@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://djulfym54bhm0"]
+
+[ext_resource type="Script" path="res://scripts/arlithons/basic_arlithon.gd" id="1_4g40n"]
+[ext_resource type="Texture2D" uid="uid://bb8kmtt8pqc72" path="res://assets/testing/arlithons/Test_Arlithon.png" id="1_c22ui"]
+[ext_resource type="Script" path="res://scripts/state_machine/state.gd" id="3_nmumc"]
+[ext_resource type="Script" path="res://scripts/state_machine/arlithons_states/arlithon_idle.gd" id="4_g80j2"]
+[ext_resource type="Script" path="res://scripts/state_machine/arlithons_states/arlithon_pathing_to_character.gd" id="5_gkwe4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bcmvi"]
+height = 26.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2iwt4"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8ok4h"]
+radius = 55.0
+
+[node name="Arlithon" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+script = ExtResource("1_4g40n")
+metadata/_edit_group_ = true
+
+[node name="Test_Arlithon" type="Sprite2D" parent="."]
+texture = ExtResource("1_c22ui")
+
+[node name="Arlithon_Node" type="Node2D" parent="."]
+
+[node name="Hit_Box" type="CollisionShape2D" parent="."]
+visible = false
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_bcmvi")
+
+[node name="Hurt_Box" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurt_Box"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_2iwt4")
+debug_color = Color(0.982405, 0.0845633, 0.258332, 0.42)
+
+[node name="Character_Detection" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Character_Detection"]
+shape = SubResource("CircleShape2D_8ok4h")
+debug_color = Color(0.623175, 0.533003, 7.70092e-07, 0.42)
+
+[node name="State_Machine" type="Node" parent="."]
+script = ExtResource("3_nmumc")
+
+[node name="Idle" type="Node" parent="State_Machine"]
+script = ExtResource("4_g80j2")
+speed = null
+
+[node name="Follow_Character" type="Node" parent="State_Machine"]
+script = ExtResource("5_gkwe4")
+speed = null
+
+[connection signal="body_entered" from="Hurt_Box" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
+[connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]

@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://cet8ubq23nxt8"]
+
+[ext_resource type="Script" path="res://scripts/weapons/famine.gd" id="1_1r042"]
+[ext_resource type="Texture2D" uid="uid://chr88tnl68bo8" path="res://assets/testing/Weapons/Famine.png" id="1_aid84"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xk7xs"]
+size = Vector2(8, 2)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_akf0a"]
+size = Vector2(10, 4)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_flkti"]
+radius = 142.032
+
+[node name="Famine" type="CharacterBody2D" groups=["weapons"]]
+collision_layer = 0
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("1_1r042")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_aid84")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_xk7xs")
+
+[node name="Area2D" type="Area2D" parent="."]
+visible = false
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
+shape = SubResource("RectangleShape2D_akf0a")
+debug_color = Color(0.640111, 0.524831, 0, 0.42)
+
+[node name="Bounce_Range" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounce_Range"]
+shape = SubResource("CircleShape2D_flkti")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,84 @@
+#PlayerMynra
+class_name PlayerMynra
+extends CharacterBody2D
+
+#Connects to the "State_Machine" script (the main one) and the "State_Machine" node (used specifically for this scene)
+@export var State_Machine : NodePath
+@onready var state_machine_instance = get_node("StateMachine")
+
+#Tracks current state of player
+var current_state
+
+#Connects to the player's sprite for animation purposes
+@onready var sprite = $AnimatedSprite2D
+
+#Sets up the "Prim_Attack_HB" Area2D for use in states and here
+@onready var atk_area = get_node("%PrimAttackHB")
+@onready var hitbox = get_node("$CollisionShape2D")
+
+#Variabls used for Famine (secondary attack)
+var target_pos: Vector2												#Tracks the target position so that Famine always spawns from Mynra's current position
+var throw_dir: Vector2												#Tracks the direction we want to throw Famine in
+const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")		#Preloads Famine as a scene so that it can be thrown and caught by Mynra
+
+#sets speed of player movement
+var speed = 200
+
+#Basic variables for player
+var angle: float				#Tracks the direction Mynra is facing
+var player_direction: Vector2	#Used to track the direction the player was last facing for idling
+var health = 10					#Sets health value for Mynra
+var ammo = 1					#Sets ammo for Famine (1, because there is only one)
+var collectable: bool			#Sets variable to determine if Famine is currently collectable
+var damaged = false				#Used for state transitions
+var damageable = true			#Used for i-frames
+var damage_rate: int			#Used for determining how much damage the player takes from an attack
+
+#Runs on startup
+func _ready():
+	#Sets up "atk_area" to monitor the "Prim_Attack_HB" mask, which is
+	#used for "get_overlapping_bodies()" script in "Primary_Attack" state
+	atk_area.monitoring = true
+
+#This script updates every frame
+func _physics_process(delta: float) -> void:	
+	#Used to track direction Mynra is facing (based on player input method)
+	var dir
+	if Input.get_connected_joypads().size() > 0:
+		var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+		var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+		dir = Vector2(x_dir, y_dir)
+		if dir.length() > 0.1:
+			dir = dir.normalized()
+	else:
+		var cursor_position = get_viewport().get_mouse_position()
+		dir = (cursor_position - global_position).normalized()
+		if dir.length() > 0:
+			dir = dir.normalized()
+	
+	#Is the angle at which the player is facing
+	angle = rad_to_deg(dir.angle())
+	
+	##Handles hurt box and Mynra taking damage
+	#const DAMAGE_RATE = 10
+	#var overlapping_mobs = $Hurt_Box.get_overlapping_bodies()
+	#if overlapping_mobs.size() > 0 && damageable == true:
+		#damaged = true
+
+#Used for transitioning to the "Damaged" state when Mynra takes damage
+func lose_health(dmg):
+	damage_rate = dmg
+	if damageable:
+		damaged = true
+
+#Allows the player to retrieve Famine when the "collectable" bool is set to true, setting the "ammo" value to 1 so that Famine can be thrown again,
+#and sets "collectable" back to false to avoid problems with Famine being collected multiple times or immediately after it was thrown
+func collect_famine():
+	if collectable == true:
+		ammo = 1
+
+#Handles i-frames for Mynra (0.67s)
+func i_frames():
+	damageable = false
+	await get_tree().create_timer(0.67).timeout
+	damageable = true
