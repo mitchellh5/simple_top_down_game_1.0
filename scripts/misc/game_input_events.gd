@@ -18,7 +18,6 @@ static func movement_input() -> Vector2:
 static func velocity_of_movement() -> Vector2:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
 	
-	print(input_vector)
 	return input_vector
 
 #Detects player movement (specifically basic movement)

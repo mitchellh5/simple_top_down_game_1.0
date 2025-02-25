@@ -1522,14 +1522,13 @@ size = Vector2(20, 36)
 
 [node name="PlayerMynra" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_u4xuv")
+State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Sec_Atk_D"
+animation = &"Idle_R"
 autoplay = "Idle_R"
-frame = 4
-frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

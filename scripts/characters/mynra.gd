@@ -4,7 +4,7 @@ extends CharacterBody2D
 
 #Connects to the "State_Machine" script (the main one) and the "State_Machine" node (used specifically for this scene)
 @export var State_Machine : NodePath
-@onready var state_machine_instance = get_node("StateMachine")
+#@onready var state_machine_instance = get_node("StateMachine") #don't think this is important, commented out, but just incase not deleted (my confidence in my code is unfounded)
 
 #Tracks current state of player
 var current_state
