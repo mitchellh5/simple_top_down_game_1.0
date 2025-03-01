@@ -377,7 +377,7 @@ height = 56.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_8ok4h"]
 radius = 75.71
 
-[node name="Arlithon" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["arlithons"]]
+[node name="Arlithon" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["Arlithons"]]
 collision_layer = 2
 collision_mask = 3
 motion_mode = 1
@@ -428,6 +428,10 @@ visible = false
 shape = SubResource("CircleShape2D_8ok4h")
 debug_color = Color(0.623175, 0.533003, 7.70092e-07, 0.42)
 
+[node name="TargetLocked" type="Timer" parent="."]
+wait_time = 7.0
+one_shot = true
+
 [node name="State_Machine" type="Node" parent="." node_paths=PackedStringArray("initial_arlithon_state")]
 script = ExtResource("3_onjyk")
 initial_arlithon_state = NodePath("Idle")
@@ -462,3 +466,4 @@ arlithon_animation = NodePath("../../Test_Arlithon")
 [connection signal="body_exited" from="Attack" to="." method="_on_attack_body_exited"]
 [connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
 [connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
+[connection signal="timeout" from="TargetLocked" to="." method="_on_target_locked_timeout"]

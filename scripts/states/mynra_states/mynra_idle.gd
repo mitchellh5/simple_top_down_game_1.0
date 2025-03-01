@@ -2,7 +2,7 @@
 extends MynraState
 
 #Exports Mynra and her animation node
-@export var player: PlayerMynra
+@export var player: CharacterBody2D
 @export var player_animation: AnimatedSprite2D
 
 #Runs every frame

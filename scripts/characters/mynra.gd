@@ -14,17 +14,18 @@ var current_state
 
 #Sets up the "Prim_Attack_HB" Area2D for use in states and here
 @onready var atk_area = get_node("%PrimAttackHB")
-@onready var hitbox = get_node("$CollisionShape2D")
+#@onready var hitbox = get_node("$HurtBox/CollisionShape2D")
 
 #Variabls used for Famine (secondary attack)
 var target_pos: Vector2												#Tracks the target position so that Famine always spawns from Mynra's current position
 var throw_dir: Vector2												#Tracks the direction we want to throw Famine in
 const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")		#Preloads Famine as a scene so that it can be thrown and caught by Mynra
 
-#sets speed of player movement
-var speed = 200
+#Tracks if Mynra is the current player character or a companion (set to true by default since she is the main character)
+var player = true
 
 #Basic variables for player
+var speed = 200					#Sets speed of player movement
 var angle: float				#Tracks the direction Mynra is facing
 var player_direction: Vector2	#Used to track the direction the player was last facing for idling
 var health = 10					#Sets health value for Mynra
@@ -44,26 +45,28 @@ func _ready():
 func _physics_process(delta: float) -> void:	
 	#Used to track direction Mynra is facing (based on player input method)
 	var dir
-	if Input.get_connected_joypads().size() > 0:
-		var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-		var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
-		dir = Vector2(x_dir, y_dir)
-		if dir.length() > 0.1:
-			dir = dir.normalized()
-	else:
-		var cursor_position = get_viewport().get_mouse_position()
-		dir = (cursor_position - global_position).normalized()
-		if dir.length() > 0:
-			dir = dir.normalized()
+	if player:
+		add_to_group("Player")
+		remove_from_group("Companion")
+		#print("Player")
+		if Input.get_connected_joypads().size() > 0:
+			var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+			var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+			dir = Vector2(x_dir, y_dir)
+			if dir.length() > 0.1:
+				dir = dir.normalized()
+		else:
+			var cursor_position = get_viewport().get_mouse_position()
+			dir = (cursor_position - global_position).normalized()
+			if dir.length() > 0:
+				dir = dir.normalized()
+	elif !player:
+		add_to_group("Companion")
+		remove_from_group("Player")
+		#print("NPC")
 	
 	#Is the angle at which the player is facing
 	angle = rad_to_deg(dir.angle())
-	
-	##Handles hurt box and Mynra taking damage
-	#const DAMAGE_RATE = 10
-	#var overlapping_mobs = $Hurt_Box.get_overlapping_bodies()
-	#if overlapping_mobs.size() > 0 && damageable == true:
-		#damaged = true
 
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):
