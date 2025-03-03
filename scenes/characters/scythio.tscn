@@ -1,4 +1,4 @@
-[gd_scene load_steps=126 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=127 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_movement.gd" id="5_kp31m"]
 [ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_follow_player.gd" id="6_u0y3l"]
 [ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
+[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")
@@ -665,7 +666,7 @@ animations = [{
 "duration": 5.0,
 "texture": SubResource("AtlasTexture_51s0n")
 }],
-"loop": false,
+"loop": true,
 "name": &"Idle_R",
 "speed": 5.0
 }, {
@@ -925,8 +926,7 @@ State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_flski")
-animation = &"Prim_Atk_L"
-frame = 1
+animation = &"Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -952,6 +952,7 @@ debug_color = Color(0.85098, 0.372549, 0, 0.419608)
 
 [node name="PlayerDetection" type="Area2D" parent="."]
 unique_name_in_owner = true
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
 shape = SubResource("RectangleShape2D_rou7o")
@@ -960,14 +961,20 @@ debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 [node name="PrimAtkHB" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 2
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkHB"]
+light_mask = 0
+visibility_layer = 2
 position = Vector2(-13, 0)
 shape = SubResource("RectangleShape2D_31j7n")
 debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 
 [node name="PrimAtkRange" type="Area2D" parent="."]
-visible = false
+unique_name_in_owner = true
+collision_layer = 3
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
 shape = SubResource("RectangleShape2D_jnlrw")
@@ -996,5 +1003,12 @@ script = ExtResource("7_hufca")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
+[node name="PrimaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("8_i2vat")
+scythio = NodePath("../..")
+scythio_animation = NodePath("../../AnimatedSprite2D")
+
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
+[connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
+[connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]

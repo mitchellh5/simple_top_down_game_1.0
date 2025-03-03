@@ -387,10 +387,8 @@ State_Machine = NodePath("State_Machine")
 
 [node name="Test_Arlithon" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_u3ayo")
-animation = &"Idle"
+animation = &"Atk"
 autoplay = "Idle"
-frame = 1
-frame_progress = 1.0
 
 [node name="Arlithon_Node" type="Node2D" parent="."]
 

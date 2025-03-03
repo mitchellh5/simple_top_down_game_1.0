@@ -12,13 +12,23 @@ func _on_update(_delta: float) -> void:
 func _on_physics_update(_delta: float) -> void:
 	#Plays the proper animation based on the direction the player was facing
 	#when they entered the state (NOTE: there are no "Idle_U" animations)
+	var anim_name : String
+	
 	if scythio.player:
-		if scythio.player_direction == Vector2.LEFT: scythio_animation.play("Idle_L")
-		elif scythio.player_direction == Vector2.RIGHT: scythio_animation.play("Idle_R")
-		else: scythio_animation.play("Idle_D")
+		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle_D"
 	elif !scythio.player:
+		var player = get_tree().get_first_node_in_group("Player")
 		scythio.velocity = Vector2.ZERO
-		scythio_animation.play("Idle_R")
+		if player.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif player.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle_D"
+		
+	if scythio_animation.animation != anim_name:
+		#print(anim_name)
+		scythio_animation.play(anim_name)
+		#print("Current frame: ", scythio_animation.frame)
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:

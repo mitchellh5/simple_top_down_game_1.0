@@ -19,14 +19,15 @@ func _on_next_transitions() -> void:
 #Runs upon entering state
 func _on_enter():
 	if arlithon.health <= 0:
+		arlithon.is_alive = false
 		
 		#Handles Mutation Spreading
-		var other_arlithons = get_tree().get_nodes_in_group("arlithons")			#Creates a variable "other_arlithons" as a list of each
+		var other_arlithons = get_tree().get_nodes_in_group("Arlithons")			#Creates a variable "other_arlithons" as a list of each
 																					#scene in the "arlithons" group currently in the main scene
 		var i = 3																	#Number of times the mutation is allowed to spread
 		for node in other_arlithons:
 			if node != self && !node.has_node("Tail_Mutation") && i>0:				#Goes through the list of arlithons and adds each mutation
-				print("mutation time")												#currently attached this arlithon to the others (assuming it
+				#print("mutation time")												#currently attached this arlithon to the others (assuming it
 																					#has a target and has not yet spent all of its mutations)
 				if arlithon.has_node("Tail_Mutation"):
 					var tail_mutation = arlithon.tail_mutation_scene.instantiate()

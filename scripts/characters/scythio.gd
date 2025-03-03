@@ -13,6 +13,7 @@ var current_state
 
 @onready var atk_area = get_node("%PrimAtkHB")					#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
+@onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
 
 #Tracks if Scythio is the current player character, or a companion (set to false by default)
 @onready var player = false
@@ -44,6 +45,8 @@ func _ready():
 	#used for "get_overlapping_bodies()" script in "Primary_Attack" state
 	atk_area.monitoring = true
 	player_detect.monitoring = true
+	prim_atk_range.monitoring = true
+	
 	
 	
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
@@ -75,8 +78,9 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		#print("NPC")
 		for body in $PrimAtkRange.get_overlapping_bodies():
-			if body.is_in_group("player"):
-				target_arlithon = body
+			if body.is_in_group("Arlithons"):
+				print(body)
+			if target_arlithon == body:
 				arlithon_in_prim_atk_range = true
 	
 	#_check_player_range()
@@ -97,3 +101,11 @@ func _on_player_detection_body_entered(body: Node2D) -> void:
 func _on_player_detection_body_exited(body: Node2D) -> void:
 	if body == player_body:
 		at_player = false
+
+func _on_prim_atk_range_body_exited(body: Node2D) -> void:
+	if body == target_arlithon:
+		arlithon_in_prim_atk_range = false
+
+func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+	if body == target_arlithon:
+		arlithon_in_prim_atk_range = true

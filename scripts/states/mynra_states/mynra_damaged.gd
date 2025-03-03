@@ -35,7 +35,7 @@ func lose_health():
 			#Triggers i-frames
 			i_frames()
 		else:
-			print("Mynra has fallen")
+			#print("Mynra has fallen")
 			transition.emit("Death")
 
 func i_frames():

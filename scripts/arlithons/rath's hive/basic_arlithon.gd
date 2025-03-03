@@ -35,6 +35,7 @@ var damage_dealt = 1						#How much damage it deals to the player
 var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
 var is_mutated : bool						#Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
 var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
+var is_alive : bool = true					#Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
 
 func _ready():
 	_check_mutations()
@@ -48,7 +49,7 @@ func _physics_process(delta: float) -> void:
 		$Test_Arlithon.flip_h = false
 	
 	for body in $Character_Detection.get_overlapping_bodies():
-		if body.is_in_group("player"):
+		if body.is_in_group("Player"):
 			player_body = body
 			player_in_range = true
 	
@@ -59,7 +60,7 @@ func _physics_process(delta: float) -> void:
 	
 	_check_mutations()
 	_is_being_targeted()
-	print(is_targeted_by_player)
+	#print(is_targeted_by_player)
 
 func _on_attack_body_exited(body: Node2D) -> void:
 	if body.has_method("lose_health"):
@@ -101,9 +102,11 @@ func _check_mutations():
 #This is the logic used for tracking when this arlithon is currently
 #being targeted by the player character
 func _is_being_targeted() -> void:
-	var other_arlithons = get_tree().get_nodes_in_group("arlithons")		#Gets list of all arlithons in the current scene
+	var other_arlithons = get_tree().get_nodes_in_group("Arlithons")		#Gets list of all arlithons in the current scene
 		
-	if damaged:												#If this arlithon is damaged
+	if !is_alive:
+		is_targeted_by_player = false
+	elif damaged:												#If this arlithon is damaged
 		for node in other_arlithons:						#It parses through all other arlithons
 			if node != self && node.is_targeted_by_player:	#And if that arlithon is not itself and is currently being targeted by the PC
 				node.is_targeted_by_player = false			#It will set that arlithon to no longer being targeted by the PC
