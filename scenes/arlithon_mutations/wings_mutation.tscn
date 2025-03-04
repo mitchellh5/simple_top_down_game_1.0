@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://hds1anqhtw22"]
 
-[ext_resource type="Script" path="res://scripts/arlithons/mutations/wings_mutation.gd" id="1_2pt31"]
+[ext_resource type="Script" uid="uid://b6wjue3add3c" path="res://scripts/arlithons/mutations/wings_mutation.gd" id="1_2pt31"]
 [ext_resource type="Texture2D" uid="uid://bvhfyvbnwh1fi" path="res://assets/alpha/arlithons/mutations/Wings.png" id="1_pqbnd"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aarjc"]

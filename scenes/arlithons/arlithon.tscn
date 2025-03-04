@@ -1,13 +1,13 @@
 [gd_scene load_steps=59 format=3 uid="uid://djulfym54bhm0"]
 
-[ext_resource type="Script" path="res://scripts/arlithons/rath's hive/basic_arlithon.gd" id="1_4g40n"]
+[ext_resource type="Script" uid="uid://ba0th0iret3bq" path="res://scripts/arlithons/rath's hive/basic_arlithon.gd" id="1_4g40n"]
 [ext_resource type="Texture2D" uid="uid://8hc6dxrfhhrg" path="res://assets/alpha/arlithons/rath's hive/Basic-Sheet.png" id="2_yc2ag"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_state_machine.gd" id="3_onjyk"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_idle.gd" id="4_g80j2"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_follow_player.gd" id="5_cceh1"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_attack.gd" id="6_kmaep"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_damaged.gd" id="7_uojla"]
-[ext_resource type="Script" path="res://scripts/states/arlithons_states/arlithon_death.gd" id="8_3ncui"]
+[ext_resource type="Script" uid="uid://c58t7rgrmh4ra" path="res://scripts/states/arlithons_states/arlithon_state_machine.gd" id="3_onjyk"]
+[ext_resource type="Script" uid="uid://dgibkli5eyqt1" path="res://scripts/states/arlithons_states/arlithon_idle.gd" id="4_g80j2"]
+[ext_resource type="Script" uid="uid://bm85hj8x37x7n" path="res://scripts/states/arlithons_states/arlithon_follow_player.gd" id="5_cceh1"]
+[ext_resource type="Script" uid="uid://bjhjlpjbc3rdm" path="res://scripts/states/arlithons_states/arlithon_attack.gd" id="6_kmaep"]
+[ext_resource type="Script" uid="uid://cvxl7y0s0blvj" path="res://scripts/states/arlithons_states/arlithon_damaged.gd" id="7_uojla"]
+[ext_resource type="Script" uid="uid://egxuw4uds6dv" path="res://scripts/states/arlithons_states/arlithon_death.gd" id="8_3ncui"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_go2j5"]
 atlas = ExtResource("2_yc2ag")

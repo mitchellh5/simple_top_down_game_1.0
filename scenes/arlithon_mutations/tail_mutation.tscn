@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://casiyrgnqyyxb"]
 
-[ext_resource type="Script" path="res://scripts/arlithons/mutations/tail_mutation.gd" id="1_i8wfb"]
+[ext_resource type="Script" uid="uid://m3g7ckksuqc7" path="res://scripts/arlithons/mutations/tail_mutation.gd" id="1_i8wfb"]
 [ext_resource type="Texture2D" uid="uid://b0oydh58jk72s" path="res://assets/alpha/arlithons/mutations/Tail.png" id="1_yxejm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kdlmh"]

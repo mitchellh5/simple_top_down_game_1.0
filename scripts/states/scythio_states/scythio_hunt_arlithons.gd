@@ -68,11 +68,11 @@ func _are_they_all_dead() -> bool:
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
-	if (arlithons.is_empty() || !one_still_lives) && !scythio.at_player:
+	if (arlithons.is_empty() || !one_still_lives) && (!scythio.at_player):
 		transition.emit("FollowPlayer")
 	elif scythio.arlithon_in_prim_atk_range:
 		transition.emit("PrimaryAttack")
-	elif scythio.at_player:
+	elif (scythio.at_player) && (arlithons.is_empty() || !one_still_lives):
 		transition.emit("Idle")
 	
 

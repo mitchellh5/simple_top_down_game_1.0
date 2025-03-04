@@ -78,8 +78,6 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		#print("NPC")
 		for body in $PrimAtkRange.get_overlapping_bodies():
-			if body.is_in_group("Arlithons"):
-				print(body)
 			if target_arlithon == body:
 				arlithon_in_prim_atk_range = true
 	

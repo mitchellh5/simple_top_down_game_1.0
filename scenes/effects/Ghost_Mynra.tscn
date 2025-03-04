@@ -1,7 +1,7 @@
 [gd_scene load_steps=20 format=3 uid="uid://blc4bahx057yw"]
 
 [ext_resource type="Texture2D" uid="uid://cyr0kb1bo2ky5" path="res://assets/alpha/characters/Mynra-Sheet.png" id="1_ku5u0"]
-[ext_resource type="Script" path="res://scripts/effects/ghost_mynra.gd" id="2_5fvpk"]
+[ext_resource type="Script" uid="uid://c1qcid6a2uedc" path="res://scripts/effects/ghost_mynra.gd" id="2_5fvpk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_406d5"]
 atlas = ExtResource("1_ku5u0")

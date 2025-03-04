@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cet8ubq23nxt8"]
 
-[ext_resource type="Script" path="res://scripts/weapons/famine.gd" id="1_1r042"]
+[ext_resource type="Script" uid="uid://bpeu0anfonkwe" path="res://scripts/weapons/famine.gd" id="1_1r042"]
 [ext_resource type="Texture2D" uid="uid://chr88tnl68bo8" path="res://assets/alpha/Weapons/Famine.png" id="1_aid84"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xk7xs"]

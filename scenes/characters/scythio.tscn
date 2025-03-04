@@ -1,13 +1,13 @@
 [gd_scene load_steps=127 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
-[ext_resource type="Script" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_state_machine.gd" id="2_baabh"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_idle.gd" id="4_7q1pf"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_movement.gd" id="5_kp31m"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_follow_player.gd" id="6_u0y3l"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
-[ext_resource type="Script" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
+[ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
+[ext_resource type="Script" uid="uid://dwh8oss5u1qeb" path="res://scripts/states/scythio_states/scythio_state_machine.gd" id="2_baabh"]
+[ext_resource type="Script" uid="uid://dfgnjyytlyiva" path="res://scripts/states/scythio_states/scythio_idle.gd" id="4_7q1pf"]
+[ext_resource type="Script" uid="uid://dqsrbns48plng" path="res://scripts/states/scythio_states/scythio_movement.gd" id="5_kp31m"]
+[ext_resource type="Script" uid="uid://qsqwb8xavcsi" path="res://scripts/states/scythio_states/scythio_follow_player.gd" id="6_u0y3l"]
+[ext_resource type="Script" uid="uid://drwpv50tyug4r" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
+[ext_resource type="Script" uid="uid://cb3qd1nq1yqe4" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")

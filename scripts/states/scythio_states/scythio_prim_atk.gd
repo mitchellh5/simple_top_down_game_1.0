@@ -127,21 +127,21 @@ func primary_attack_companion():
 			atk_vel = input_velocity.normalized() * scythio.speed * 0.25						#in the current direction of movement.
 		else:																					#Otherwise, it dashes in the direction the player is currently facing
 			atk_vel = scythio.player_direction.normalized() * scythio.speed * 0.25				#(for cases where the player dashes from an idle position)
-		if scythio.player_direction == Vector2.LEFT:
+		if scythio.player_direction.normalized() == Vector2.LEFT:
 			scythio_animation.play("Prim_Atk_L")
 			scythio.atk_area.rotation_degrees = 0
 			var bodies = scythio.atk_area.get_overlapping_bodies()
 			for body in bodies:
 				if body.has_method("take_damage"):
 					body.take_damage()
-		elif scythio.player_direction == Vector2.RIGHT:
+		elif scythio.player_direction.normalized() == Vector2.RIGHT:
 			scythio_animation.play("Prim_Atk_R")
 			scythio.atk_area.rotation_degrees = 180
 			var bodies = scythio.atk_area.get_overlapping_bodies()
 			for body in bodies:
 				if body.has_method("take_damage"):
 					body.take_damage()
-		elif scythio.player_direction == Vector2.DOWN:
+		elif scythio.player_direction.normalized() == Vector2.DOWN:
 			scythio_animation.play("Prim_Atk_D")
 			scythio.atk_area.rotation_degrees = -90
 			var bodies = scythio.atk_area.get_overlapping_bodies()
@@ -155,6 +155,8 @@ func primary_attack_companion():
 			for body in bodies:
 				if body.has_method("take_damage"):
 					body.take_damage()
+		
+		print(scythio_animation.animation)
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -167,12 +169,10 @@ func _on_next_transitions() -> void:
 			transition.emit("FollowPlayer")
 		elif !arlithons.is_empty() && !scythio.arlithon_in_prim_atk_range:
 			transition.emit("HuntArlithons")
-		else:
-			transition.emit("Idle")
 
 #Tracks when animation is finished
 func _on_animation_finished():
-	if scythio_animation.animation in ["Prim_Atk1_R", "Prim_Atk1_L", "Prim_Atk1_U", "Prim_Atk1_D"]:
+	if scythio_animation.animation in ["Prim_Atk_R", "Prim_Atk_L", "Prim_Atk_U", "Prim_Atk_D"]:
 		is_animating = false
 
 #Runs upon entering state
