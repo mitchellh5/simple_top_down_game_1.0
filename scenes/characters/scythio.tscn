@@ -1,4 +1,4 @@
-[gd_scene load_steps=127 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=128 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -920,6 +920,9 @@ size = Vector2(26, 36)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnlrw"]
 size = Vector2(52, 52)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_ww6x6"]
+radius = 54.0093
+
 [node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Companion"]]
 script = ExtResource("1_qbh1l")
 State_Machine = NodePath("StateMachine")
@@ -973,11 +976,17 @@ debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 
 [node name="PrimAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
+visible = false
 collision_layer = 3
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
 shape = SubResource("RectangleShape2D_jnlrw")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_ww6x6")
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]
 script = ExtResource("2_baabh")
@@ -1012,3 +1021,4 @@ scythio_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
+[connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]

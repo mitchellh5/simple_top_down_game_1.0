@@ -107,3 +107,18 @@ func _on_prim_atk_range_body_exited(body: Node2D) -> void:
 func _on_prim_atk_range_body_entered(body: Node2D) -> void:
 	if body == target_arlithon:
 		arlithon_in_prim_atk_range = true
+
+const lines: Array[String] = [
+	"Hello there! I am Scythio, the Son of Life and Death. Welcome to Oblivion, the Heaven of the Gods!",
+	"Let me guess, you don't remember anything.",
+	"Yeah... none of us do. We don't know why, but it seems that, when we come here, Oblivion just strips away any memories we had of our past lives.",
+	"It's so strange... I remember some things, as I'm sure you do as well....",
+	"I remember my Father was the God of Life and Death... but I can't recall his face or voice.",
+	"I remember there being others in the pantheon... though I can't remember how many or who.",
+	"I remember seeing the entire Universe... but I can't recall what specifically was in it."
+]
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		if $InteractionArea.get_overlapping_bodies().size() > 0:
+			DialogueManager.start_dialogue(global_position, lines)
