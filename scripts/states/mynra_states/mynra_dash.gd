@@ -23,6 +23,8 @@ func _on_update(_delta: float) -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
+	if player.get_parent().name == "Oblivion":
+		can_dash = false
 	#Awaits input from player, then, if the cooldown is inactive, runs the "dash()" function
 	if Input.is_action_pressed("dash") && can_dash:
 		dash()

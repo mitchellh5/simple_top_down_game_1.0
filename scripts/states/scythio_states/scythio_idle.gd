@@ -4,6 +4,8 @@ extends ScythioState
 @export var scythio : PlayerScythio
 @export var scythio_animation : AnimatedSprite2D
 
+var waiting: bool = false
+
 #Runs every frame
 func _on_update(_delta: float) -> void:
 	pass
@@ -26,12 +28,21 @@ func _on_physics_update(_delta: float) -> void:
 		else: anim_name = "Idle_D"
 	else:
 		scythio.velocity = Vector2.ZERO
-		anim_name = "Idle_L"
+		if waiting:
+			scythio_animation.pause()
+		else:
+			scythio_animation.play("Idle_L")
+			_waiting()
 		
-	if scythio_animation.animation != anim_name:
+	if scythio_animation.animation != anim_name && scythio.get_parent().name != "Oblivion":
 		#print(anim_name)
 		scythio_animation.play(anim_name)
 		#print("Current frame: ", scythio_animation.frame)
+
+func _waiting():
+	waiting = true
+	await get_tree().create_timer(5).timeout
+	waiting = false
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -65,6 +76,8 @@ func _on_next_transitions() -> void:
 				transition.emit("FollowPlayer")
 			elif scythio.at_player:
 				transition.emit("Idle")
+		else:
+			return
 
 #Runs upon entering state
 func _on_enter():

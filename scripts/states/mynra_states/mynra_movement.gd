@@ -42,7 +42,7 @@ func _on_next_transitions() -> void:
 			transition.emit("Primary_Attack")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
-		elif Game_Input_Events.is_dashing():
+		elif Game_Input_Events.is_dashing() && player.get_parent().name != "Oblivion":
 			transition.emit("Dash")
 
 #Runs upon entering state

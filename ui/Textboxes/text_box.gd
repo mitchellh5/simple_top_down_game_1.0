@@ -18,6 +18,8 @@ signal finished_displaying()
 
 #Function that actually handles displaying the text to the screen
 func display_text(text_to_display: String):
+	set_character_pause(true)
+	GlobalState.input_paused = true
 	text = text_to_display
 	label.text = text_to_display
 	
@@ -48,6 +50,7 @@ func _display_character():
 	#so, signals that the text is done being displayed and returns nothing
 	if character_index >= text.length():
 		finished_displaying.emit()
+		set_character_pause(false)
 		return
 	
 	#Checks each character to see what is being displayed
@@ -62,3 +65,14 @@ func _display_character():
 
 func _on_display_timer_timeout() -> void:
 	_display_character()
+
+func set_character_pause(paused: bool):
+	for node in get_tree().get_nodes_in_group("Player"):
+		node.set_process(!paused)
+		node.set_physics_process(!paused)
+		node.set_process_input(!paused)
+
+	for node in get_tree().get_nodes_in_group("Companion"):
+		node.set_process(!paused)
+		node.set_physics_process(!paused)
+		node.set_process_input(!paused)

@@ -921,7 +921,7 @@ size = Vector2(26, 36)
 size = Vector2(52, 52)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ww6x6"]
-radius = 54.0093
+radius = 142.004
 
 [node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Companion"]]
 script = ExtResource("1_qbh1l")
@@ -990,7 +990,7 @@ shape = SubResource("CircleShape2D_ww6x6")
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]
 script = ExtResource("2_baabh")
-initial_scythio_state = NodePath("FollowPlayer")
+initial_scythio_state = NodePath("Idle")
 
 [node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
 script = ExtResource("4_7q1pf")

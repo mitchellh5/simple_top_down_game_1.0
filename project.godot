@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 DialogueManager="*res://singletons/DialogManager.gd"
+GlobalState="*res://singletons/global_state.gd"
+DialogueTree="*res://singletons/dialogue_tree.gd"
 
 [display]
 

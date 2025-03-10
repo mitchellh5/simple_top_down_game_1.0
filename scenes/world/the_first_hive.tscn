@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dkb8pkean1gw8"]
+
+[node name="TheFirstHive" type="Node2D"]
+
+[node name="TheFirstHiveTileMap" type="Node" parent="."]
+
+[node name="Surface" type="TileMapLayer" parent="TheFirstHiveTileMap"]

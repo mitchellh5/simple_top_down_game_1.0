@@ -1,17 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://o3mwcbvikorn"]
+[gd_scene load_steps=4 format=3 uid="uid://d3glvvxrmn11v"]
 
-[ext_resource type="Texture2D" uid="uid://c7v2030udinq8" path="res://ui/Textbox Sprites/Scythio's Textbox.png" id="1_ncbgf"]
-[ext_resource type="Script" uid="uid://de6xoujtef0xt" path="res://ui/Textboxes/scythios_text_box.gd" id="1_ovibe"]
-[ext_resource type="FontFile" uid="uid://iqsdmjkt7567" path="res://ui/Fonts/antiquity-print.ttf" id="2_ovibe"]
+[ext_resource type="Script" uid="uid://de6xoujtef0xt" path="res://ui/Textboxes/text_box.gd" id="1_ge6qc"]
+[ext_resource type="Texture2D" uid="uid://4lohm6inn03b" path="res://ui/Textbox Sprites/Mynra's Textbox.png" id="2_ge6qc"]
+[ext_resource type="FontFile" uid="uid://iqsdmjkt7567" path="res://ui/Fonts/antiquity-print.ttf" id="3_53exr"]
 
-[node name="ScythiosTextBox" type="MarginContainer"]
-offset_right = 36.0
+[node name="MynrasTextBox" type="MarginContainer"]
+offset_right = 105.0
 offset_bottom = 36.0
-script = ExtResource("1_ovibe")
+script = ExtResource("1_ge6qc")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 layout_mode = 2
-texture = ExtResource("1_ncbgf")
+texture = ExtResource("2_ge6qc")
 region_rect = Rect2(0, 0, 54, 54)
 patch_margin_left = 18
 patch_margin_top = 18
@@ -28,7 +28,7 @@ theme_override_constants/margin_bottom = 8
 [node name="Label" type="Label" parent="MarginContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("2_ovibe")
+theme_override_fonts/font = ExtResource("3_53exr")
 theme_override_font_sizes/font_size = 13
 text = "Hello there"
 vertical_alignment = 1

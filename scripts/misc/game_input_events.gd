@@ -18,7 +18,10 @@ static func movement_input() -> Vector2:
 static func velocity_of_movement() -> Vector2:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
 	
-	return input_vector
+	if GlobalState.input_paused:
+		return Vector2.ZERO
+	else:
+		return input_vector
 
 #Detects player movement (specifically basic movement)
 static func is_movement_input() -> bool:
@@ -29,21 +32,21 @@ static func is_movement_input() -> bool:
 
 #Detects if player is currently dashing
 static func is_dashing() -> bool:
-	if Input.is_action_just_pressed("dash"):
+	if Input.is_action_just_pressed("dash") && !GlobalState.input_paused:
 		return true
 	else:
 		return false
 
 #Detects if player is currently using their secondary attack
 static func is_sec_attacking() -> bool:
-	if Input.is_action_just_pressed("secondary_attack"):
+	if Input.is_action_just_pressed("secondary_attack") && !GlobalState.input_paused:
 		return true
 	else:
 		return false
 
 #Detects if player is currently using their primary attack
 static func is_prim_attacking() -> bool:
-	if Input.is_action_just_pressed("primary_attack"):
+	if Input.is_action_just_pressed("primary_attack") && !GlobalState.input_paused:
 		return true
 	else:
 		return false

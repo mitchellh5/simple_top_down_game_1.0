@@ -108,7 +108,7 @@ func _on_prim_atk_range_body_entered(body: Node2D) -> void:
 	if body == target_arlithon:
 		arlithon_in_prim_atk_range = true
 
-const lines: Array[String] = [
+const introduction: Array[String] = [
 	"Hello there! I am Scythio, the Son of Life and Death. Welcome to Oblivion, the Heaven of the Gods!",
 	"Let me guess, you don't remember anything.",
 	"Yeah... none of us do. We don't know why, but it seems that, when we come here, Oblivion just strips away any memories we had of our past lives.",
@@ -121,4 +121,5 @@ const lines: Array[String] = [
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		if $InteractionArea.get_overlapping_bodies().size() > 0:
-			DialogueManager.start_dialogue(global_position, lines)
+			if !GlobalState.has_conquered.has("Rath"):
+				DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio)

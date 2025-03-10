@@ -29,10 +29,10 @@ func _on_next_transitions() -> void:
 	
 	if player.damaged:
 		transition.emit("Damaged")
-	else:
+	elif !GlobalState.input_paused:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
-		elif Game_Input_Events.is_dashing():
+		elif Game_Input_Events.is_dashing() && player.get_parent().name != "Oblivion":
 			transition.emit("Dash")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("Primary_Attack")

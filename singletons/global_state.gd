@@ -1,0 +1,21 @@
+#-------------------------------------------------------
+#This handles all of the global states of the game.
+#It will track at what point the player is at, such
+#as the current sun, hive, player character, and
+#companion to the player character. This can all be
+#used to display proper dialogue, play the correct
+#cutscene, and everything else depending on how far
+#into the game the player currently is.
+#-------------------------------------------------------
+extends Node
+
+var sun: String = "White"					#Tracks the current sun (starting at White)
+var hive: String = ""						#Tracks the current hive (blank since we start in Oblivion)
+var scene: String = "Oblivion"				#Tracks the current scene (starting in Oblivion)
+var companion: String = "Scythio"			#Tracks the current companion (starting as Scythio)
+var player: String = "Mynra"				#Tracks the current PC (starting as Mynra)
+
+var has_conquered: Array[String]			#Tracks which hives the player has played through so far
+var has_witnessed: Array[String]			#Tracks which suns the player has played through so far
+
+var input_paused: bool = false				#Handles pausing player input during dialogue and cutscenes
