@@ -1,0 +1,44 @@
+extends Node
+
+var in_range: bool = false
+const FILE_BEGIN = "res://world/rath's hive/"
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact") && in_range:
+		var current_scene_file = get_tree().current_scene.scene_file_path
+		
+		if GlobalState.scene != "Oblivion":
+			if GlobalState.scene == "Rath":
+				var next_level = current_scene_file.int() + 1
+				var next_level_path = FILE_BEGIN + str(next_level) + ".tscn"
+			elif  GlobalState.scene ==  "Slothe":
+				pass
+			elif  GlobalState.scene ==  "Gluttonee":
+				pass
+			elif  GlobalState.scene ==  "Gried":
+				pass
+			elif  GlobalState.scene == "Luste":
+				pass
+			elif  GlobalState.scene == "Nvee":
+				pass
+		elif GlobalState.scene == "Oblivion":
+			if !GlobalState.has_conquered.has("Rath"):
+				pass
+			elif !GlobalState.has_conquered.has("Slothe"):
+				pass
+			elif !GlobalState.has_conquered.has("Gluttonee"):
+				pass
+			elif !GlobalState.has_conquered.has("Gried"):
+				pass
+			elif !GlobalState.has_conquered.has("Luste"):
+				pass
+			elif !GlobalState.has_conquered.has("Nvee"):
+				pass
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		in_range = true
+
+func _on_body_exited(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		in_range = false

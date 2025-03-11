@@ -1,5 +1,6 @@
 extends Node
 
+#Dialogue for when Mynra first meets Scythio
 const mynra_meets_scythio: Array = [
 	{"speaker": "Scythio", "text": "Do you remember anything?"},
 	{"speaker": "Mynra", "text": "No, I don't..."},

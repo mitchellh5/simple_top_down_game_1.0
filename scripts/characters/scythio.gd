@@ -14,6 +14,7 @@ var current_state
 @onready var atk_area = get_node("%PrimAtkHB")					#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
+@onready var interact_area = get_node("%InteractionArea")
 
 #Tracks if Scythio is the current player character, or a companion (set to false by default)
 @onready var player = false
@@ -46,6 +47,7 @@ func _ready():
 	atk_area.monitoring = true
 	player_detect.monitoring = true
 	prim_atk_range.monitoring = true
+	interact_area.monitoring = true
 	
 	
 	
@@ -78,7 +80,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		#print("NPC")
 		for body in $PrimAtkRange.get_overlapping_bodies():
-			if target_arlithon == body:
+			if body == target_arlithon:
 				arlithon_in_prim_atk_range = true
 	
 	#_check_player_range()
@@ -108,18 +110,9 @@ func _on_prim_atk_range_body_entered(body: Node2D) -> void:
 	if body == target_arlithon:
 		arlithon_in_prim_atk_range = true
 
-const introduction: Array[String] = [
-	"Hello there! I am Scythio, the Son of Life and Death. Welcome to Oblivion, the Heaven of the Gods!",
-	"Let me guess, you don't remember anything.",
-	"Yeah... none of us do. We don't know why, but it seems that, when we come here, Oblivion just strips away any memories we had of our past lives.",
-	"It's so strange... I remember some things, as I'm sure you do as well....",
-	"I remember my Father was the God of Life and Death... but I can't recall his face or voice.",
-	"I remember there being others in the pantheon... though I can't remember how many or who.",
-	"I remember seeing the entire Universe... but I can't recall what specifically was in it."
-]
-
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
-		if $InteractionArea.get_overlapping_bodies().size() > 0:
-			if !GlobalState.has_conquered.has("Rath"):
-				DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio)
+		for body in $InteractionArea.get_overlapping_bodies():
+			if body.is_in_group("Player"):
+				if !GlobalState.has_conquered.has("Rath"):
+					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio)
