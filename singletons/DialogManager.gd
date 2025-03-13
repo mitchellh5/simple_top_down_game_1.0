@@ -79,6 +79,7 @@ func _unhandled_input(event):
 			dialogue_active = false
 			current_line_index = 0
 			GlobalState.input_paused = false
+			GlobalState.ready_to_go = true
 			return
 		
 		_show_text_box()

@@ -19,3 +19,4 @@ var has_conquered: Array[String]			#Tracks which hives the player has played thr
 var has_witnessed: Array[String]			#Tracks which suns the player has played through so far
 
 var input_paused: bool = false				#Handles pausing player input during dialogue and cutscenes
+var ready_to_go: bool = false				#Handles waiting for scene transitions

@@ -1,7 +1,20 @@
-[gd_scene format=3 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=4 format=3 uid="uid://dkb8pkean1gw8"]
 
-[node name="TheFirstHive" type="Node2D"]
+[ext_resource type="Texture2D" uid="uid://bbrcoxpgalrjn" path="res://assets/testing/world/backgrounds/Basic_Sand.png" id="1_gne1f"]
+[ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_v00ta"]
+[ext_resource type="PackedScene" uid="uid://bvy0bt4bf1cso" path="res://singletons/level_transition.tscn" id="3_e045w"]
+
+[node name="Rath\'sHive1" type="Node2D"]
+
+[node name="BasicSand" type="Sprite2D" parent="."]
+position = Vector2(318, 180)
+texture = ExtResource("1_gne1f")
 
 [node name="TheFirstHiveTileMap" type="Node" parent="."]
 
 [node name="Surface" type="TileMapLayer" parent="TheFirstHiveTileMap"]
+
+[node name="PlayerMynra" parent="." instance=ExtResource("2_v00ta")]
+
+[node name="LevelTransition" parent="." instance=ExtResource("3_e045w")]
+position = Vector2(197, 124)

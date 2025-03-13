@@ -1,16 +1,20 @@
 extends Node
 
 var in_range: bool = false
-const FILE_BEGIN = "res://world/rath's hive/"
+const FILE_BEGIN = "res://world/rath's hive/rath's_hive_"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") && in_range:
+		print("well I atleast attempted a transition")
 		var current_scene_file = get_tree().current_scene.scene_file_path
 		
 		if GlobalState.scene != "Oblivion":
 			if GlobalState.scene == "Rath":
-				var next_level = current_scene_file.int() + 1
+				var next_level = current_scene_file.to_int() + 1
+				print(FILE_BEGIN + str(next_level) + ".tscn")
 				var next_level_path = FILE_BEGIN + str(next_level) + ".tscn"
+				get_tree().change_scene_to_file(next_level_path)
+				
 			elif  GlobalState.scene ==  "Slothe":
 				pass
 			elif  GlobalState.scene ==  "Gluttonee":
@@ -21,9 +25,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 			elif  GlobalState.scene == "Nvee":
 				pass
-		elif GlobalState.scene == "Oblivion":
+		elif GlobalState.scene == "Oblivion" && GlobalState.ready_to_go:
 			if !GlobalState.has_conquered.has("Rath"):
-				pass
+				var next_level_path = "res://world/rath's hive/rath's_hive_1.tscn"
+				GlobalState.scene = "Rath"
+				get_tree().change_scene_to_file(next_level_path)
 			elif !GlobalState.has_conquered.has("Slothe"):
 				pass
 			elif !GlobalState.has_conquered.has("Gluttonee"):
