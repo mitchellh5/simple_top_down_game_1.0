@@ -19,7 +19,7 @@ var speed = 50
 #Paths to character Mynra on start up so that it can track the player's location
 #NOTE: will need to update this later to be able to track whichever character
 #is currently the player character
-@onready var character = get_node("/root/Oblivion/PlayerMynra")
+@onready var character = get_tree().get_first_node_in_group("Player")
 
 var health: int = 3							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
