@@ -156,7 +156,7 @@ func primary_attack_companion():
 				if body.has_method("take_damage"):
 					body.take_damage()
 		
-		print(scythio_animation.animation)
+		#print(scythio_animation.animation)
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:

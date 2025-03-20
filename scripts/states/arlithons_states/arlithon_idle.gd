@@ -36,6 +36,8 @@ func _on_next_transitions() -> void:
 		transition.emit("Attack")
 	elif arlithon.player_in_range:
 		transition.emit("Follow_Player")
+	elif arlithon.companion_in_range:
+		transition.emit("Follow_Companion")
 	
 
 #Runs upon entering state

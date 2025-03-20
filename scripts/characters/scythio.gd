@@ -114,5 +114,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		for body in $InteractionArea.get_overlapping_bodies():
 			if body.is_in_group("Player"):
-				if !GlobalState.has_conquered.has("Rath"):
+				if GlobalState.sun == "Prelude":
 					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio)

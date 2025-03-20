@@ -20,11 +20,16 @@ var speed = 50
 #NOTE: will need to update this later to be able to track whichever character
 #is currently the player character
 @onready var character = get_tree().get_first_node_in_group("Player")
+@onready var companion = get_tree().get_first_node_in_group("Companion")
 
 var health: int = 3							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
 var player_in_atk_range: bool = false		#Used for tracking if player is in attack range
 var player_body: CharacterBody2D			#Represents the player body
+
+var companion_body: CharacterBody2D			#Represents the companion's body
+var companion_in_range: bool = false		#Used for tracking if companion is within range of detection
+var companion_in_atk_range: bool = false	#Used for tracking if companion is in attack range
 
 var damageable: bool = true					#Used for tracking i-frames
 var damaged: bool = false					#Detects when arlithon receives damage
@@ -48,10 +53,23 @@ func _physics_process(delta: float) -> void:
 	else:
 		$Test_Arlithon.flip_h = false
 	
-	for body in $Character_Detection.get_overlapping_bodies():
-		if body.is_in_group("Player"):
-			player_body = body
-			player_in_range = true
+	#for body in $Character_Detection.get_overlapping_bodies():
+		#if body.is_in_group("Player"):
+			#player_body = body
+			#player_in_range = true
+	
+	player_body = get_tree().get_first_node_in_group("Player")
+	companion_body = get_tree().get_first_node_in_group("Companion")
+	
+	var distance_from_player =  player_body.global_position - global_position
+	var distance_from_companion = companion_body.global_position - global_position
+	
+	if distance_from_player > distance_from_companion:
+		player_in_range = true
+		companion_in_range = false
+	else:
+		player_in_range = false
+		companion_in_range = false
 	
 	for body in $Attack.get_overlapping_bodies():
 		if body.has_method("lose_health"):
@@ -61,6 +79,11 @@ func _physics_process(delta: float) -> void:
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
+	
+	#If the arlithon is dead, it removes itself from the "Arlithons" group
+	#This is to help companion AI avoid hunting arlithons that are already dead
+	if health <= 0:
+		remove_from_group("Arlithons")
 
 func _on_attack_body_exited(body: Node2D) -> void:
 	if body.has_method("lose_health"):

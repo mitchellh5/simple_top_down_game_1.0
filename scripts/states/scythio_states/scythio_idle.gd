@@ -68,7 +68,6 @@ func _on_next_transitions() -> void:
 				transition.emit("Secondary_Attack")
 		#States transitions used when this is the current companion
 		elif !scythio.player && scythio.get_parent().name != "Oblivion":
-			print(scythio.get_parent().name)
 			var arlithons = get_tree().get_nodes_in_group("arlithons")
 			if !arlithons.is_empty():
 				transition.emit("HuntArlithons")

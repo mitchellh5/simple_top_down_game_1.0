@@ -15,6 +15,7 @@ func _on_update(_delta: float) -> void:
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
+	print(arlithons.size())
 	
 	if _are_they_all_dead() == true:
 		one_still_lives = false
@@ -58,6 +59,8 @@ func _on_physics_update(_delta: float) -> void:
 						scythio_animation.play("Run_D")
 					else:
 						scythio_animation.play("Run_U")
+			#elif arlithons.size() == 1:
+				#scythio.target_arlithon = body
 
 func _are_they_all_dead() -> bool:
 	for node in arlithons:

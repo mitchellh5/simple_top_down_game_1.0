@@ -9,7 +9,7 @@
 #-------------------------------------------------------
 extends Node
 
-var sun: String = "White"					#Tracks the current sun (starting at White)
+var sun: String = "Prelude"					#Tracks the current sun (starting at the prelude)
 var hive: String = ""						#Tracks the current hive (blank since we start in Oblivion)
 var scene: String = "Oblivion"				#Tracks the current scene (starting in Oblivion)
 var companion: String = "Scythio"			#Tracks the current companion (starting as Scythio)
