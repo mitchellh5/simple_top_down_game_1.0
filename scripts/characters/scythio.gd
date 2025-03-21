@@ -15,6 +15,7 @@ var current_state
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
 @onready var interact_area = get_node("%InteractionArea")
+@onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown
 
 #Tracks if Scythio is the current player character, or a companion (set to false by default)
 @onready var player = false

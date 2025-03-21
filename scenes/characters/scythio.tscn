@@ -990,6 +990,9 @@ visible = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_ww6x6")
 
+[node name="Prim_Atk_Cooldown" type="Timer" parent="."]
+one_shot = true
+
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]
 script = ExtResource("2_baabh")
 initial_scythio_state = NodePath("Idle")
@@ -1024,3 +1027,4 @@ scythio_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
+[connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]

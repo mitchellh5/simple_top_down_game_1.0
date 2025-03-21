@@ -7,6 +7,7 @@ extends ScythioState
 var arlithons
 
 var is_animating: bool = false
+var atk_on_cooldown: bool = false
 var atk_vel: Vector2 = Vector2.ZERO
 
 #Runs every frame
@@ -119,44 +120,41 @@ func primary_attack_player():
 						body.take_damage()
 
 func primary_attack_companion():
-	if !is_animating:
+	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown:
 		is_animating = true
+		atk_on_cooldown = true
+		scythio.atk_cooldown_timer.start()
+		
 		
 		var input_velocity = scythio.target_arlithon.global_position - scythio.global_position	#Gets the direction scythio is currently attacking in
-		if input_velocity != Vector2.ZERO:														#As long as the velocity vector is not 0, it will set the player to dash
-			atk_vel = input_velocity.normalized() * scythio.speed * 0.25						#in the current direction of movement.
-		else:																					#Otherwise, it dashes in the direction the player is currently facing
-			atk_vel = scythio.player_direction.normalized() * scythio.speed * 0.25				#(for cases where the player dashes from an idle position)
-		if scythio.player_direction.normalized() == Vector2.LEFT:
-			scythio_animation.play("Prim_Atk_L")
-			scythio.atk_area.rotation_degrees = 0
-			var bodies = scythio.atk_area.get_overlapping_bodies()
-			for body in bodies:
-				if body.has_method("take_damage"):
-					body.take_damage()
-		elif scythio.player_direction.normalized() == Vector2.RIGHT:
-			scythio_animation.play("Prim_Atk_R")
-			scythio.atk_area.rotation_degrees = 180
-			var bodies = scythio.atk_area.get_overlapping_bodies()
-			for body in bodies:
-				if body.has_method("take_damage"):
-					body.take_damage()
-		elif scythio.player_direction.normalized() == Vector2.DOWN:
-			scythio_animation.play("Prim_Atk_D")
-			scythio.atk_area.rotation_degrees = -90
-			var bodies = scythio.atk_area.get_overlapping_bodies()
-			for body in bodies:
-				if body.has_method("take_damage"):
-					body.take_damage()
-		else:
-			scythio_animation.play("Prim_Atk_U")
-			scythio.atk_area.rotation_degrees = 90
-			var bodies = scythio.atk_area.get_overlapping_bodies()
-			for body in bodies:
-				if body.has_method("take_damage"):
-					body.take_damage()
 		
-		#print(scythio_animation.animation)
+		var direction = scythio.target_arlithon.global_position - scythio.global_position
+		var abs_x = abs(direction.x)
+		var abs_y = abs(direction.y)
+		
+		var bodies = scythio.atk_area.get_overlapping_bodies()
+		
+		if abs_x > abs_y:
+			if direction.x > 0:
+				scythio.atk_area.rotation_degrees = 180
+				scythio_animation.play("Prim_Atk_R")
+			else:
+				scythio.atk_area.rotation_degrees = 0
+				scythio_animation.play("Prim_Atk_L")
+		else:
+			if direction.y > 0:
+				scythio.atk_area.rotation_degrees = 90
+				scythio_animation.play("Prim_Atk_D")
+			else:
+				scythio.atk_area.rotation_degrees = -90
+				scythio_animation.play("Prim_Atk_U")
+		
+		for body in bodies:
+			if body.has_method("take_damage"):
+				body.take_damage()
+
+func _on_prim_atk_cooldown_timeout() -> void:
+	atk_on_cooldown = false
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
