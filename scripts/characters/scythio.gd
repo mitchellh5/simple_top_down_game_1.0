@@ -26,7 +26,7 @@ var player_body : CharacterBody2D			#Represents the player body
 var at_player : bool = false				#Tracks when this is close enough to the player to start idling when in follow mode
 
 #Basic variables for player
-var speed = 200					#Sets speed of player movement
+var speed : int					#Sets speed of player movement
 var angle : float				#Tracks the direction Mynra is facing
 var player_direction : Vector2	#Used to track the direction the player was last facing for idling
 var health = 10					#Sets health value for Mynra
@@ -62,6 +62,7 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	var dir
 	if player:
+		speed = 200
 		add_to_group("Player")
 		remove_from_group("Companion")
 		if Input.get_connected_joypads().size() > 0:
@@ -76,6 +77,7 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
+		speed = 150
 		add_to_group("Companion")
 		remove_from_group("Player")
 		move_and_slide()

@@ -134,6 +134,8 @@ func primary_attack_companion():
 		
 		var bodies = scythio.atk_area.get_overlapping_bodies()
 		
+		scythio.velocity = Vector2.ZERO
+		
 		if abs_x > abs_y:
 			if direction.x > 0:
 				scythio.atk_area.rotation_degrees = 180

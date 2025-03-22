@@ -59,8 +59,9 @@ func _on_physics_update(_delta: float) -> void:
 						scythio_animation.play("Run_D")
 					else:
 						scythio_animation.play("Run_U")
-			#elif arlithons.size() == 1:
-				#scythio.target_arlithon = body
+			
+			elif arlithons.size() == 1:
+				scythio.target_arlithon = body
 
 func _are_they_all_dead() -> bool:
 	for node in arlithons:
