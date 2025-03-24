@@ -86,6 +86,8 @@ func _physics_process(delta: float) -> void:
 			if body == target_arlithon:
 				arlithon_in_prim_atk_range = true
 	
+	#print(arlithon_in_prim_atk_range)
+	#print(target_arlithon)
 	#_check_player_range()
 	
 	#angle = rad_to_deg(dir.angle())
@@ -107,10 +109,12 @@ func _on_player_detection_body_exited(body: Node2D) -> void:
 
 func _on_prim_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
+		print("No luck chief, we'll get 'em next time.")
 		arlithon_in_prim_atk_range = false
 
 func _on_prim_atk_range_body_entered(body: Node2D) -> void:
 	if body == target_arlithon:
+		print("Enemy spotted!")
 		arlithon_in_prim_atk_range = true
 
 func _unhandled_input(event: InputEvent) -> void:

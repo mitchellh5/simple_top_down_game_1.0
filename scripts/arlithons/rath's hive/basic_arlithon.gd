@@ -42,11 +42,21 @@ var is_mutated : bool						#Used to track if the arlithon is currently mutated s
 var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
 var is_alive : bool = true					#Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
 
+signal dead									#Used to signal to companion that the enemy has died
+
 func _ready():
 	_check_mutations()
 
 #Runs each frame
 func _physics_process(delta: float) -> void:
+	#If the arlithon is dead, it removes itself from the "Arlithons" group
+	#This is to help companion AI avoid hunting arlithons that are already dead
+	if health <= 0:
+		emit_signal("dead")
+		remove_from_group("Arlithons")
+		is_alive = false
+		#print("I'm dead and have removed myself from the group of arlithons")
+	
 	move_and_slide()
 	if velocity.x > 0:
 		$Test_Arlithon.flip_h = true
@@ -79,20 +89,15 @@ func _physics_process(delta: float) -> void:
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
-	
-	#If the arlithon is dead, it removes itself from the "Arlithons" group
-	#This is to help companion AI avoid hunting arlithons that are already dead
-	if health <= 0:
-		remove_from_group("Arlithons")
 
 func _on_attack_body_exited(body: Node2D) -> void:
 	if body.has_method("lose_health"):
 		player_in_atk_range = false
-
-func _on_character_detection_body_exited(body: Node2D) -> void:
-	if body == player_body:
-		player_in_range = false
-		#print("Player not detected in detection area")
+#
+#func _on_character_detection_body_exited(body: Node2D) -> void:
+	#if body == player_body:
+		#player_in_range = false
+		##print("Player not detected in detection area")
 
 #Handles taking damage
 func take_damage():

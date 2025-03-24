@@ -167,8 +167,13 @@ func _on_next_transitions() -> void:
 	else:
 		if arlithons.is_empty() && !scythio.at_player:
 			transition.emit("FollowPlayer")
+			print("Tried to transition to FP")
+		elif !arlithons.is_empty() && !scythio.target_arlithon.is_alive:
+			transition.emit("HuntArlithons")
+			print("Tried to transition to HA")
 		elif !arlithons.is_empty() && !scythio.arlithon_in_prim_atk_range:
 			transition.emit("HuntArlithons")
+			print("Tried to transition to HA")
 
 #Tracks when animation is finished
 func _on_animation_finished():

@@ -36,7 +36,11 @@ func _on_next_transitions() -> void:
 	if is_animating:
 		return
 	
-	if arlithon.player_in_atk_range:
+	if arlithon.health <= 0:
+		arlithon.is_alive = false
+		arlithon.remove_from_group("Arlithons")
+		transition.emit("Death")
+	elif arlithon.player_in_atk_range:
 		transition.emit("Attack")
 	elif arlithon.player_in_range:
 		transition.emit("Follow_Player")
