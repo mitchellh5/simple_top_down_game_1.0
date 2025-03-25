@@ -120,7 +120,7 @@ func primary_attack_player():
 						body.take_damage()
 
 func primary_attack_companion():
-	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown:
+	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_prim_atk_range:
 		is_animating = true
 		atk_on_cooldown = true
 		scythio.atk_cooldown_timer.start()
@@ -145,10 +145,10 @@ func primary_attack_companion():
 				scythio_animation.play("Prim_Atk_L")
 		else:
 			if direction.y > 0:
-				scythio.atk_area.rotation_degrees = 90
+				scythio.atk_area.rotation_degrees = -90
 				scythio_animation.play("Prim_Atk_D")
 			else:
-				scythio.atk_area.rotation_degrees = -90
+				scythio.atk_area.rotation_degrees = 90
 				scythio_animation.play("Prim_Atk_U")
 		
 		for body in bodies:
@@ -167,13 +167,13 @@ func _on_next_transitions() -> void:
 	else:
 		if arlithons.is_empty() && !scythio.at_player:
 			transition.emit("FollowPlayer")
-			print("Tried to transition to FP")
+			#print("Tried to transition to FP")
 		elif !arlithons.is_empty() && !scythio.target_arlithon.is_alive:
 			transition.emit("HuntArlithons")
-			print("Tried to transition to HA")
+			#print("Tried to transition to HA 1")
 		elif !arlithons.is_empty() && !scythio.arlithon_in_prim_atk_range:
 			transition.emit("HuntArlithons")
-			print("Tried to transition to HA")
+			#print("Tried to transition to HA 2")
 
 #Tracks when animation is finished
 func _on_animation_finished():

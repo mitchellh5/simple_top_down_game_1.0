@@ -5,13 +5,12 @@ const RATHS_SUBHIVE = "res://world/rath's subhive/rath's_subhive_"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") && in_range:
-		print("well I atleast attempted a transition")
+		#print("well I atleast attempted a transition")
 		var current_scene_file = get_tree().current_scene.scene_file_path
 		
 		if GlobalState.scene != "Oblivion":
 			if GlobalState.scene == "Rath's Subhive":
 				var next_level = current_scene_file.to_int() + 1
-				print(RATHS_SUBHIVE + str(next_level) + ".tscn")
 				var next_level_path = RATHS_SUBHIVE + str(next_level) + ".tscn"
 				get_tree().change_scene_to_file(next_level_path)
 			elif GlobalState.scene == "Rath":

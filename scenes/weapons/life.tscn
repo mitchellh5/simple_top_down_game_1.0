@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://dktkod1so1h67"]
+
+[ext_resource type="Script" uid="uid://brl2nfmp63msd" path="res://scripts/weapons/life.gd" id="1_gq7ib"]
+
+[node name="Life" type="CharacterBody2D"]
+script = ExtResource("1_gq7ib")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+
+[node name="Timer" type="Timer" parent="."]

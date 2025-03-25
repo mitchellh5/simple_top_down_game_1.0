@@ -1,4 +1,4 @@
-[gd_scene load_steps=128 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=129 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://qsqwb8xavcsi" path="res://scripts/states/scythio_states/scythio_follow_player.gd" id="6_u0y3l"]
 [ext_resource type="Script" uid="uid://drwpv50tyug4r" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
 [ext_resource type="Script" uid="uid://cb3qd1nq1yqe4" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
+[ext_resource type="Script" uid="uid://dahp1wlpr002x" path="res://scripts/states/scythio_states/scythio_sec_atk.gd" id="9_wcscq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")
@@ -963,6 +964,7 @@ debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 
 [node name="PrimAtkHB" type="Area2D" parent="."]
 unique_name_in_owner = true
+visible = false
 collision_layer = 2
 collision_mask = 3
 
@@ -975,6 +977,7 @@ debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 
 [node name="PrimAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
+visible = false
 collision_layer = 3
 collision_mask = 3
 
@@ -989,6 +992,9 @@ visible = false
 shape = SubResource("CircleShape2D_ww6x6")
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
+one_shot = true
+
+[node name="Sec_Atk_Cooldown" type="Timer" parent="."]
 one_shot = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]
@@ -1020,9 +1026,14 @@ script = ExtResource("8_i2vat")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
+[node name="SecondaryAttack" type="Node" parent="StateMachine"]
+script = ExtResource("9_wcscq")
+
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
+[connection signal="timeout" from="Sec_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
+[connection signal="timeout" from="Sec_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_sec_atk_cooldown_timeout"]

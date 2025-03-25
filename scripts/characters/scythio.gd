@@ -84,7 +84,12 @@ func _physics_process(delta: float) -> void:
 		#print("NPC")
 		for body in $PrimAtkRange.get_overlapping_bodies():
 			if body == target_arlithon:
+				#print(target_arlithon)
+				#print("enemy spotted")
 				arlithon_in_prim_atk_range = true
+			elif body != target_arlithon && arlithon_in_prim_atk_range:
+				arlithon_in_prim_atk_range = false
+				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
 	
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)
@@ -109,13 +114,12 @@ func _on_player_detection_body_exited(body: Node2D) -> void:
 
 func _on_prim_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
-		print("No luck chief, we'll get 'em next time.")
 		arlithon_in_prim_atk_range = false
 
-func _on_prim_atk_range_body_entered(body: Node2D) -> void:
-	if body == target_arlithon:
-		print("Enemy spotted!")
-		arlithon_in_prim_atk_range = true
+#func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+	#if body == target_arlithon:
+		##print("Enemy spotted!")
+		#arlithon_in_prim_atk_range = true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):

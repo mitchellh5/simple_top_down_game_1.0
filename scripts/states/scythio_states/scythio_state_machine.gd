@@ -48,4 +48,4 @@ func transition_to(scythio_state_name: String) -> void:
 	
 	current_scythio_state = new_scythio_state
 	current_scythio_state_name = current_scythio_state.name.to_lower()
-	print("Current State: ", current_scythio_state_name)
+	#print("Current State: ", current_scythio_state_name)

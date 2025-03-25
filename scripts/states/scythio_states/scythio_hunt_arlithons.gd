@@ -65,7 +65,7 @@ func _hunt_arlithons():
 				scythio.target_arlithon = body
 
 func _on_target_death():
-	scythio.target_arlithon.is_alive == false
+	scythio.target_arlithon.is_alive = false
 	_hunt_arlithons()
 
 func _are_they_all_dead() -> bool:

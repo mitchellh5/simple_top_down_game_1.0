@@ -5,7 +5,7 @@ const SPEED = 600 #Speed at which Famine travels
 const RANGE = 300 #Range of Famine (before it begins to return to Mynra)
 
 #Gets the character and arlithon nodes on start up to use for collision checking
-@onready var character = get_tree().get_first_node_in_group("Player")
+@onready var character = get_tree().current_scene.find_child("PlayerMynra")
 @onready var arlithon = get_tree().get_first_node_in_group("Arlithons")
 
 #Variables used to make sure Famine is thrown the direction that Mynra
