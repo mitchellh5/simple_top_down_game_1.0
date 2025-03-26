@@ -29,7 +29,7 @@ collision_mask = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 visible = false
 shape = SubResource("RectangleShape2D_akf0a")
-debug_color = Color(0.640111, 0.524831, 0, 0.42)
+debug_color = Color(0.580655, 0.551752, 3.85046e-07, 0.42)
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.05

@@ -55,7 +55,7 @@ func secondary_attack_player():
 				scythio_animation.play("Sec_Atk_L")
 
 			# Instantiate and throw Famine
-			var famine = scythio.FAMINE_PATH.instantiate()
+			var famine = scythio.LIFE_PATH.instantiate()
 			famine.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(famine)
 
@@ -77,9 +77,9 @@ func secondary_attack_player():
 				scythio_animation.play("Sec_Atk_L")
 			
 			# Instantiate and throw Famine
-			var famine = scythio.FAMINE_PATH.instantiate()
-			famine.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
-			get_parent().add_child(famine)
+			var life = scythio.FAMINE_PATH.instantiate()
+			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			get_parent().add_child(life)
 
 			# Update ammo and manage collectability
 			scythio.ammo = 0
@@ -88,60 +88,86 @@ func secondary_attack_player():
 			scythio.collectable = true
 
 func secondary_attack_companion():
+	#print("Scythio prepares an attack")
 	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0:
+		print("Scythio has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true
 		scythio.atk_cooldown_timer.start()
 		
+		# Detect direction for animation and aiming
+		var throw_direction: Vector2
 		
-		var input_velocity = scythio.target_arlithon.global_position - scythio.global_position	#Gets the direction scythio is currently attacking in
+		throw_direction = scythio.target_arlithon.global_position - scythio.global_position
 		
-		var direction = scythio.target_arlithon.global_position - scythio.global_position
-		var abs_x = abs(direction.x)
-		var abs_y = abs(direction.y)
+		print("LIFE_PATH:", scythio.LIFE_PATH)
 		
-		var bodies = scythio.atk_area.get_overlapping_bodies()
-		
-		scythio.velocity = Vector2.ZERO
-		
-		if abs_x > abs_y:
-			if direction.x > 0:
-				scythio.atk_area.rotation_degrees = 180
-				scythio_animation.play("Prim_Atk_R")
+		# Ensure a valid throw direction
+		#print(throw_direction)
+		if throw_direction.length():
+			# Determine the angle for animation
+			var throw_angle = rad_to_deg(throw_direction.angle())
+			if throw_angle >= -45 and throw_angle < 45:
+				scythio_animation.play("Sec_Atk_R")
+			elif throw_angle >= 45 and throw_angle < 135:
+				scythio_animation.play("Sec_Atk_D")
+			elif throw_angle >= -135 and throw_angle < -45:
+				scythio_animation.play("Sec_Atk_U")
 			else:
-				scythio.atk_area.rotation_degrees = 0
-				scythio_animation.play("Prim_Atk_L")
+				scythio_animation.play("Sec_Atk_L")
+
+			# Instantiate and throw Famine
+			var life = scythio.LIFE_PATH.instantiate()
+			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			get_parent().add_child(life)
+
+			# Update ammo and manage collectability
+			scythio.ammo = 0
+			scythio.collectable = false
+			await get_tree().create_timer(0.05).timeout
+			scythio.collectable = true
+			
 		else:
-			if direction.y > 0:
-				scythio.atk_area.rotation_degrees = -90
-				scythio_animation.play("Prim_Atk_D")
+			if scythio_animation.animation == "Idle_R":
+				throw_direction = Vector2(1, 0)
+				scythio_animation.play("Sec_Atk_R")
+			elif scythio_animation.animation in ["Idle1_D", "Idle2_D", "Idle3_D"]:
+				throw_direction = Vector2(0, 1)
+				scythio_animation.play("Sec_Atk_D")
 			else:
-				scythio.atk_area.rotation_degrees = 90
-				scythio_animation.play("Prim_Atk_U")
-		
-		for body in bodies:
-			if body.has_method("take_damage"):
-				body.take_damage()
+				throw_direction = Vector2(-1, 0)
+				scythio_animation.play("Sec_Atk_L")
+			
+			# Instantiate and throw Famine
+			var life = scythio.FAMINE_PATH.instantiate()
+			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			get_parent().add_child(life)
+
+			# Update ammo and manage collectability
+			scythio.ammo = 0
+			scythio.collectable = false
+			await get_tree().create_timer(0.05).timeout
+			scythio.collectable = true
 
 func _on_sec_atk_cooldown_timeout() -> void:
 	atk_on_cooldown = false
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if is_animating:
-		return
-	
 	if scythio.damaged:
 		transition.emit("Damaged")
+	elif scythio.player:
+		pass
 	else:
-		if Game_Input_Events.is_movement_input():
-			transition.emit("Movement")
-		elif Game_Input_Events.is_prim_attacking():
-			transition.emit("Primary_Attack")
-		elif Game_Input_Events.is_dashing():
-			transition.emit("Dash")
-		elif !Game_Input_Events.is_movement_input():
-			transition.emit("Idle")
+		if arlithons.is_empty() && !scythio.at_player:
+			transition.emit("FollowPlayer")
+			#print("Tried to transition to FP")
+		elif !arlithons.is_empty() && !scythio.target_arlithon.is_alive:
+			transition.emit("HuntArlithons")
+			#print("Tried to transition to HA 1")
+		elif !arlithons.is_empty() && !scythio.arlithon_in_prim_atk_range:
+			transition.emit("HuntArlithons")
+			#print("Tried to transition to HA 2")
 
 #Ensures the animation has finished to avoid overlapping animations
 func _on_animation_finished():
