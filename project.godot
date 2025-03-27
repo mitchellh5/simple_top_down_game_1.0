@@ -32,6 +32,8 @@ window/stretch/mode="canvas_items"
 Player=""
 Companion=""
 Arlithons=""
+weapons=""
+walls=""
 
 [input]
 

@@ -1,4 +1,4 @@
-#MynraSecondaryAttack
+#SecondaryAttack
 extends ScythioState
 
 @export var scythio: PlayerScythio
@@ -89,6 +89,7 @@ func secondary_attack_player():
 
 func secondary_attack_companion():
 	#print("Scythio prepares an attack")
+	print(is_animating, scythio.target_arlithon.is_alive, atk_on_cooldown, scythio.arlithon_in_sec_atk_range, scythio.ammo)
 	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0:
 		print("Scythio has an attack locked on")
 		is_animating = true
@@ -118,7 +119,7 @@ func secondary_attack_companion():
 
 			# Instantiate and throw Famine
 			var life = scythio.LIFE_PATH.instantiate()
-			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(life)
 
 			# Update ammo and manage collectability
@@ -149,7 +150,7 @@ func secondary_attack_companion():
 			await get_tree().create_timer(0.05).timeout
 			scythio.collectable = true
 
-func _on_sec_atk_cooldown_timeout() -> void:
+func _on_prim_atk_cooldown_timeout() -> void:
 	atk_on_cooldown = false
 
 #Handles transitioning between states

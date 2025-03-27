@@ -1,4 +1,4 @@
-#ScythioState
+#PrimaryAttack
 extends ScythioState
 
 @export var scythio : PlayerScythio

@@ -19,15 +19,14 @@ script = ExtResource("1_1r042")
 texture = ExtResource("1_aid84")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
+show_behind_parent = true
 shape = SubResource("RectangleShape2D_xk7xs")
 
 [node name="Area2D" type="Area2D" parent="."]
-visible = false
+show_behind_parent = true
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-visible = false
 shape = SubResource("RectangleShape2D_akf0a")
 debug_color = Color(0.580655, 0.551752, 3.85046e-07, 0.42)
 

@@ -149,7 +149,7 @@ func collect_life():
 
 func _secondary_atk_cd():
 	sec_atk_cooldown = true
-	await get_tree().create_timer(5).timeout
+	await get_tree().create_timer(0.5).timeout
 	sec_atk_cooldown = false
 
 func _unhandled_input(event: InputEvent) -> void:

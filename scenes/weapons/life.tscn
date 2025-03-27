@@ -4,31 +4,30 @@
 [ext_resource type="Texture2D" uid="uid://cfh3i6q40px05" path="res://assets/alpha/Weapons/Life.png" id="2_ajuuw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4d3il"]
-size = Vector2(11, 5)
+size = Vector2(28, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ajuuw"]
-size = Vector2(31, 11)
+size = Vector2(30, 6)
 
-[node name="Life" type="CharacterBody2D"]
+[node name="Life" type="CharacterBody2D" groups=["weapons"]]
 script = ExtResource("1_gq7ib")
 
 [node name="Life" type="Sprite2D" parent="."]
 texture = ExtResource("2_ajuuw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(9.5, 0)
 shape = SubResource("RectangleShape2D_4d3il")
 
 [node name="Area2D" type="Area2D" parent="."]
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0.5, -0.5)
 shape = SubResource("RectangleShape2D_ajuuw")
 debug_color = Color(0.576356, 0.553516, 0, 0.42)
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
