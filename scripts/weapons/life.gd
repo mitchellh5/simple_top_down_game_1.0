@@ -31,6 +31,7 @@ func _physics_process(delta: float) -> void:
 	
 	#Tracks how far Life has traveled in reference to its range
 	#and begins returning to Scythio once it has surpassed its range
+	rotation += PI/4
 	distance_travelled += SPEED * delta
 	if distance_travelled > RANGE:
 		#print("Maximum distance traveled.")
@@ -42,7 +43,7 @@ func _physics_process(delta: float) -> void:
 		position += dir * SPEED * delta
 		move_and_slide()
 	else:
-		return_to_scythio()	#Runs the "return_to_Scythio()" function once Life has exceeded its range of attack
+		return_to_scythio()		#Runs the "return_to_scythio()" function once Life has exceeded its range of attack
 
 #Once the timer (0.05s) has ended, it marks Life as "collectable"
 func _on_timer_timeout():
@@ -76,13 +77,9 @@ func _on_area_2d_body_entered(body):
 			returning = true
 	
 	elif body.is_in_group("walls"):
-		print("Hit a wall")
 		if collectable == true:
-			velocity = Vector2.ZERO
-			
 			returning = true
 		else:
-			velocity = Vector2.ZERO
 			await get_tree().create_timer(0.07).timeout
 			returning = true
 
