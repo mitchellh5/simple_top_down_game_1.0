@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://dktkod1so1h67"]
+
+[ext_resource type="Script" uid="uid://brl2nfmp63msd" path="res://scripts/weapons/life.gd" id="1_gq7ib"]
+[ext_resource type="Texture2D" uid="uid://cfh3i6q40px05" path="res://assets/alpha/Weapons/Life.png" id="2_ajuuw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4d3il"]
+size = Vector2(28, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ajuuw"]
+size = Vector2(30, 6)
+
+[node name="Life" type="RigidBody2D" groups=["weapons"]]
+script = ExtResource("1_gq7ib")
+
+[node name="Life" type="Sprite2D" parent="."]
+texture = ExtResource("2_ajuuw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4d3il")
+
+[node name="CollectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
+shape = SubResource("RectangleShape2D_ajuuw")
+debug_color = Color(0.576356, 0.553516, 0, 0.42)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="body_entered" from="CollectionArea" to="." method="_on_collection_area_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

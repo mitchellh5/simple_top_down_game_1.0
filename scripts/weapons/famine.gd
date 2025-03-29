@@ -64,7 +64,7 @@ func _on_area_2d_body_entered(body):
 	#When Famine hits an arlithon, it signals to the arlithon to take
 	#damage, then begins to return to Mynra if it's collectable
 	elif body.has_method("take_damage"):
-		print("Hit an arlithon")
+		#print("Hit an arlithon")
 		body.take_damage()
 		
 		#Famine makes sure that it is collectable before returning to Mynra. If it isn't,

@@ -405,6 +405,8 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurt_Box"]
+light_mask = 3
+visibility_layer = 3
 position = Vector2(0, 4)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_2iwt4")

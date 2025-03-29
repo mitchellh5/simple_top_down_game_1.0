@@ -48,6 +48,7 @@ var arlithon_in_prim_atk_range : bool
 var arlithon_in_sec_atk_range : bool
 var target_arlithon : CharacterBody2D
 var sec_atk_cooldown : bool = false
+var collecting_life : bool = false			#Used to track if Scythio is currently going to collect Life instead of hunt arlithons
 
 #Runs on startup
 func _ready():
@@ -106,6 +107,17 @@ func _physics_process(delta: float) -> void:
 				arlithon_in_sec_atk_range = true
 			#elif body != target_arlithon && arlithon_in_sec_atk_range:
 				#arlithon_in_sec_atk_range = false
+		
+		if ammo <= 0:
+			var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
+			var distance_from_target = target_arlithon.global_position - global_position
+			
+			if distance_from_life > distance_from_target:
+				collecting_life = true
+			else:
+				collecting_life = false
+		elif ammo >= 1:
+			collecting_life = false
 	
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=130 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=131 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://drwpv50tyug4r" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
 [ext_resource type="Script" uid="uid://cb3qd1nq1yqe4" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
 [ext_resource type="Script" uid="uid://dahp1wlpr002x" path="res://scripts/states/scythio_states/scythio_sec_atk.gd" id="9_wcscq"]
+[ext_resource type="Script" uid="uid://ctga8dbxigkf2" path="res://scripts/states/scythio_states/scythio_collect_life.gd" id="10_e6jrn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")
@@ -1041,13 +1042,18 @@ script = ExtResource("9_wcscq")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
+[node name="CollectLife" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("10_e6jrn")
+scythio = NodePath("../..")
+scythio_animation = NodePath("../../AnimatedSprite2D")
+
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="SecAtkRange" to="." method="_on_prim_atk_range_body_entered"]
-[connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
+[connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_prim_atk_cooldown_timeout"]
