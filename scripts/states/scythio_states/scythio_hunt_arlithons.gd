@@ -78,8 +78,6 @@ func _are_they_all_dead() -> bool:
 func _on_next_transitions() -> void:
 	
 	#print(scythio.arlithon_in_sec_atk_range, scythio.target_arlithon.is_alive, scythio.ammo, scythio.arlithon_in_prim_atk_range)
-	
-	
 	if scythio.ammo <= 0 && scythio.collecting_life:
 		transition.emit("CollectLife")
 	elif arlithons.is_empty() || !one_still_lives || scythio.target_arlithon == $"<Freed Object>":

@@ -17,7 +17,7 @@ func _on_physics_update(_delta: float) -> void:
 
 func damage():
 	if !is_animating:
-		print("Ouchie!")
+		#print("Ouchie!")
 		is_animating = true
 		
 		if arlithon.character.global_position.x - arlithon.global_position.x > 0:

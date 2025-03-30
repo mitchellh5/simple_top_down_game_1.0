@@ -16,7 +16,7 @@ func _on_physics_update(_delta: float) -> void:
 	
 	#Checks if Scythio is missing Life (ammo <= 0), and if so, checks if it is closer to him than his current target arlithon
 	#and if so, goes and collects Life before attacking his next target
-	if scythio.ammo <= 0 && scythio.collecting_life:
+	if scythio.ammo <= 0 && scythio.collecting_life && scythio.collectable:
 		_collect_life()
 	else:
 		transition.emit("HuntArlithons")

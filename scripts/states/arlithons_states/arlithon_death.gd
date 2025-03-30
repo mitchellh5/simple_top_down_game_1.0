@@ -39,7 +39,7 @@ func _on_enter():
 		
 		arlithon.velocity = Vector2.ZERO
 		arlithon_animation.play("Death")
-		print(arlithon, "is dead")
+		#print(arlithon, "is dead")
 		await get_tree().create_timer(3).timeout
 		arlithon.queue_free()
 	else:

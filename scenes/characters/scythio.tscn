@@ -1,4 +1,4 @@
-[gd_scene load_steps=131 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=132 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -923,7 +923,10 @@ size = Vector2(26, 36)
 size = Vector2(26, 28)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wcscq"]
-radius = 288.0
+radius = 256.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e6jrn"]
+radius = 142.004
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ww6x6"]
 radius = 142.004
@@ -996,7 +999,21 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkRange"]
 shape = SubResource("CircleShape2D_wcscq")
+one_way_collision_margin = 0.0
 debug_color = Color(0.85258, 0.370438, 1.92523e-07, 0.42)
+
+[node name="SecAtkOutRange" type="Area2D" parent="."]
+unique_name_in_owner = true
+light_mask = 2
+visibility_layer = 2
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkOutRange"]
+light_mask = 2
+visibility_layer = 2
+shape = SubResource("CircleShape2D_e6jrn")
+debug_color = Color(0.501447, 0.580817, 0, 0.42)
 
 [node name="InteractionArea" type="Area2D" parent="."]
 unique_name_in_owner = true
@@ -1054,6 +1071,7 @@ scythio_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_entered" from="SecAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
+[connection signal="body_exited" from="SecAtkOutRange" to="." method="_on_sec_atk_out_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_prim_atk_cooldown_timeout"]

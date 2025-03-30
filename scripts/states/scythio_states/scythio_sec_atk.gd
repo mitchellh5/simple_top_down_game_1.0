@@ -88,8 +88,7 @@ func secondary_attack_player():
 			scythio.collectable = true
 
 func secondary_attack_companion():
-	#print("Scythio prepares an attack")
-	print(is_animating, scythio.target_arlithon.is_alive, atk_on_cooldown, scythio.arlithon_in_sec_atk_range, scythio.ammo)
+	#print("Scythio prepares an attack")de
 	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0:
 		print("Scythio has an attack locked on")
 		is_animating = true
@@ -101,7 +100,6 @@ func secondary_attack_companion():
 		
 		throw_direction = scythio.target_arlithon.global_position - scythio.global_position
 		
-		print("LIFE_PATH:", scythio.LIFE_PATH)
 		
 		# Ensure a valid throw direction
 		#print(throw_direction)
