@@ -77,15 +77,18 @@ func _are_they_all_dead() -> bool:
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
-	#print(scythio.arlithon_in_sec_atk_range, scythio.target_arlithon.is_alive, scythio.ammo, scythio.arlithon_in_prim_atk_range)
+	print(scythio.arlithon_in_prim_atk_range, scythio.target_arlithon.is_alive)
+	
+	var distance = scythio.target_arlithon.global_position.distance_to(scythio.global_position)
+	
 	if scythio.ammo <= 0 && scythio.collecting_life:
 		transition.emit("CollectLife")
 	elif arlithons.is_empty() || !one_still_lives || scythio.target_arlithon == $"<Freed Object>":
 		transition.emit("FollowPlayer")
-	elif scythio.arlithon_in_sec_atk_range && scythio.target_arlithon.is_alive && scythio.ammo > 0 && !scythio.arlithon_in_prim_atk_range && !scythio.sec_atk_cooldown:
-		transition.emit("SecondaryAttack")
-	elif scythio.arlithon_in_prim_atk_range && scythio.target_arlithon.is_alive:
+	elif (scythio.arlithon_in_prim_atk_range || distance <= 25) && scythio.target_arlithon.is_alive:
 		transition.emit("PrimaryAttack")
+	elif scythio.arlithon_in_sec_atk_range && scythio.target_arlithon.is_alive && scythio.ammo > 0 && !scythio.arlithon_in_prim_atk_range && !scythio.sec_atk_cooldown && scythio.target_arlithon.global_position.distance_to(scythio.global_position) <= 100:
+		transition.emit("SecondaryAttack")
 	elif (scythio.at_player) && (arlithons.is_empty() || !one_still_lives):
 		transition.emit("Idle")
 	

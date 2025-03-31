@@ -15,7 +15,6 @@ var current_state
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
 @onready var sec_atk_range = get_node("%SecAtkRange")
-@onready var sec_atk_out_range = get_node("%SecAtkOutRange")
 @onready var interact_area = get_node("%InteractionArea")
 @onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown
 
@@ -61,7 +60,6 @@ func _ready():
 	player_detect.monitoring = true
 	prim_atk_range.monitoring = true
 	sec_atk_range.monitoring = true
-	sec_atk_out_range.monitoring = true
 	interact_area.monitoring = true
 	
 	
@@ -101,25 +99,31 @@ func _physics_process(delta: float) -> void:
 				#print(target_arlithon)
 				#print("enemy spotted")
 				arlithon_in_prim_atk_range = true
-			elif body != target_arlithon && arlithon_in_prim_atk_range:
-				arlithon_in_prim_atk_range = false
+			#elif body != target_arlithon && arlithon_in_prim_atk_range:
+				#arlithon_in_prim_atk_range = false
 				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
 		
 		for body in $SecAtkRange.get_overlapping_bodies():
-			if body == target_arlithon:
-				print("Arlithon in range")
-				arlithon_in_sec_atk_ring_1 = true
-			
-		for body in $SecAtkOutRange.get_overlapping_bodies():
-			if body == target_arlithon:
-				print("Arlithon too close")
-				arlithon_in_sec_atk_ring_2 = true
+			if ammo <= 0:
+				arlithon_in_sec_atk_range = false
+			elif body == target_arlithon:
+				#print("Arlithon in range")
+				arlithon_in_sec_atk_range = true
 		
-		print(arlithon_in_sec_atk_ring_1, arlithon_in_sec_atk_ring_2)
-		if arlithon_in_sec_atk_ring_1 && !arlithon_in_sec_atk_ring_2:
-			arlithon_in_sec_atk_range = true
-		else:
-			arlithon_in_sec_atk_range = false
+		#var counter: int = 0
+		#for body in $SecAtkOutRange.get_overlapping_bodies():
+			#counter += 1
+			#if body == target_arlithon:
+				#print("Arlithon too close")
+				#arlithon_in_sec_atk_ring_2 = true
+			#elif body != target_arlithon && counter == $SecAtkOutRange.get_overlapping_bodies().size():
+				#arlithon_in_sec_atk_ring_2 = false
+		
+		#print(arlithon_in_sec_atk_ring_1, arlithon_in_sec_atk_ring_2)
+		#if arlithon_in_sec_atk_ring_1 && !arlithon_in_sec_atk_ring_2:
+			#arlithon_in_sec_atk_range = true
+		#else:
+			#arlithon_in_sec_atk_range = false
 		
 		var life_node = get_tree().root.find_child("Life", true, false)
 		
@@ -162,19 +166,15 @@ func _on_prim_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
 		arlithon_in_prim_atk_range = false
 
-func _on_sec_atk_range_body_exited(body: Node2D) -> void:
-	if body == target_arlithon:
-		#print("Mission failed, we'll get 'em next time.")
-		arlithon_in_sec_atk_ring_1 = false
-
-func _on_sec_atk_out_range_body_exited(body: Node2D) -> void:
-	if body == target_arlithon:
-		arlithon_in_sec_atk_ring_2 = false
-
-#func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+#func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 	#if body == target_arlithon:
-		##print("Enemy spotted!")
-		#arlithon_in_prim_atk_range = true
+		##print("Mission failed, we'll get 'em next time.")d
+		#arlithon_in_sec_atk_ring_1 = false
+
+func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+	if body == target_arlithon:
+		#print("Enemy spotted!")
+		arlithon_in_prim_atk_range = true
 
 func collect_life():
 	print("Life collected")
