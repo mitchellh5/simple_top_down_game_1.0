@@ -901,9 +901,8 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_faveb"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_e6jrn"]
 radius = 4.0
-height = 26.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rllml"]
 radius = 7.0
@@ -917,10 +916,10 @@ height = 42.0
 size = Vector2(56, 54)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_31j7n"]
-size = Vector2(27, 38)
+size = Vector2(20, 36)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnlrw"]
-size = Vector2(54, 48)
+size = Vector2(40, 42)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wcscq"]
 radius = 256.0
@@ -928,7 +927,8 @@ radius = 256.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_ww6x6"]
 radius = 142.004
 
-[node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Companion"]]
+[node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Companion", "Scythio"]]
+collision_layer = 2
 script = ExtResource("1_qbh1l")
 State_Machine = NodePath("StateMachine")
 
@@ -938,22 +938,32 @@ animation = &"Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
-position = Vector2(0, 5)
-shape = SubResource("CapsuleShape2D_faveb")
+light_mask = 2
+visibility_layer = 2
+position = Vector2(0, 14)
+shape = SubResource("CircleShape2D_e6jrn")
 
 [node name="HurtBox" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 4
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_rllml")
 debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 
-[node name="CollectionArea" type="Area2D" parent="."]
+[node name="CollectionArea" type="Area2D" parent="." groups=["collect_life"]]
 visible = false
+light_mask = 2
+visibility_layer = 2
+collision_layer = 8
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
+light_mask = 2
+visibility_layer = 2
 position = Vector2(0, 2)
 shape = SubResource("CapsuleShape2D_bxg1q")
 debug_color = Color(0.85098, 0.372549, 0, 0.419608)
@@ -961,6 +971,8 @@ debug_color = Color(0.85098, 0.372549, 0, 0.419608)
 [node name="PlayerDetection" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
 shape = SubResource("RectangleShape2D_rou7o")
@@ -968,38 +980,42 @@ debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 
 [node name="PrimAtkHB" type="Area2D" parent="."]
 unique_name_in_owner = true
-light_mask = 3
-visibility_layer = 3
-collision_layer = 3
-collision_mask = 3
+light_mask = 4
+visibility_layer = 4
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkHB"]
-light_mask = 0
+light_mask = 2
 visibility_layer = 2
-position = Vector2(-13.5, 0)
+position = Vector2(-10, 0)
 shape = SubResource("RectangleShape2D_31j7n")
 debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 
 [node name="PrimAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
-light_mask = 3
-visibility_layer = 3
-collision_layer = 3
-collision_mask = 3
+light_mask = 2
+visibility_layer = 2
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
+light_mask = 2
+visibility_layer = 2
 shape = SubResource("RectangleShape2D_jnlrw")
 debug_color = Color(0.718829, 0.480597, 5.77569e-07, 0.42)
 
 [node name="SecAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-light_mask = 3
-visibility_layer = 3
-collision_layer = 3
-collision_mask = 3
+light_mask = 2
+visibility_layer = 2
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkRange"]
+light_mask = 2
+visibility_layer = 2
 shape = SubResource("CircleShape2D_wcscq")
 one_way_collision_margin = 0.0
 debug_color = Color(0.85258, 0.370438, 1.92523e-07, 0.42)
@@ -1007,8 +1023,14 @@ debug_color = Color(0.85258, 0.370438, 1.92523e-07, 0.42)
 [node name="InteractionArea" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+light_mask = 2
+visibility_layer = 2
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+light_mask = 2
+visibility_layer = 2
 shape = SubResource("CircleShape2D_ww6x6")
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
@@ -1053,6 +1075,7 @@ script = ExtResource("10_e6jrn")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
+[connection signal="body_entered" from="CollectionArea" to="." method="_on_collection_area_body_entered"]
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]

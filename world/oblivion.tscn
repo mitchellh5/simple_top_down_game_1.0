@@ -393,3 +393,5 @@ position = Vector2(366, 178)
 
 [node name="LevelTransition" parent="." instance=ExtResource("6_ykrys")]
 position = Vector2(366, 178)
+collision_layer = 2
+collision_mask = 2

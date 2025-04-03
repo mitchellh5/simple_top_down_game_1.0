@@ -1506,7 +1506,7 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p6ahp"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_exrpt"]
 radius = 4.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cx0t6"]
@@ -1521,6 +1521,7 @@ height = 46.0
 size = Vector2(20, 36)
 
 [node name="PlayerMynra" type="CharacterBody2D" groups=["Player"]]
+collision_layer = 2
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
 
@@ -1531,9 +1532,10 @@ animation = &"Idle_R"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0, 3)
-shape = SubResource("CapsuleShape2D_p6ahp")
+light_mask = 2
+visibility_layer = 2
+position = Vector2(0, 14)
+shape = SubResource("CircleShape2D_exrpt")
 
 [node name="Aiming_Famine" type="Node2D" parent="."]
 visible = false
@@ -1541,8 +1543,8 @@ visible = false
 [node name="HurtBox" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 0
-collision_mask = 2
+collision_layer = 4
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 light_mask = 0
@@ -1551,8 +1553,10 @@ position = Vector2(0, 3)
 shape = SubResource("CapsuleShape2D_cx0t6")
 debug_color = Color(0.991738, 0, 0.261583, 0.42)
 
-[node name="CollectionArea" type="Area2D" parent="."]
+[node name="CollectionArea" type="Area2D" parent="." groups=["Mynra"]]
 visible = false
+collision_layer = 8
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
 shape = SubResource("CapsuleShape2D_a0pcm")
@@ -1561,8 +1565,8 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 [node name="PrimAttackHB" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 4
 
 [node name="PrimAtkHBMask" type="CollisionShape2D" parent="PrimAttackHB"]
 light_mask = 0

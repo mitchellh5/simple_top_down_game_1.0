@@ -7,10 +7,10 @@ class_name PlayerScythio
 
 #Tracks current state of Scythio
 var current_state
-
+ 
 #Connects to AnimatedSprite2D for handling animations
 @onready var spriteScythio = $AnimatedSprite2D
-
+ 
 @onready var atk_area = get_node("%PrimAtkHB")					#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
@@ -46,8 +46,6 @@ var damage_rate : int			#Used for determining how much damage the player takes f
 #Companion specific variabls
 var arlithon_in_prim_atk_range : bool
 var arlithon_in_sec_atk_range : bool
-var arlithon_in_sec_atk_ring_1 : bool
-var arlithon_in_sec_atk_ring_2 : bool
 var target_arlithon : CharacterBody2D
 var sec_atk_cooldown : bool = false
 var collecting_life : bool = false			#Used to track if Scythio is currently going to collect Life instead of hunt arlithons
@@ -61,16 +59,16 @@ func _ready():
 	prim_atk_range.monitoring = true
 	sec_atk_range.monitoring = true
 	interact_area.monitoring = true
-	
-	
-	
+ 
+ 
+ 
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
 	if !nodes_in_group.is_empty():
 		player_body = nodes_in_group[0] as CharacterBody2D
 	else:
 		print("That's weird, I don't see any players here")
-
-#Runs every frame
+ 
+ #Runs every frame
 func _physics_process(delta: float) -> void:
 	var dir
 	if player:
@@ -99,54 +97,36 @@ func _physics_process(delta: float) -> void:
 				#print(target_arlithon)
 				#print("enemy spotted")
 				arlithon_in_prim_atk_range = true
-			#elif body != target_arlithon && arlithon_in_prim_atk_range:
-				#arlithon_in_prim_atk_range = false
+			elif body != target_arlithon && arlithon_in_prim_atk_range:
+				arlithon_in_prim_atk_range = false
 				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
-		
+ 
 		for body in $SecAtkRange.get_overlapping_bodies():
-			if ammo <= 0:
-				arlithon_in_sec_atk_range = false
-			elif body == target_arlithon:
-				#print("Arlithon in range")
+			if body == target_arlithon:
+				#print("Enemy spotted!")
 				arlithon_in_sec_atk_range = true
-		
-		#var counter: int = 0
-		#for body in $SecAtkOutRange.get_overlapping_bodies():
-			#counter += 1
-			#if body == target_arlithon:
-				#print("Arlithon too close")
-				#arlithon_in_sec_atk_ring_2 = true
-			#elif body != target_arlithon && counter == $SecAtkOutRange.get_overlapping_bodies().size():
-				#arlithon_in_sec_atk_ring_2 = false
-		
-		#print(arlithon_in_sec_atk_ring_1, arlithon_in_sec_atk_ring_2)
-		#if arlithon_in_sec_atk_ring_1 && !arlithon_in_sec_atk_ring_2:
-			#arlithon_in_sec_atk_range = true
-		#else:
-			#arlithon_in_sec_atk_range = false
-		
-		var life_node = get_tree().root.find_child("Life", true, false)
-		
-		if ammo <= 0 && collectable && target_arlithon && life_node:
-			var distance_from_life = life_node.global_position - global_position
+			#elif body != target_arlithon && arlithon_in_sec_atk_range:
+				#arlithon_in_sec_atk_range = false
+
+		if ammo <= 0 && target_arlithon:
+			var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
 			var distance_from_target = target_arlithon.global_position - global_position
-			await get_tree().create_timer(0.1).timeout
-			
+
 			if distance_from_life > distance_from_target:
 				collecting_life = true
 			else:
 				collecting_life = false
-		elif ammo <= 0 && collectable && life_node && !target_arlithon:
+		elif ammo <= 0:
 			collecting_life = true
 		elif ammo >= 1:
 			collecting_life = false
-	
-	#print(arlithon_in_prim_atk_range)
-	#print(target_arlithon)
-	#_check_player_range()
-	
-	#angle = rad_to_deg(dir.angle())
-
+ 
+ 	#print(arlithon_in_prim_atk_range)
+ 	#print(target_arlithon)
+ 	#_check_player_range()
+ 
+ 	#angle = rad_to_deg(dir.angle())
+ 
 func _find_player_node() -> void:
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
 	if !nodes_in_group.is_empty():
@@ -157,35 +137,42 @@ func _find_player_node() -> void:
 func _on_player_detection_body_entered(body: Node2D) -> void:
 	if body == player_body:
 		at_player = true
-
+ 
 func _on_player_detection_body_exited(body: Node2D) -> void:
 	if body == player_body:
 		at_player = false
-
+ 
 func _on_prim_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
 		arlithon_in_prim_atk_range = false
-
-#func _on_sec_atk_range_body_exited(body: Node2D) -> void:
-	#if body == target_arlithon:
-		##print("Mission failed, we'll get 'em next time.")d
-		#arlithon_in_sec_atk_ring_1 = false
-
-func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+ 
+func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
-		#print("Enemy spotted!")
-		arlithon_in_prim_atk_range = true
-
+		#print("Mission failed, we'll get 'em next time.")
+		arlithon_in_sec_atk_range = false
+ 
+#func _on_prim_atk_range_body_entered(body: Node2D) -> void:
+	#if body == target_arlithon:
+		##print("Enemy spotted!")
+		#arlithon_in_prim_atk_range = true
+ 
 func collect_life():
 	print("Life collected")
 	ammo = 1
 	_secondary_atk_cd()
-
+ 
 func _secondary_atk_cd():
 	sec_atk_cooldown = true
 	await get_tree().create_timer(0.5).timeout
 	sec_atk_cooldown = false
 
+#func _on_collection_area_body_entered(body: Node2D) -> void:
+	#if body.has_method("_life_collected") && !sec_atk_cooldown:
+		#if body.collectable:
+			#body._life_collected()
+			#ammo = 1
+		
+ 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		for body in $InteractionArea.get_overlapping_bodies():

@@ -51,19 +51,17 @@ func _on_timer_timeout():
 	#print("Famine is now collectable!")
 
 #Checks collisions Famine has with characters, enemies, and walls
-func _on_area_2d_body_entered(body):
-	
-	#When famine collides with Mynra, as long as it is marked as collectable
-	#It frees itself from the queue and signals to Mynra that it has been collected
-	if body == character && collectable == true:
-		#print("Famine has returned to Mynra")
+
+func _on_area_2d_area_entered(area: Area2D) -> void:
+	if area.get_parent().has_method("collect_famine") && collectable:
+		area.get_parent().collect_famine()
+		#print("I has been grabbed!")
 		queue_free()
-		if body.has_method("collect_famine"):
-			body.collect_famine()
-	
+
+func _on_area_2d_body_entered(body):
 	#When Famine hits an arlithon, it signals to the arlithon to take
 	#damage, then begins to return to Mynra if it's collectable
-	elif body.has_method("take_damage"):
+	if body.has_method("take_damage"):
 		#print("Hit an arlithon")
 		body.take_damage()
 		
@@ -86,6 +84,7 @@ func _on_area_2d_body_entered(body):
 
 #This function is used to have Famine track back towards Mynra for collection
 func return_to_mynra():
+	#print("Returning to Mynra")
 	var direction = global_position.direction_to(character.global_position)
 	velocity = direction * SPEED
 	move_and_slide()
