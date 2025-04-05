@@ -1,4 +1,4 @@
-[gd_scene load_steps=131 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=133 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" uid="uid://cb3qd1nq1yqe4" path="res://scripts/states/scythio_states/scythio_prim_atk.gd" id="8_i2vat"]
 [ext_resource type="Script" uid="uid://dahp1wlpr002x" path="res://scripts/states/scythio_states/scythio_sec_atk.gd" id="9_wcscq"]
 [ext_resource type="Script" uid="uid://ctga8dbxigkf2" path="res://scripts/states/scythio_states/scythio_collect_life.gd" id="10_e6jrn"]
+[ext_resource type="Script" uid="uid://cnh5q550lqfwl" path="res://scripts/states/scythio_states/scythio_dash.gd" id="11_t40pp"]
+[ext_resource type="PackedScene" uid="uid://dluwwlc5g42j7" path="res://scenes/effects/Ghost_Scythio.tscn" id="12_xwxx2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")
@@ -518,16 +520,16 @@ animations = [{
 "speed": 20.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_5ml2c")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_xuglp")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_w83ai")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_m8m5m")
 }],
 "loop": false,
@@ -535,16 +537,16 @@ animations = [{
 "speed": 8.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_4mvw7")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_bgo3f")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_brqxy")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_oc1p7")
 }],
 "loop": false,
@@ -552,16 +554,16 @@ animations = [{
 "speed": 8.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_qy261")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_u8f2q")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_5axfr")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_ien1f")
 }],
 "loop": false,
@@ -569,16 +571,16 @@ animations = [{
 "speed": 8.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_0nd0n")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_c0xl2")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_32upp")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_0i4h4")
 }],
 "loop": false,
@@ -934,7 +936,7 @@ State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_flski")
-animation = &"Idle_R"
+animation = &"Dash_U"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -1074,6 +1076,12 @@ scythio_animation = NodePath("../../AnimatedSprite2D")
 script = ExtResource("10_e6jrn")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
+
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("11_t40pp")
+scythio = NodePath("../..")
+scythio_animation = NodePath("../../AnimatedSprite2D")
+ghost_node = ExtResource("12_xwxx2")
 
 [connection signal="body_entered" from="CollectionArea" to="." method="_on_collection_area_body_entered"]
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]

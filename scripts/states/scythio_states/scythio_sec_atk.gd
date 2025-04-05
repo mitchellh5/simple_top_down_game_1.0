@@ -124,7 +124,7 @@ func secondary_attack_companion():
 			# Update ammo and manage collectability
 			scythio.ammo = 0
 			scythio.collectable = false
-			await get_tree().create_timer(0.05).timeout
+			await get_tree().create_timer(0.5).timeout
 			scythio.collectable = true
 			
 		else:

@@ -33,7 +33,7 @@ var player_body : CharacterBody2D			#Represents the player body
 var at_player : bool = false				#Tracks when this is close enough to the player to start idling when in follow mode
 
 #Basic variables for player
-var speed : int					#Sets speed of player movement
+var speed = 200					#Sets speed of player movement
 var angle : float				#Tracks the direction Mynra is facing
 var player_direction : Vector2	#Used to track the direction the player was last facing for idling
 var health = 10					#Sets health value for Mynra
@@ -72,7 +72,6 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	var dir
 	if player:
-		speed = 200
 		add_to_group("Player")
 		remove_from_group("Companion")
 		if Input.get_connected_joypads().size() > 0:
@@ -87,7 +86,6 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
-		speed = 150
 		add_to_group("Companion")
 		remove_from_group("Player")
 		move_and_slide()
@@ -108,7 +106,7 @@ func _physics_process(delta: float) -> void:
 			#elif body != target_arlithon && arlithon_in_sec_atk_range:
 				#arlithon_in_sec_atk_range = false
 
-		if ammo <= 0 && target_arlithon:
+		if ammo <= 0 && target_arlithon && collectable:
 			var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
 			var distance_from_target = target_arlithon.global_position - global_position
 
@@ -116,7 +114,7 @@ func _physics_process(delta: float) -> void:
 				collecting_life = true
 			else:
 				collecting_life = false
-		elif ammo <= 0:
+		elif ammo <= 0 && collectable:
 			collecting_life = true
 		elif ammo >= 1:
 			collecting_life = false
@@ -157,9 +155,10 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 		#arlithon_in_prim_atk_range = true
  
 func collect_life():
-	print("Life collected")
-	ammo = 1
-	_secondary_atk_cd()
+	if collectable:
+		print("Life collected")
+		ammo = 1
+		_secondary_atk_cd()
  
 func _secondary_atk_cd():
 	sec_atk_cooldown = true

@@ -16,9 +16,11 @@ func _on_physics_update(_delta: float) -> void:
 func _on_next_transitions() -> void:
 	pass
 
-#Runs upon entering state
+#Runs upon entering stated
 func _on_enter():
 	if arlithon.health <= 0:
+		arlithon.collision_layer = 0
+		arlithon.collision_mask = 0
 		arlithon.is_alive = false
 		
 		#Handles Mutation Spreading

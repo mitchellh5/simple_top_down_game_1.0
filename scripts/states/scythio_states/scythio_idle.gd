@@ -69,11 +69,11 @@ func _on_next_transitions() -> void:
 		#States transitions used when this is the current companion
 		elif !scythio.player && scythio.get_parent().name != "Oblivion":
 			var arlithons = get_tree().get_nodes_in_group("arlithons")
-			if !arlithons.is_empty():
+			if !arlithons.is_empty() || scythio.target_arlithon:
 				transition.emit("HuntArlithons")
 			elif arlithons.is_empty() && !scythio.at_player:
 				transition.emit("FollowPlayer")
-			elif scythio.at_player:
+			elif scythio.at_player && !scythio.target_arlithon:
 				transition.emit("Idle")
 		else:
 			return

@@ -9,7 +9,7 @@ var arlithons
 var eligible_targets
 
 #tracks current player character for following between levels
-var player_character : CharacterBody2D 
+var player_character : CharacterBody2D
 
 #Runs every frame
 func _on_update(_delta: float) -> void:
@@ -47,10 +47,12 @@ func _on_physics_update(_delta: float) -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if scythio.at_player:
-		transition.emit("Idle")
-	elif eligible_targets >= 0:
+	if eligible_targets > 0:
 		transition.emit("HuntArlithons")
+	elif scythio.at_player:
+		transition.emit("Idle")
+	elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 120:
+		transition.emit("Dash")
 
 #Runs upon entering state
 func _on_enter():

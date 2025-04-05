@@ -1,4 +1,4 @@
-#FollowPlayerState
+#CollectLifeState
 extends ScythioState
 
 @export var scythio : PlayerScythio
