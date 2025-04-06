@@ -17,6 +17,7 @@ var scythio: CharacterBody2D
 func _ready() -> void:
 	scythio = get_tree().get_first_node_in_group("Scythio")
 	contact_monitor = true
+	collection_area.monitoring = true
 	max_contacts_reported = 1
 	$Timer.start()
 
@@ -34,6 +35,11 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 				collider.take_damage()
 			freeze = true
 			linear_velocity = Vector2.ZERO
+	
+	for area in collection_area.get_overlapping_areas():
+		if area.get_parent().has_method("collect_life") && collectable:
+			area.get_parent().collect_life()
+			queue_free()
 
 #func _life_collected():
 	#if collectable:

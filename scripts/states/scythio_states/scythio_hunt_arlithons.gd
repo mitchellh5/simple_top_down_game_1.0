@@ -85,7 +85,7 @@ func _on_next_transitions() -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
 	for body in arlithons:
-		if body.global_position.distance_to(scythio.global_position) < 100:
+		if body.global_position.distance_to(scythio.global_position) < 50:
 			too_close = true
 	
 	if scythio.target_arlithon:

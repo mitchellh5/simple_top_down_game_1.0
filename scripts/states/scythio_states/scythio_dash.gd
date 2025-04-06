@@ -94,34 +94,6 @@ func _on_physics_update(_delta: float) -> void:
 		#Stops dash when target distance is reached
 		if distance_covered >= dash_distance:
 			_end_dash()
-		
-		#var input_velocity: Vector2
-		#if scythio.target_arlithon && !scythio.collecting_life:
-			#input_velocity = scythio.target_arlithon.global_position - scythio.global_position
-		#elif scythio.collecting_life:
-			#input_velocity = scythio.get_tree().root.find_child("Life", true, false).global_position - scythio.global_position
-		#else:
-			#input_velocity = scythio.player_body.global_position - scythio.global_position
-			#
-		#scythio.velocity = dash_velocity 
-		#scythio.move_and_slide()
-		#
-		##Assuming the ghost cooldown is finished, this adds a ghost at the curent
-		##frame to the scene, then increments the frame of the ghost, and triggers
-		##the "start_ghost_cooldown()" function. Once the dash is complete, the
-		##ghost will have shown three seperate frames, each of a different section of the dash.
-		#if can_ghost == true:
-			#can_ghost = false
-			#var ghost = ghost_node.instantiate()
-			#ghost.set_property(scythio.position, $"../../AnimatedSprite2D".scale)
-			#if ghost is AnimatedSprite2D:
-				#ghost.animation = scythio_animation.animation
-				#ghost.frame = frame
-				##ghost.stop()
-			#get_tree().current_scene.add_child(ghost)
-			#
-			#frame = (frame + 1) % scythio_animation.sprite_frames.get_frame_count(scythio_animation.animation)
-			#start_ghost_timer()
 
 #Handles dashing for player
 func _dash_as_player():

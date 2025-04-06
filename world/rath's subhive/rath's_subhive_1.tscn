@@ -411,10 +411,10 @@ tile_set = SubResource("TileSet_3lqn2")
 anchor_mode = 0
 
 [node name="PlayerMynra" parent="." instance=ExtResource("2_tere8")]
-position = Vector2(36, 187)
+position = Vector2(226, 251)
 
 [node name="PlayerScythio" parent="." instance=ExtResource("3_yyw80")]
-position = Vector2(36, 106)
+position = Vector2(41, 151)
 
 [node name="Arlithons" type="Node" parent="."]
 
@@ -424,10 +424,10 @@ position = Vector2(475, 286)
 [node name="Tail_Mutation" parent="Arlithons/Arlithon" instance=ExtResource("4_astrw")]
 
 [node name="Arlithon2" parent="Arlithons" instance=ExtResource("3_x4j1o")]
-position = Vector2(163, 98)
+position = Vector2(109, 112)
 
 [node name="Arlithon3" parent="Arlithons" instance=ExtResource("3_x4j1o")]
-position = Vector2(173, 296)
+position = Vector2(41, 217)
 
 [node name="Arlithon4" parent="Arlithons" instance=ExtResource("3_x4j1o")]
 position = Vector2(509, 125)
@@ -435,7 +435,7 @@ position = Vector2(509, 125)
 [node name="Tail_Mutation" parent="Arlithons/Arlithon4" instance=ExtResource("4_astrw")]
 
 [node name="Arlithon5" parent="Arlithons" instance=ExtResource("3_x4j1o")]
-position = Vector2(355, 68)
+position = Vector2(47, 79)
 
 [node name="Arlithon6" parent="Arlithons" instance=ExtResource("3_x4j1o")]
-position = Vector2(291, 196)
+position = Vector2(103, 184)
