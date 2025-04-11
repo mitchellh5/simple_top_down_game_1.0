@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=4 uid="uid://dkb8pkean1gw8"]
 
-[ext_resource type="Texture2D" uid="uid://b5y5qi663xkv2" path="res://assets/alpha/world/Hives/Rath/Rath's Hive Tileset (Alpha).png" id="1_avq8n"]
-[ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_tere8"]
-[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/arlithon.tscn" id="3_x4j1o"]
-[ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_yyw80"]
-[ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/tail_mutation.tscn" id="4_astrw"]
+[ext_resource type="Texture2D" uid="uid://b5y5qi663xkv2" path="res://assets/alpha/world/Hives/Rath/Rath's Hive Tileset (Alpha).png" id="1_nf421"]
+[ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
+[ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_gj8ej"]
+[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Rath's_Basic.tscn" id="4_7aavk"]
+[ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/tail_mutation.tscn" id="5_hgr82"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e045w"]
-texture = ExtResource("1_avq8n")
+texture = ExtResource("1_nf421")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -61,7 +61,7 @@ texture = ExtResource("1_avq8n")
 sources/0 = SubResource("TileSetAtlasSource_e045w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ls5dj"]
-texture = ExtResource("1_avq8n")
+texture = ExtResource("1_nf421")
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
@@ -394,7 +394,7 @@ terrain_set_0/terrain_0/name = "Pits"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_ls5dj")
 
-[node name="Rath\'sSubhive1" type="Node2D"]
+[node name="Pryd\'sSubhive1" type="Node2D"]
 
 [node name="TheFirstHiveTileMap" type="Node2D" parent="."]
 y_sort_enabled = true
@@ -410,32 +410,32 @@ tile_set = SubResource("TileSet_3lqn2")
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[node name="PlayerMynra" parent="." instance=ExtResource("2_tere8")]
+[node name="PlayerMynra" parent="." instance=ExtResource("2_fbjvc")]
 position = Vector2(226, 251)
 
-[node name="PlayerScythio" parent="." instance=ExtResource("3_yyw80")]
+[node name="PlayerScythio" parent="." instance=ExtResource("3_gj8ej")]
 position = Vector2(41, 151)
 
 [node name="Arlithons" type="Node" parent="."]
 
-[node name="Arlithon" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(475, 286)
 
-[node name="Tail_Mutation" parent="Arlithons/Arlithon" instance=ExtResource("4_astrw")]
+[node name="Tail_Mutation" parent="Arlithons/Arlithon" instance=ExtResource("5_hgr82")]
 
-[node name="Arlithon2" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon2" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(109, 112)
 
-[node name="Arlithon3" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon3" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(41, 217)
 
-[node name="Arlithon4" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon4" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(509, 125)
 
-[node name="Tail_Mutation" parent="Arlithons/Arlithon4" instance=ExtResource("4_astrw")]
+[node name="Tail_Mutation" parent="Arlithons/Arlithon4" instance=ExtResource("5_hgr82")]
 
-[node name="Arlithon5" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon5" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(47, 79)
 
-[node name="Arlithon6" parent="Arlithons" instance=ExtResource("3_x4j1o")]
+[node name="Arlithon6" parent="Arlithons" instance=ExtResource("4_7aavk")]
 position = Vector2(103, 184)

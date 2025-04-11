@@ -1,7 +1,7 @@
 extends Node
 
 var in_range: bool = false
-const RATHS_SUBHIVE = "res://world/rath's subhive/rath's_subhive_"
+const PRYDS_SUBHIVE = "res://world/pryd's subhive/pryd's_subhive_"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") && in_range:
@@ -9,9 +9,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		var current_scene_file = get_tree().current_scene.scene_file_path
 		
 		if GlobalState.scene != "Oblivion":
-			if GlobalState.scene == "Rath's Subhive":
+			if GlobalState.scene == "Pryd's Subhive":
 				var next_level = current_scene_file.to_int() + 1
-				var next_level_path = RATHS_SUBHIVE + str(next_level) + ".tscn"
+				var next_level_path = PRYDS_SUBHIVE + str(next_level) + ".tscn"
 				get_tree().change_scene_to_file(next_level_path)
 			elif GlobalState.scene == "Rath":
 				pass
@@ -27,8 +27,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 		elif GlobalState.scene == "Oblivion" && GlobalState.ready_to_go:
 			if GlobalState.sun == "Prelude":
-				var next_level_path = "res://world/rath's subhive/rath's_subhive_1.tscn"
-				GlobalState.scene = "Rath's Subhive"
+				var next_level_path = "res://world/pryd's subhive/pryd's_subhive_1.tscn"
+				GlobalState.scene = "Pryd's Subhive"
 				get_tree().change_scene_to_file(next_level_path)
 			elif !GlobalState.has_conquered.has("Rath"):
 				pass

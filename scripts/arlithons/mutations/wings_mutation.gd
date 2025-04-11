@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@onready var parent_arlithon: PackedScene = preload("res://scenes/arlithons/arlithon.tscn")
+@onready var parent_arlithon: PackedScene = preload("res://scenes/arlithons/Rath's_Basic.tscn")
 
 
 func _physics_process(delta: float) -> void:
