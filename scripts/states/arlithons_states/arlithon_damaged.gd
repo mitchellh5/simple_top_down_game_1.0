@@ -25,7 +25,9 @@ func damage():
 		else:
 			arlithon_animation.flip_h = false
 			
-		arlithon_animation.play("DMG")
+		arlithon_animation.modulate = Color.RED  # Temporarily change to red
+		await get_tree().create_timer(0.5).timeout  # Wait for 0.1 seconds
+		arlithon_animation.modulate = Color.WHITE  # Revert to normal
 		arlithon.damaged = false
 
 func _on_animation_finished():

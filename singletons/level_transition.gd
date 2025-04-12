@@ -27,7 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 		elif GlobalState.scene == "Oblivion" && GlobalState.ready_to_go:
 			if GlobalState.sun == "Prelude":
-				var next_level_path = "res://world/pryd's subhive/pryd's_subhive_1.tscn"
+				var next_level_path = "res://world/pryd's subhive/pryd's_subhive_0.tscn"
 				GlobalState.scene = "Pryd's Subhive"
 				get_tree().change_scene_to_file(next_level_path)
 			elif !GlobalState.has_conquered.has("Rath"):

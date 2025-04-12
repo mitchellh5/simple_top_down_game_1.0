@@ -1,0 +1,603 @@
+[gd_scene load_steps=58 format=3 uid="uid://xnif1ospbec3"]
+
+[ext_resource type="Texture2D" uid="uid://bksf0uj1twi7p" path="res://assets/alpha/arlithons/pryd's hive/Pryd-Basic-Sheet.png" id="2_ubiyw"]
+[ext_resource type="Script" uid="uid://c58t7rgrmh4ra" path="res://scripts/states/arlithons_states/arlithon_state_machine.gd" id="3_51va2"]
+[ext_resource type="Script" uid="uid://dgibkli5eyqt1" path="res://scripts/states/arlithons_states/arlithon_idle.gd" id="4_4jx0k"]
+[ext_resource type="Script" uid="uid://bm85hj8x37x7n" path="res://scripts/states/arlithons_states/arlithon_follow_player.gd" id="5_lifwc"]
+[ext_resource type="Script" uid="uid://b5fuus50mycnr" path="res://scripts/states/arlithons_states/arlithon_follow_companion.gd" id="6_ti3eq"]
+[ext_resource type="Script" uid="uid://bjhjlpjbc3rdm" path="res://scripts/states/arlithons_states/arlithon_attack.gd" id="7_t2ejr"]
+[ext_resource type="Script" uid="uid://cvxl7y0s0blvj" path="res://scripts/states/arlithons_states/arlithon_damaged.gd" id="8_8yq7h"]
+[ext_resource type="Script" uid="uid://egxuw4uds6dv" path="res://scripts/states/arlithons_states/arlithon_death.gd" id="9_ouaic"]
+
+[sub_resource type="GDScript" id="GDScript_i6khc"]
+script/source = "#Pryds_Basic
+extends CharacterBody2D
+class_name Pryds_Basic
+
+#Exports the arlithon's AnimatedSprite2D node to be called for animations
+@export var sprite: AnimatedSprite2D
+
+#Connects the arlithon to the state machine on run time
+@export var State_Machine : NodePath
+@onready var state_machine_instance = get_node(\"State_Machine\")
+
+#preloads all possible mutations on run time
+@onready var tail_mutation_scene: PackedScene = preload(\"res://scenes/arlithon_mutations/tail_mutation.tscn\")
+@onready var wings_mutation_scene: PackedScene = preload(\"res://scenes/arlithon_mutations/wings_mutation.tscn\")
+
+#Determines movement speed of the basic arlithon
+var speed = 50
+
+#Paths to character Mynra on start up so that it can track the player's location
+#NOTE: will need to update this later to be able to track whichever character
+#is currently the player character
+@onready var character = get_tree().get_first_node_in_group(\"Player\")
+@onready var companion = get_tree().get_first_node_in_group(\"Companion\")
+
+var health: int = 3							#Used for tracking health of arlithon
+var player_in_range: bool = false			#Used for tracking if player is within range of detection
+var player_in_atk_range: bool = false		#Used for tracking if player is in attack range
+var player_body: CharacterBody2D			#Represents the player body
+
+var companion_body: CharacterBody2D			#Represents the companion's body
+var companion_in_range: bool = false		#Used for tracking if companion is within range of detection
+var companion_in_atk_range: bool = false	#Used for tracking if companion is in attack range
+
+var damageable: bool = true					#Used for tracking i-frames
+var damaged: bool = false					#Detects when arlithon receives damage
+var smote: bool = false						#Determines how arlithon was slain
+var stunlocked: bool = false				#Used for determining if the player is currently stun locking the arlithon
+var damage_dealt = 1						#How much damage it deals to the player
+
+var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
+var is_mutated : bool						#Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
+var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
+var is_alive : bool = true					#Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
+
+signal dead									#Used to signal to companion that the enemy has died
+
+func _ready():
+	_check_mutations()
+
+#Runs each frame
+func _physics_process(delta: float) -> void:
+	#If the arlithon is dead, it removes itself from the \"Arlithons\" group
+	#This is to help companion AI avoid hunting arlithons that are already dead
+	if health <= 0:
+		emit_signal(\"dead\")
+		remove_from_group(\"Arlithons\")
+		is_alive = false
+		#print(\"I'm dead and have removed myself from the group of arlithons\")
+	
+	move_and_slide()
+	if velocity.x > 0:
+		$Test_Arlithon.flip_h = true
+	else:
+		$Test_Arlithon.flip_h = false
+	
+	#for body in $Character_Detection.get_overlapping_bodies():
+		#if body.is_in_group(\"Player\"):
+			#player_body = body
+			#player_in_range = true
+	
+	player_body = get_tree().get_first_node_in_group(\"Player\")
+	companion_body = get_tree().get_first_node_in_group(\"Companion\")
+	
+	var distance_from_player =  player_body.global_position - global_position
+	var distance_from_companion = companion_body.global_position - global_position
+	
+	if distance_from_player > distance_from_companion:
+		player_in_range = true
+		companion_in_range = false
+	else:
+		player_in_range = false
+		companion_in_range = false
+	
+	for body in $Attack.get_overlapping_bodies():
+		if body.has_method(\"lose_health\"):
+			player_body = body
+			player_in_atk_range = true
+	
+	_check_mutations()
+	_is_being_targeted()
+	#print(is_targeted_by_player)
+
+func _on_attack_body_exited(body: Node2D) -> void:
+	if body.has_method(\"lose_health\"):
+		player_in_atk_range = false
+#
+#func _on_character_detection_body_exited(body: Node2D) -> void:
+	#if body == player_body:
+		#player_in_range = false
+		##print(\"Player not detected in detection area\")
+
+#Handles taking damage
+func take_damage():
+	if damageable:
+		health -= 1
+		if health > 0:
+			damaged = true
+			stunlocked = true
+			state_machine_instance.transition_to(\"Damaged\")
+			#print(health)
+		else:
+			state_machine_instance.transition_to(\"Death\")
+
+func _stunlocked():
+	await get_tree().create_timer(5).timeout
+	stunlocked = false
+	#print(\"Can now attack\")
+
+#Checks this arlithons current mutations each frame to see if it is
+#mutated (used for targeting purposes for the companion), and if so,
+#which mutations it has (to alter the arlithon's stats accordingly)
+func _check_mutations():
+	if has_node(\"Tail_Mutation\"):
+		damage_dealt = 2
+		is_mutated = true
+	else:
+		damage_dealt = 1
+		is_mutated = false
+
+#This is the logic used for tracking when this arlithon is currently
+#being targeted by the player character
+func _is_being_targeted() -> void:
+	var other_arlithons = get_tree().get_nodes_in_group(\"Arlithons\")		#Gets list of all arlithons in the current scene
+		
+	if !is_alive:
+		is_targeted_by_player = false
+	elif damaged:												#If this arlithon is damaged
+		for node in other_arlithons:						#It parses through all other arlithons
+			if node != self && node.is_targeted_by_player:	#And if that arlithon is not itself and is currently being targeted by the PC
+				node.is_targeted_by_player = false			#It will set that arlithon to no longer being targeted by the PC
+		is_targeted_by_player = true						#Then it will set itself as the current target
+		$TargetLocked.start()								#And start the timer (which locks it as the target as long is it is damaged by the player every 7s or less)
+	
+	elif other_arlithons.size() == 1:						#As long as this is the only arlithon in the current scene
+		is_targeted_by_player = true						#It is always considered the targeted arlithon
+	
+	elif $TargetLocked.is_stopped():						#Once the 7s timer runs out, if this arlithon is not being damaged
+		is_targeted_by_player = false						#It is removed as the current target
+
+func _on_target_locked_timeout() -> void:
+	if !damaged:
+		is_targeted_by_player = false
+
+#Handles dealing damage to characters
+func deal_damage():
+	pass
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gu48c"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51va2"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4jx0k"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lifwc"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(192, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ti3eq"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(256, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2ejr"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(320, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yq7h"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(384, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ouaic"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(448, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hjvgt"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(512, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5umdq"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(576, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hx6io"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(640, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n64hu"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(704, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s21kx"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(768, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x6220"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(832, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ubiyw"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uuah1"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ny2uh"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hyxt2"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2os65"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rocwt"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xi3wb"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nejr0"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qk1xo"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qle07"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8457h"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(64, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekbb3"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d6o80"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(192, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bjpt1"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(256, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_npoj5"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(320, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_in3rq"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(384, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5mtbm"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(448, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y8hxj"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(512, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ew4ka"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(576, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w8aqe"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(640, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43urt"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(704, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hlha0"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(768, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gqac0"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(832, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y0n7m"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(896, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8uc2i"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(960, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogwrs"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(1024, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_culp3"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(1088, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxo72"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(1152, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4tisw"]
+atlas = ExtResource("2_ubiyw")
+region = Rect2(1216, 128, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u3ayo"]
+animations = [{
+"frames": [{
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_gu48c")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_51va2")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_4jx0k")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_lifwc")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ti3eq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_t2ejr")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_8yq7h")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ouaic")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hjvgt")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_5umdq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hx6io")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_n64hu")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_s21kx")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_x6220")
+}],
+"loop": true,
+"name": &"Atk",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ubiyw")
+}],
+"loop": true,
+"name": &"Death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_uuah1")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ny2uh")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hyxt2")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_2os65")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_rocwt")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_xi3wb")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_nejr0")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_qk1xo")
+}],
+"loop": true,
+"name": &"Fly",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_qle07")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_8457h")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ekbb3")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_d6o80")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_bjpt1")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_npoj5")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_in3rq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_5mtbm")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_y8hxj")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ew4ka")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_w8aqe")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_43urt")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hlha0")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_gqac0")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_y0n7m")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_8uc2i")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ogwrs")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_culp3")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_rxo72")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_4tisw")
+}],
+"loop": true,
+"name": &"Smote",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bcmvi"]
+radius = 14.0
+height = 44.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2iwt4"]
+radius = 15.0
+height = 46.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_y4o7p"]
+radius = 12.0
+height = 56.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8ok4h"]
+radius = 75.71
+
+[node name="Pryd\'sBasic" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["Arlithons"]]
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+script = SubResource("GDScript_i6khc")
+sprite = NodePath("Test_Arlithon")
+State_Machine = NodePath("State_Machine")
+
+[node name="Test_Arlithon" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_u3ayo")
+animation = &"Atk"
+
+[node name="Arlithon_Node" type="Node2D" parent="."]
+
+[node name="Hit_Box" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, 4)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_bcmvi")
+
+[node name="Hurt_Box" type="Area2D" parent="."]
+visible = false
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurt_Box"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(0, 4)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_2iwt4")
+debug_color = Color(0.982405, 0.0845633, 0.258332, 0.42)
+
+[node name="Attack" type="Area2D" parent="."]
+visible = false
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack"]
+position = Vector2(0, 5)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_y4o7p")
+
+[node name="Character_Detection" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Character_Detection"]
+shape = SubResource("CircleShape2D_8ok4h")
+debug_color = Color(0.623175, 0.533003, 7.70092e-07, 0.42)
+
+[node name="TargetLocked" type="Timer" parent="."]
+wait_time = 7.0
+one_shot = true
+
+[node name="State_Machine" type="Node" parent="." node_paths=PackedStringArray("initial_arlithon_state")]
+script = ExtResource("3_51va2")
+initial_arlithon_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+script = ExtResource("4_4jx0k")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
+
+[node name="Follow_Player" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+script = ExtResource("5_lifwc")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
+
+[node name="Follow_Companion" type="Node" parent="State_Machine"]
+script = ExtResource("6_ti3eq")
+
+[node name="Attack" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+script = ExtResource("7_t2ejr")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
+
+[node name="Damaged" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+script = ExtResource("8_8yq7h")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
+
+[node name="Death" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+script = ExtResource("9_ouaic")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
+
+[connection signal="body_entered" from="Hurt_Box" to="." method="_on_hurt_box_body_entered"]
+[connection signal="body_exited" from="Hurt_Box" to="." method="_on_hurt_box_body_exited"]
+[connection signal="body_exited" from="Attack" to="." method="_on_attack_body_exited"]
+[connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
+[connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
+[connection signal="timeout" from="TargetLocked" to="." method="_on_target_locked_timeout"]

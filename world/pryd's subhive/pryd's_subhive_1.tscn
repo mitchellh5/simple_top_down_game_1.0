@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=9 format=4 uid="uid://dkb8pkean1gw8"]
 
 [ext_resource type="Texture2D" uid="uid://b5y5qi663xkv2" path="res://assets/alpha/world/Hives/Rath/Rath's Hive Tileset (Alpha).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_gj8ej"]
-[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Rath's_Basic.tscn" id="4_7aavk"]
-[ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/tail_mutation.tscn" id="5_hgr82"]
+[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Pryd's_Basic.tscn" id="4_7aavk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e045w"]
 texture = ExtResource("1_nf421")
@@ -418,24 +417,4 @@ position = Vector2(41, 151)
 
 [node name="Arlithons" type="Node" parent="."]
 
-[node name="Arlithon" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(475, 286)
-
-[node name="Tail_Mutation" parent="Arlithons/Arlithon" instance=ExtResource("5_hgr82")]
-
-[node name="Arlithon2" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(109, 112)
-
-[node name="Arlithon3" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(41, 217)
-
-[node name="Arlithon4" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(509, 125)
-
-[node name="Tail_Mutation" parent="Arlithons/Arlithon4" instance=ExtResource("5_hgr82")]
-
-[node name="Arlithon5" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(47, 79)
-
-[node name="Arlithon6" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(103, 184)
+[node name="RathsBasic" parent="Arlithons" instance=ExtResource("4_7aavk")]

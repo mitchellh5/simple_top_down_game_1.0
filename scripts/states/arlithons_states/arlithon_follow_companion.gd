@@ -11,7 +11,7 @@ func _on_update(_delta: float) -> void:
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	if arlithon.companion_in_range:
-		arlithon_animation.play("Run")
+		arlithon_animation.play("Fly")
 		var direction = arlithon.companion_body.global_position - arlithon.global_position
 	
 		arlithon.velocity = direction.normalized() * arlithon.speed

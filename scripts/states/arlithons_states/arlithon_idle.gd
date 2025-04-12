@@ -26,7 +26,7 @@ func _on_physics_update(_delta: float) -> void:
 
 #Handles idling
 func wander():
-	arlithon_animation.play("Run")
+	arlithon_animation.play("Fly")
 	arlithon.velocity = move_dir * arlithon.speed
 
 #Handles transitioning between states
