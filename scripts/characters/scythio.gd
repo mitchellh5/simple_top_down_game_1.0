@@ -179,6 +179,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		for body in $InteractionArea.get_overlapping_bodies():
 			if body.is_in_group("Player"):
 				if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 0 && GlobalState.mynra_dt == 0:
-					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio)
+					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio_0)
+					GlobalState.scythio_dt += 1
+					GlobalState.mynra_dt += 1
+				if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 1 && GlobalState.mynra_dt == 1:
+					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio_1)
 					GlobalState.scythio_dt += 1
 					GlobalState.mynra_dt += 1
