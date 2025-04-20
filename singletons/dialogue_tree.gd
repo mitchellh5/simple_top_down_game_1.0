@@ -2,6 +2,17 @@ extends Node
 
 #------------------
 #
+#Playtesting Demo
+#
+#------------------
+
+const playtest_m_s_0: Array = [
+	{"speaker": "Scythio", "text": "Hello"},
+	{"speaker": "Mynra", "text": "World"},
+]
+
+#------------------
+#
 #Prelude Dialogue
 #
 #------------------
@@ -128,7 +139,7 @@ const mynra_and_scythio_4: Array = [
 const mynra_and_scythio_5: Array = [
 	{"speaker": "Scythio", "text": "WHAT IN THE NAME OF MA'AT IS THAT?!?!?!"},
 	{"speaker": "Mynra", "text": "Um... Scythio?"},
-	{"speaker": "Scythio", "text": "Forget everything I said, that thing is NOT Pryd and we need to kill her, NOW!"},
+	{"speaker": "Scythio", "text": "Forget everything I said, that thing is NOT Pryd and we need to kill it, NOW!"},
 	{"speaker": "Mynra", "text": "What?! Then what is it?!"}
 ]
 
@@ -155,7 +166,7 @@ const mynra_meets_scythio_3: Array = [
 	{"speaker": "Scythio", "text": "Mynra? Mynra! Are you okay?!"},
 	{"speaker": "Mynra", "text": "I'm fine, I just... I just had a memory, the-"},
 	{"speaker": "Scythio", "text": "Memory of when we first met, I had it too! My Father, my scythe and spear, and my first creation: the arlithons. "},
-	{"speaker": "Mynra", "text": "Venturing into Pryd's hive and finding Subjugation. You saw it all too?"},
+	{"speaker": "Mynra", "text": "Venturing into Pryd's hive and finding Ego. You saw it all too?"},
 	{"speaker": "Scythio", "text": "Yes, every moment, I was like I was living it again for the first time. Mynra, I think we just figured out how to remember our past."},
 	{"speaker": "Mynra", "text": "What?"},
 	{"speaker": "Scythio", "text": "You mentioned that I seemed familiar to you, like you could recognize me almost, and then we went into that memory."},

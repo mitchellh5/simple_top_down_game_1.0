@@ -174,15 +174,15 @@ func _secondary_atk_cd():
 
 #Handles dialogue (my heaven above, this is going to look like a freaking nightmare fairly
 #soon, and I am horrified at the thought of trying to trouble shoot it when that happens.)
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact"):
-		for body in $InteractionArea.get_overlapping_bodies():
-			if body.is_in_group("Player"):
-				if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 0 && GlobalState.mynra_dt == 0:
-					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio_0)
-					GlobalState.scythio_dt += 1
-					GlobalState.mynra_dt += 1
-				if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 1 && GlobalState.mynra_dt == 1:
-					DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio_1)
-					GlobalState.scythio_dt += 1
-					GlobalState.mynra_dt += 1
+#func _unhandled_input(event: InputEvent) -> void:
+	#if event.is_action_pressed("interact"):
+		#for body in $InteractionArea.get_overlapping_bodies():
+			#if body.is_in_group("Player"):
+				#if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 0 && GlobalState.mynra_dt == 0:
+					#DialogueManager.start_dialogue(player_body.global_position, DialogueTree.playtest_m_s_0)
+					#GlobalState.scythio_dt += 1
+					#GlobalState.mynra_dt += 1
+				#if GlobalState.sun == "Prelude" && GlobalState.scythio_dt == 1 && GlobalState.mynra_dt == 1:
+					#DialogueManager.start_dialogue(player_body.global_position, DialogueTree.mynra_meets_scythio_1)
+					#GlobalState.scythio_dt += 1
+					#GlobalState.mynra_dt += 1

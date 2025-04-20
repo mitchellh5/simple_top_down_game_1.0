@@ -26,4 +26,4 @@ var player: String = "Mynra"				#Tracks the current PC (starting as Mynra)
 
 #Tracks current pause and transition state for the game
 var input_paused: bool = false				#Handles pausing player input during dialogue and cutscenes
-var ready_to_go: bool = false				#Handles waiting for scene transitions
+var ready_to_go: bool = true				#Handles waiting for scene transitions
