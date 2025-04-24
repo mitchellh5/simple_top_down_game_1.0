@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://djulfym54bhm0"]
+[gd_scene load_steps=74 format=3 uid="uid://djulfym54bhm0"]
 
 [ext_resource type="Script" uid="uid://ba0th0iret3bq" path="res://scripts/arlithons/rath's hive/basic_arlithon.gd" id="1_4g40n"]
 [ext_resource type="Texture2D" uid="uid://bksf0uj1twi7p" path="res://assets/alpha/arlithons/pryd's hive/Pryd-Basic-Sheet.png" id="2_rx2ct"]
@@ -65,6 +65,70 @@ region = Rect2(768, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_1fjxv"]
 atlas = ExtResource("2_rx2ct")
 region = Rect2(832, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ubiyw"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(0, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gu48c"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(64, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51va2"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(128, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4jx0k"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(192, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lifwc"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(256, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ti3eq"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(320, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2ejr"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(384, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yq7h"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(448, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ouaic"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(512, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hjvgt"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(576, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5umdq"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(640, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hx6io"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(704, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n64hu"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(768, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s21kx"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(832, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x6220"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(896, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uuah1"]
+atlas = ExtResource("2_rx2ct")
+region = Rect2(960, 256, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vwgm7"]
 atlas = ExtResource("2_rx2ct")
@@ -232,6 +296,59 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ubiyw")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_gu48c")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_51va2")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_4jx0k")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_lifwc")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ti3eq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_t2ejr")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_8yq7h")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_ouaic")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hjvgt")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_5umdq")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_hx6io")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_n64hu")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_s21kx")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_x6220")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_uuah1")
+}],
+"loop": true,
+"name": &"Atk_2",
+"speed": 5.0
+}, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vwgm7")
 }],
@@ -359,8 +476,10 @@ State_Machine = NodePath("State_Machine")
 
 [node name="Test_Arlithon" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_u3ayo")
-animation = &"Fly"
+animation = &"Atk_2"
 autoplay = "Fly"
+frame = 3
+frame_progress = 0.895714
 
 [node name="Arlithon_Node" type="Node2D" parent="."]
 

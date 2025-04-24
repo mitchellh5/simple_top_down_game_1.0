@@ -10,8 +10,10 @@ class_name Arlithon
 @onready var state_machine_instance = get_node("State_Machine")
 
 #preloads all possible mutations on run time
-@onready var tail_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/tail_mutation.tscn")
-@onready var wings_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/wings_mutation.tscn")
+@onready var armor_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/armor_mutation.tscn")
+@onready var barbed_stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/barbed_stinger_mutation.tscn")
+@onready var hatchling_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/hatchling_mutation.tscn")
+@onready var stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/stinger_mutation.tscn")
 
 #Determines movement speed of the basic arlithon
 var speed = 50
@@ -38,9 +40,17 @@ var stunlocked: bool = false				#Used for determining if the player is currently
 var damage_dealt = 1						#How much damage it deals to the player
 
 var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
-var is_mutated : bool						#Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
 var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
 var is_alive : bool = true					#Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
+
+#Mutation variables
+var is_mutated: bool = false				#Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
+
+#Tracks all mutations the arlithon currently has to ensure appropriate animation
+var has_armor: bool = false
+var has_barbed_stinger: bool = false
+var has_hatchling: bool = false
+var has_stinger: bool = false			
 
 signal dead									#Used to signal to companion that the enemy has died
 
@@ -120,12 +130,16 @@ func _stunlocked():
 #mutated (used for targeting purposes for the companion), and if so,
 #which mutations it has (to alter the arlithon's stats accordingly)
 func _check_mutations():
-	if has_node("Tail_Mutation"):
+	#Checks and applies modifiers for "stinger" mutation
+	if has_node("stinger_mutation"):
+		print("I have a stinger! Stabby stabby stabby!")
 		damage_dealt = 2
 		is_mutated = true
 	else:
 		damage_dealt = 1
 		is_mutated = false
+	
+	
 
 #This is the logic used for tracking when this arlithon is currently
 #being targeted by the player character
