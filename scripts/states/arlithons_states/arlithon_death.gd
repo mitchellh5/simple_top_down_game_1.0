@@ -28,15 +28,12 @@ func _on_enter():
 																					#scene in the "arlithons" group currently in the main scene
 		var i = 3																	#Number of times the mutation is allowed to spread
 		for node in other_arlithons:
-			if node != self && !node.has_node("Tail_Mutation") && i>0:				#Goes through the list of arlithons and adds each mutation
-				#print("mutation time")												#currently attached this arlithon to the others (assuming it
-																					#has a target and has not yet spent all of its mutations)
-				if arlithon.has_node("Tail_Mutation"):
-					var tail_mutation = arlithon.tail_mutation_scene.instantiate()
-					node.add_child(tail_mutation)
-				if arlithon.has_node("Wings_Mutation"):
-					var wings_mutation = arlithon.wings_mutation_scene.instantiate()
-					node.add_child(wings_mutation)
+			if node != self && !node.has_node("Stinger_Mutation") && i>0:				#Goes through the list of arlithons and adds each mutation
+				#print("mutation time")													#currently attached this arlithon to the others (assuming it
+																						#has a target and has not yet spent all of its mutations)
+				if arlithon.has_node("Stinger_Mutation"):
+					var stinger_mutation = arlithon.stinger_mutation_scene.instantiate()
+					node.add_child(stinger_mutation)
 				i-=1
 		
 		arlithon.velocity = Vector2.ZERO

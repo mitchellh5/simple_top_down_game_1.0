@@ -91,7 +91,7 @@ func secondary_attack_companion():
 	#print("Scythio prepares an attack")
 	var distance = scythio.target_arlithon.global_position.distance_to(scythio.global_position)
 	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0 && distance >= 100:
-		print("Scythio has an attack locked on")
+		#print("Scythio has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true
 		scythio.atk_cooldown_timer.start()

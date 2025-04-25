@@ -48,7 +48,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 func _on_collection_area_area_entered(area: Node2D) ->void:
 	if area.get_parent().has_method("collect_life") && collectable:
 		area.get_parent().collect_life()
-		print("I has been grabbed!")
+		#print("I has been grabbed!")
 		queue_free()
 
 #func _on_collection_area_body_entered(body: Node2D) -> void:

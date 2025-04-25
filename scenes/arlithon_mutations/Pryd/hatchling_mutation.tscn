@@ -1,6 +1,6 @@
 [gd_scene load_steps=75 format=3 uid="uid://c62euiuxu26a3"]
 
-[ext_resource type="Script" uid="uid://m3g7ckksuqc7" path="res://scripts/arlithons/mutations/tail_mutation.gd" id="1_lxg6s"]
+[ext_resource type="Script" uid="uid://m3g7ckksuqc7" path="res://scripts/arlithons/mutations/pryd/armor_mutation.gd" id="1_lxg6s"]
 [ext_resource type="Texture2D" uid="uid://g4ew3qv2ovrq" path="res://assets/alpha/arlithons/mutations/Pryd's Mutations/Hatchling-Sheet.png" id="2_lxg6s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kdlmh"]

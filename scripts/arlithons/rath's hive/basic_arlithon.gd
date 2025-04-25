@@ -10,10 +10,10 @@ class_name Arlithon
 @onready var state_machine_instance = get_node("State_Machine")
 
 #preloads all possible mutations on run time
-@onready var armor_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/armor_mutation.tscn")
-@onready var barbed_stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/barbed_stinger_mutation.tscn")
-@onready var hatchling_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/hatchling_mutation.tscn")
-@onready var stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/Pryd/stinger_mutation.tscn")
+@onready var armor_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/armor_mutation.tscn")
+@onready var barbed_stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/barbed_stinger_mutation.tscn")
+@onready var hatchling_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/hatchling_mutation.tscn")
+@onready var stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn")
 
 #Determines movement speed of the basic arlithon
 var speed = 50
@@ -23,6 +23,12 @@ var speed = 50
 #is currently the player character
 @onready var character = get_tree().get_first_node_in_group("Player")
 @onready var companion = get_tree().get_first_node_in_group("Companion")
+
+@onready var prim_atk_range = get_node("%Attack")
+
+signal direction_changed(flip_h: bool)		#Used to dertmine the arlithon's current facing direction so that any
+var facing_left = false						#mutations can animate properly in the same direction
+
 
 var health: int = 3							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
@@ -55,6 +61,7 @@ var has_stinger: bool = false
 signal dead									#Used to signal to companion that the enemy has died
 
 func _ready():
+	prim_atk_range.monitoring = true
 	_check_mutations()
 
 #Runs each frame
@@ -69,9 +76,11 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	if velocity.x > 0:
-		$Test_Arlithon.flip_h = true
+		#$Test_Arlithon.flip_h = true
+		set_facing_left(true)
 	else:
-		$Test_Arlithon.flip_h = false
+		#$Test_Arlithon.flip_h = false
+		set_facing_left(false)
 	
 	#for body in $Character_Detection.get_overlapping_bodies():
 		#if body.is_in_group("Player"):
@@ -81,14 +90,18 @@ func _physics_process(delta: float) -> void:
 	player_body = get_tree().get_first_node_in_group("Player")
 	companion_body = get_tree().get_first_node_in_group("Companion")
 	
-	var distance_from_player =  player_body.global_position - global_position
-	var distance_from_companion = companion_body.global_position - global_position
+	var distance_from_player = player_body.global_position - global_position
+	var distance_from_companion
+	if companion_body:
+		distance_from_companion = companion_body.global_position - global_position
+	else:
+		distance_from_companion = Vector2(1000000,1000000)
 	
 	if distance_from_player > distance_from_companion:
-		player_in_range = true
-		companion_in_range = false
-	else:
 		player_in_range = false
+		companion_in_range = true
+	else:
+		player_in_range = true
 		companion_in_range = false
 	
 	for body in $Attack.get_overlapping_bodies():
@@ -131,8 +144,8 @@ func _stunlocked():
 #which mutations it has (to alter the arlithon's stats accordingly)
 func _check_mutations():
 	#Checks and applies modifiers for "stinger" mutation
-	if has_node("stinger_mutation"):
-		print("I have a stinger! Stabby stabby stabby!")
+	if has_node("Stinger_Mutation"):
+		#print("I have a stinger! Stabby stabby stabby!")
 		damage_dealt = 2
 		is_mutated = true
 	else:
@@ -168,3 +181,9 @@ func _on_target_locked_timeout() -> void:
 #Handles dealing damage to characters
 func deal_damage():
 	pass
+
+func set_facing_left(value: bool) -> void:
+	if facing_left != value:
+		facing_left = value
+		$Test_Arlithon.flip_h = value
+		emit_signal("direction_changed", value)

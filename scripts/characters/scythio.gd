@@ -156,7 +156,7 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
  
 func collect_life():
 	if collectable:
-		print("Life collected")
+		#print("Life collected")
 		ammo = 1
 		_secondary_atk_cd()
  

@@ -1565,8 +1565,8 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 [node name="PrimAttackHB" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 4
-collision_mask = 4
+collision_layer = 8
+collision_mask = 15
 
 [node name="PrimAtkHBMask" type="CollisionShape2D" parent="PrimAttackHB"]
 light_mask = 0

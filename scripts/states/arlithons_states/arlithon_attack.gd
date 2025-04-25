@@ -13,9 +13,11 @@ func _on_physics_update(_delta: float) -> void:
 	if arlithon.player_in_atk_range && !arlithon.stunlocked:
 		
 		if arlithon.player_body.global_position.x - arlithon.global_position.x > 0:
-			arlithon_animation.flip_h = true
+			#arlithon_animation.flip_h = true
+			arlithon.set_facing_left(true)
 		else:
-			arlithon_animation.flip_h = false
+			#arlithon_animation.flip_h = false
+			arlithon.set_facing_left(false)
 		
 		arlithon.velocity = Vector2.ZERO
 		

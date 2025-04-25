@@ -1,10 +1,7 @@
-[gd_scene load_steps=42 format=3 uid="uid://casiyrgnqyyxb"]
+[gd_scene load_steps=45 format=3 uid="uid://casiyrgnqyyxb"]
 
-[ext_resource type="Script" uid="uid://m3g7ckksuqc7" path="res://scripts/arlithons/mutations/tail_mutation.gd" id="1_o3cr7"]
+[ext_resource type="Script" uid="uid://cmvf61hcb0hfl" path="res://scripts/arlithons/mutations/pryd/stinger_mutation.gd" id="1_j8hxj"]
 [ext_resource type="Texture2D" uid="uid://d1shoal7uxu8a" path="res://assets/alpha/arlithons/mutations/Pryd's Mutations/Stinger-Sheet.png" id="2_ebg3m"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_kdlmh"]
-size = Vector2(18, 18)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_o3cr7"]
 atlas = ExtResource("2_ebg3m")
@@ -61,6 +58,14 @@ region = Rect2(768, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_rh2d0"]
 atlas = ExtResource("2_ebg3m")
 region = Rect2(832, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j8hxj"]
+atlas = ExtResource("2_ebg3m")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kurvu"]
+atlas = ExtResource("2_ebg3m")
+region = Rect2(64, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pae37"]
 atlas = ExtResource("2_ebg3m")
@@ -198,8 +203,14 @@ animations = [{
 }, {
 "duration": 0.25,
 "texture": SubResource("AtlasTexture_rh2d0")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_j8hxj")
+}, {
+"duration": 0.25,
+"texture": SubResource("AtlasTexture_kurvu")
 }],
-"loop": true,
+"loop": false,
 "name": &"Atk",
 "speed": 5.0
 }, {
@@ -207,7 +218,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_pae37")
 }],
-"loop": true,
+"loop": false,
 "name": &"Death",
 "speed": 5.0
 }, {
@@ -275,7 +286,7 @@ animations = [{
 "duration": 0.25,
 "texture": SubResource("AtlasTexture_nep51")
 }],
-"loop": true,
+"loop": false,
 "name": &"Grow_Shrink",
 "speed": 5.0
 }, {
@@ -283,25 +294,44 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_aruuu")
 }],
-"loop": true,
+"loop": false,
 "name": &"Idle",
 "speed": 5.0
 }]
 
-[node name="Tail_Mutation" type="CharacterBody2D" groups=["Mutations"]]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kdlmh"]
+size = Vector2(9, 1.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j8hxj"]
+size = Vector2(5, 3)
+
+[node name="Stinger_Mutation" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["Mutations"]]
 collision_layer = 0
 collision_mask = 0
-script = ExtResource("1_o3cr7")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-light_mask = 0
-position = Vector2(-23, -8)
-shape = SubResource("RectangleShape2D_kdlmh")
+script = ExtResource("1_j8hxj")
+sprite = NodePath("Stinger")
 
 [node name="Stinger" type="AnimatedSprite2D" parent="."]
 light_mask = 0
 visibility_layer = 4
 sprite_frames = SubResource("SpriteFrames_afn8l")
-animation = &"Idle"
+animation = &"Atk"
 autoplay = "Idle"
+frame = 15
+frame_progress = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+light_mask = 0
+position = Vector2(8.5, 8.25)
+shape = SubResource("RectangleShape2D_kdlmh")
+
+[node name="HB" type="Area2D" parent="."]
+visible = false
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HB"]
+position = Vector2(0.5, 9.5)
+shape = SubResource("RectangleShape2D_j8hxj")
+debug_color = Color(0.993638, 0.0735645, 0, 0.42)

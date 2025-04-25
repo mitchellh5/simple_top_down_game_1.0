@@ -2,11 +2,8 @@ extends CharacterBody2D
 
 @onready var parent_arlithon: PackedScene = preload("res://scenes/arlithons/Pryd's_Basic.tscn")
 
-var hatched: bool = false
-
 func _physics_process(delta: float) -> void:
-	if !hatched:
-		if get_parent().velocity.x < 0:
-			$Animation.flip_h = false
-		else:
-			$Animation.flip_h = true
+	if get_parent().velocity.x < 0:
+		$Armor.flip_h = false
+	else:
+		$Armor.flip_h = true

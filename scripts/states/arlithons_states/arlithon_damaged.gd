@@ -21,9 +21,11 @@ func damage():
 		is_animating = true
 		
 		if arlithon.character.global_position.x - arlithon.global_position.x > 0:
-			arlithon_animation.flip_h = true
+			#arlithon_animation.flip_h = true
+			arlithon.set_facing_left(true)
 		else:
-			arlithon_animation.flip_h = false
+			#arlithon_animation.flip_h = false
+			arlithon.set_facing_left(false)
 			
 		arlithon_animation.modulate = Color.RED  # Temporarily change to red
 		await get_tree().create_timer(0.5).timeout  # Wait for 0.1 seconds
