@@ -8,7 +8,7 @@ var is_animating: bool = false
 
 #Runs every frame
 func _on_update(_delta: float) -> void:
-	arlithon_animation.animation_finished.connect(_on_animation_finished)
+	pass
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
@@ -32,25 +32,19 @@ func damage():
 		arlithon_animation.modulate = Color.WHITE  # Revert to normal
 		arlithon.damaged = false
 
-func _on_animation_finished():
-	if arlithon_animation.animation == "DMG":
-		is_animating = false
-
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if is_animating:
-		return
 	
 	if arlithon.health <= 0:
 		arlithon.is_alive = false
 		arlithon.remove_from_group("Arlithons")
 		transition.emit("Death")
-	elif arlithon.player_in_atk_range:
+	elif arlithon.player_in_atk_range || arlithon.companion_in_atk_range:
 		transition.emit("Attack")
-	elif arlithon.player_in_range:
-		transition.emit("Follow_Player")
+	elif arlithon.companion_in_range:
+		transition.emit("Follow_Companion")
 	else:
-		transition.emit("Idle")
+		transition.emit("Follow_Player")
 
 #Runs upon entering state
 func _on_enter():
