@@ -51,4 +51,4 @@ func transition_to(arlithon_state_name: String) -> void:
 	
 	# *** IMPORTANT: Call _on_enter() on the new state ***
 	current_arlithon_state._on_enter()
-	#print("Current State: ", current_arlithon_state)
+	print("Current State: ", current_arlithon_state)

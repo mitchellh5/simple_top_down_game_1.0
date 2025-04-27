@@ -452,7 +452,7 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bcmvi"]
-radius = 8.0
+radius = 15.0
 height = 36.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2iwt4"]
@@ -470,9 +470,15 @@ radius = 75.71
 collision_layer = 2
 collision_mask = 3
 motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_4g40n")
 sprite = NodePath("Test_Arlithon")
 State_Machine = NodePath("State_Machine")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 5.0
+target_desired_distance = 5.0
+debug_enabled = true
 
 [node name="Test_Arlithon" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_u3ayo")
@@ -484,7 +490,7 @@ frame_progress = 0.895714
 [node name="Arlithon_Node" type="Node2D" parent="."]
 
 [node name="Hit_Box" type="CollisionShape2D" parent="."]
-position = Vector2(0, -4)
+position = Vector2(0, 3)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_bcmvi")
 
@@ -521,6 +527,10 @@ collision_mask = 2
 shape = SubResource("CircleShape2D_8ok4h")
 debug_color = Color(0.623175, 0.533003, 7.70092e-07, 0.42)
 
+[node name="Nav" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
 [node name="TargetLocked" type="Timer" parent="."]
 wait_time = 7.0
 one_shot = true
@@ -539,8 +549,10 @@ script = ExtResource("5_cceh1")
 arlithon = NodePath("../..")
 arlithon_animation = NodePath("../../Test_Arlithon")
 
-[node name="Follow_Companion" type="Node" parent="State_Machine"]
+[node name="Follow_Companion" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
 script = ExtResource("9_menls")
+arlithon = NodePath("../..")
+arlithon_animation = NodePath("../../Test_Arlithon")
 
 [node name="Attack" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
 script = ExtResource("6_kmaep")
@@ -562,4 +574,6 @@ arlithon_animation = NodePath("../../Test_Arlithon")
 [connection signal="body_exited" from="Attack" to="." method="_on_attack_body_exited"]
 [connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
 [connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
+[connection signal="timeout" from="Nav" to="State_Machine/Follow_Player" method="_on_nav_timeout"]
+[connection signal="timeout" from="Nav" to="State_Machine/Follow_Companion" method="_on_nav_timeout"]
 [connection signal="timeout" from="TargetLocked" to="." method="_on_target_locked_timeout"]

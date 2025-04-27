@@ -9,6 +9,9 @@ class_name Arlithon
 @export var State_Machine : NodePath
 @onready var state_machine_instance = get_node("State_Machine")
 
+#Links the navigation2d node to the enemy for pathfinding
+@onready var nav: NavigationAgent2D = $NavigationAgent2D
+
 #preloads all possible mutations on run time
 @onready var armor_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/armor_mutation.tscn")
 @onready var barbed_stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/barbed_stinger_mutation.tscn")
@@ -26,9 +29,11 @@ var speed = 50
 
 @onready var prim_atk_range = get_node("%Attack")
 
-signal direction_changed(flip_h: bool)		#Used to dertmine the arlithon's current facing direction so that any
+signal direction_changed(flip_h: bool)		#Used to determine the arlithon's current facing direction so that any
 var facing_left = false						#mutations can animate properly in the same direction
 
+signal modulating(is_red: bool)				#Used to check when the arlithon has modulated to red to indicate it has
+var red = false								#been damaged to stay consistent with the mutations (namely the stinger)
 
 var health: int = 3							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
@@ -44,6 +49,7 @@ var damaged: bool = false					#Detects when arlithon receives damage
 var smote: bool = false						#Determines how arlithon was slain
 var stunlocked: bool = false				#Used for determining if the player is currently stun locking the arlithon
 var damage_dealt = 1						#How much damage it deals to the player
+var dir
 
 var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
 var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
@@ -97,12 +103,23 @@ func _physics_process(delta: float) -> void:
 	else:
 		distance_from_companion = Vector2(1000000,1000000)
 	
+	nav.target_position = player_body.global_position
+	distance_from_player = nav.distance_to_target()
+	
+	nav.target_position = companion_body.global_position
+	distance_from_companion = nav.distance_to_target()
+	
+	print(distance_from_player > distance_from_companion)
+	
 	if distance_from_player > distance_from_companion:
+		#print(self, " is targeting the companion")
 		player_in_range = false
 		companion_in_range = true
 	else:
+		#print(self, " is targeting the player")
 		player_in_range = true
 		companion_in_range = false
+	
 	
 	for body in $Attack.get_overlapping_bodies():
 		if body.has_method("lose_health"):
@@ -187,3 +204,12 @@ func set_facing_left(value: bool) -> void:
 		facing_left = value
 		$Test_Arlithon.flip_h = value
 		emit_signal("direction_changed", value)
+
+func set_modulation(value: bool) -> void:
+	if red != value:
+		red = value
+		if value:
+			$Test_Arlithon.modulate = Color.RED
+		else:
+			$Test_Arlithon.modulate = Color.WHITE
+		emit_signal("modulating", value)

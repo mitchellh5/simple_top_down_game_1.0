@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 @export var sprite: AnimatedSprite2D
-
 @onready var parent = get_parent()
 
 var has_grown: bool = false
@@ -10,9 +9,14 @@ func _ready() -> void:
 	if parent.has_signal("direction_changed"):
 		parent.connect("direction_changed", Callable(self, "_on_direction_changed"))
 	
-	sprite.play("Grow_Shrink")
+	if parent.has_signal("modulating"):
+		parent.connect("modulating", Callable(self, "_on_damaged"))
 
 func _physics_process(delta: float) -> void:
+	
+	if !has_grown:
+		sprite.play("Grow_Shrink")
+		has_grown = true
 	
 	if get_parent().health <= 0:
 		_death()
@@ -30,3 +34,9 @@ func _death():
 
 func _on_direction_changed(flip_h: bool) -> void:
 	$Stinger.flip_h = flip_h
+
+func _on_damaged(red: bool) -> void:
+	if red:
+		$Stinger.modulate = Color.RED
+	else:
+		$Stinger.modulate = Color.WHITE

@@ -20,6 +20,8 @@ func damage():
 		#print("Ouchie!")
 		is_animating = true
 		
+		var mutations = get_children()
+		
 		if arlithon.character.global_position.x - arlithon.global_position.x > 0:
 			#arlithon_animation.flip_h = true
 			arlithon.set_facing_left(true)
@@ -27,9 +29,9 @@ func damage():
 			#arlithon_animation.flip_h = false
 			arlithon.set_facing_left(false)
 			
-		arlithon_animation.modulate = Color.RED  # Temporarily change to red
-		await get_tree().create_timer(0.5).timeout  # Wait for 0.1 seconds
-		arlithon_animation.modulate = Color.WHITE  # Revert to normal
+		arlithon.set_modulation(true)
+		await get_tree().create_timer(0.25).timeout  # Wait for 0.25 seconds
+		arlithon.set_modulation(false)
 		arlithon.damaged = false
 
 #Handles transitioning between states

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0oydh58jk72s"
-path="res://.godot/imported/Tail.png-55cab4d9b92e18a715c524b35d10303c.ctex"
+uid="uid://dksecr0fj6f74"
+path="res://.godot/imported/Pryd's Hive Tileset 3.png-4e02cf160dd3fc7e3dba4d5174640c11.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/alpha/arlithons/mutations/Tail.png"
-dest_files=["res://.godot/imported/Tail.png-55cab4d9b92e18a715c524b35d10303c.ctex"]
+source_file="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png"
+dest_files=["res://.godot/imported/Pryd's Hive Tileset 3.png-4e02cf160dd3fc7e3dba4d5174640c11.ctex"]
 
 [params]
 

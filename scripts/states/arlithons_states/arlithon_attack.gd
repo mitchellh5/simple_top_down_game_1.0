@@ -23,8 +23,12 @@ func _on_physics_update(_delta: float) -> void:
 		
 		if arlithon_animation.animation != "Atk_2":
 			arlithon_animation.play("Atk_2")
+			
 		arlithon_animation.play("Atk_2")
-		arlithon.player_body.lose_health(arlithon.damage_dealt)
+		
+		if arlithon_animation.animation == "Atk_2":
+			if arlithon_animation.frame == 6:
+				arlithon.player_body.lose_health(arlithon.damage_dealt)
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
