@@ -35,8 +35,8 @@ func _on_next_transitions() -> void:
 	
 	if arlithon.player_in_atk_range:
 		return
-	elif arlithon.player_in_range:
-		transition.emit("Follow_Player")
+	elif arlithon.player_in_range || arlithon.companion_in_range:
+		transition.emit("Hunt")
 	else:
 		transition.emit("Idle")
 

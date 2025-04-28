@@ -14,13 +14,18 @@ var current_state
 @onready var atk_area = get_node("%PrimAtkHB")					#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
-@onready var sec_atk_range = get_node("%SecAtkRange")
-@onready var interact_area = get_node("%InteractionArea")
-@onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown
+@onready var sec_atk_range = get_node("%SecAtkRange")			#Sets up sec_attack range area for ensuring an enemy is in range
+@onready var interact_area = get_node("%InteractionArea")		#Sets up interaction area for player interactions
+@onready var los = $LineOfSight									#Sets up line of sight
+
+@onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown		#Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
+																#just watch the companion tear everything to shreds around them)
+
 
 #Variabls used for Life (secondary attack)
 var target_pos: Vector2												#Tracks the target position so that Life always spawns from Mynra's current position
 var throw_dir: Vector2												#Tracks the direction we want to throw Life in
+var enemy_spotted: bool = false										#Ensures the enemy is within line of sight
 const LIFE_PATH = preload("res://scenes/weapons/life.tscn")			#Preloads Life as a scene so that it can be thrown and caught by Mynra
 
 
@@ -72,6 +77,7 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	var dir
 	if player:
+		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 		add_to_group("Player")
 		remove_from_group("Companion")
 		if Input.get_connected_joypads().size() > 0:
@@ -86,6 +92,8 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
+		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+		wall_min_slide_angle = 0
 		add_to_group("Companion")
 		remove_from_group("Player")
 		move_and_slide()
@@ -101,8 +109,10 @@ func _physics_process(delta: float) -> void:
  
 		for body in $SecAtkRange.get_overlapping_bodies():
 			if body == target_arlithon:
-				#print("Enemy spotted!")
-				arlithon_in_sec_atk_range = true
+				los.look_at(target_arlithon.global_position)
+				if enemy_spotted:
+					#print("Enemy spotted!")
+					arlithon_in_sec_atk_range = true
 			#elif body != target_arlithon && arlithon_in_sec_atk_range:
 				#arlithon_in_sec_atk_range = false
 
@@ -124,7 +134,15 @@ func _physics_process(delta: float) -> void:
  	#_check_player_range()
  
  	#angle = rad_to_deg(dir.angle())
- 
+
+func _check_los_enemy() -> bool:
+	var collider = los.get_collider()
+	if collider and collider.is_in_group("Arlithons"):
+		enemy_spotted = true
+		return true
+	else:
+		return false
+
 func _find_player_node() -> void:
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
 	if !nodes_in_group.is_empty():

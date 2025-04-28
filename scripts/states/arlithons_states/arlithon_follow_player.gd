@@ -16,7 +16,10 @@ func _on_physics_update(_delta: float) -> void:
 	arlithon.velocity = direction * arlithon.speed
 
 func _make_path():
-	arlithon.nav.target_position = arlithon.player_body.global_position
+	if arlithon.player_in_range:
+		arlithon.nav.target_position = arlithon.player_body.global_position
+	else:
+		arlithon.nav.target_position = arlithon.companion_body.global_position
 
 func _on_nav_timeout() -> void:
 	_make_path()
@@ -26,7 +29,7 @@ func _on_next_transitions() -> void:
 	
 	if arlithon.player_in_atk_range:
 		transition.emit("Attack")
-	elif arlithon.companion_in_range && !arlithon.player_in_range:
+	elif !arlithon.player_in_range:
 		transition.emit("Follow_Companion")
 	elif !arlithon.player_in_range:
 		transition.emit("Idle")

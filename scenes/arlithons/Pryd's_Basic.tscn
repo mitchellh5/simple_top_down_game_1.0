@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=3 uid="uid://djulfym54bhm0"]
+[gd_scene load_steps=73 format=3 uid="uid://djulfym54bhm0"]
 
 [ext_resource type="Script" uid="uid://ba0th0iret3bq" path="res://scripts/arlithons/rath's hive/basic_arlithon.gd" id="1_4g40n"]
 [ext_resource type="Texture2D" uid="uid://bksf0uj1twi7p" path="res://assets/alpha/arlithons/pryd's hive/Pryd-Basic-Sheet.png" id="2_rx2ct"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://bjhjlpjbc3rdm" path="res://scripts/states/arlithons_states/arlithon_attack.gd" id="6_kmaep"]
 [ext_resource type="Script" uid="uid://cvxl7y0s0blvj" path="res://scripts/states/arlithons_states/arlithon_damaged.gd" id="7_uojla"]
 [ext_resource type="Script" uid="uid://egxuw4uds6dv" path="res://scripts/states/arlithons_states/arlithon_death.gd" id="8_3ncui"]
-[ext_resource type="Script" uid="uid://b5fuus50mycnr" path="res://scripts/states/arlithons_states/arlithon_follow_companion.gd" id="9_menls"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5q62m"]
 atlas = ExtResource("2_rx2ct")
@@ -467,8 +466,8 @@ height = 56.0
 radius = 75.71
 
 [node name="PrydsBasic" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["Arlithons"]]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 0
+collision_mask = 0
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_4g40n")
@@ -496,8 +495,8 @@ shape = SubResource("CapsuleShape2D_bcmvi")
 
 [node name="Hurt_Box" type="Area2D" parent="."]
 visible = false
-collision_layer = 4
-collision_mask = 4
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurt_Box"]
 light_mask = 4
@@ -510,8 +509,8 @@ debug_color = Color(0.982405, 0.0845633, 0.258332, 0.42)
 [node name="Attack" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 2
-collision_mask = 2
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Attack"]
 position = Vector2(0, 5)
@@ -520,8 +519,8 @@ shape = SubResource("CapsuleShape2D_y4o7p")
 
 [node name="Character_Detection" type="Area2D" parent="."]
 visible = false
-collision_layer = 2
-collision_mask = 2
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Character_Detection"]
 shape = SubResource("CircleShape2D_8ok4h")
@@ -544,13 +543,8 @@ script = ExtResource("4_g80j2")
 arlithon = NodePath("../..")
 arlithon_animation = NodePath("../../Test_Arlithon")
 
-[node name="Follow_Player" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
+[node name="Hunt" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
 script = ExtResource("5_cceh1")
-arlithon = NodePath("../..")
-arlithon_animation = NodePath("../../Test_Arlithon")
-
-[node name="Follow_Companion" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
-script = ExtResource("9_menls")
 arlithon = NodePath("../..")
 arlithon_animation = NodePath("../../Test_Arlithon")
 
@@ -574,6 +568,5 @@ arlithon_animation = NodePath("../../Test_Arlithon")
 [connection signal="body_exited" from="Attack" to="." method="_on_attack_body_exited"]
 [connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
 [connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
-[connection signal="timeout" from="Nav" to="State_Machine/Follow_Player" method="_on_nav_timeout"]
-[connection signal="timeout" from="Nav" to="State_Machine/Follow_Companion" method="_on_nav_timeout"]
+[connection signal="timeout" from="Nav" to="State_Machine/Hunt" method="_on_nav_timeout"]
 [connection signal="timeout" from="TargetLocked" to="." method="_on_target_locked_timeout"]

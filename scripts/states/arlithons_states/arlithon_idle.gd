@@ -34,10 +34,8 @@ func _on_next_transitions() -> void:
 	
 	if arlithon.player_in_atk_range:
 		transition.emit("Attack")
-	elif arlithon.player_in_range:
-		transition.emit("Follow_Player")
-	elif arlithon.companion_in_range:
-		transition.emit("Follow_Companion")
+	else:
+		transition.emit("Hunt")
 	
 
 #Runs upon entering state

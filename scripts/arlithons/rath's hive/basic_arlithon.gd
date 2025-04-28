@@ -96,30 +96,25 @@ func _physics_process(delta: float) -> void:
 	player_body = get_tree().get_first_node_in_group("Player")
 	companion_body = get_tree().get_first_node_in_group("Companion")
 	
-	var distance_from_player = player_body.global_position - global_position
+	var distance_from_player = global_position.distance_to(player_body.global_position)
 	var distance_from_companion
 	if companion_body:
-		distance_from_companion = companion_body.global_position - global_position
+		distance_from_companion = global_position.distance_to(companion_body.global_position)
 	else:
-		distance_from_companion = Vector2(1000000,1000000)
+		distance_from_companion = 1000000000000000
 	
-	nav.target_position = player_body.global_position
-	distance_from_player = nav.distance_to_target()
-	
-	nav.target_position = companion_body.global_position
-	distance_from_companion = nav.distance_to_target()
-	
-	print(distance_from_player > distance_from_companion)
+	#print(distance_from_player > distance_from_companion)
 	
 	if distance_from_player > distance_from_companion:
 		#print(self, " is targeting the companion")
 		player_in_range = false
 		companion_in_range = true
+		nav.target_position = companion_body.global_position
 	else:
 		#print(self, " is targeting the player")
 		player_in_range = true
 		companion_in_range = false
-	
+		nav.target_position = player_body.global_position
 	
 	for body in $Attack.get_overlapping_bodies():
 		if body.has_method("lose_health"):

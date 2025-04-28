@@ -1521,7 +1521,8 @@ height = 46.0
 size = Vector2(20, 36)
 
 [node name="PlayerMynra" type="CharacterBody2D" groups=["Player"]]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
 
@@ -1543,8 +1544,8 @@ visible = false
 [node name="HurtBox" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 4
-collision_mask = 4
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 light_mask = 0
@@ -1555,8 +1556,8 @@ debug_color = Color(0.991738, 0, 0.261583, 0.42)
 
 [node name="CollectionArea" type="Area2D" parent="." groups=["Mynra"]]
 visible = false
-collision_layer = 8
-collision_mask = 8
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
 shape = SubResource("CapsuleShape2D_a0pcm")
@@ -1565,8 +1566,8 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 [node name="PrimAttackHB" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 8
-collision_mask = 15
+collision_layer = 0
+collision_mask = 0
 
 [node name="PrimAtkHBMask" type="CollisionShape2D" parent="PrimAttackHB"]
 light_mask = 0

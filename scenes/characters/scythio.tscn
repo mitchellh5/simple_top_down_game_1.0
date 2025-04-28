@@ -930,7 +930,9 @@ radius = 256.0
 radius = 142.004
 
 [node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Companion", "Scythio"]]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 0
+motion_mode = 1
 script = ExtResource("1_qbh1l")
 State_Machine = NodePath("StateMachine")
 
@@ -948,8 +950,8 @@ shape = SubResource("CircleShape2D_e6jrn")
 [node name="HurtBox" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
-collision_layer = 4
-collision_mask = 4
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 position = Vector2(0, 5)
@@ -960,8 +962,8 @@ debug_color = Color(0.992157, 0, 0.262745, 0.419608)
 visible = false
 light_mask = 2
 visibility_layer = 2
-collision_layer = 8
-collision_mask = 8
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
 light_mask = 2
@@ -974,7 +976,7 @@ debug_color = Color(0.85098, 0.372549, 0, 0.419608)
 unique_name_in_owner = true
 visible = false
 collision_layer = 0
-collision_mask = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
 shape = SubResource("RectangleShape2D_rou7o")
@@ -984,8 +986,8 @@ debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 unique_name_in_owner = true
 light_mask = 4
 visibility_layer = 4
-collision_layer = 2
-collision_mask = 2
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkHB"]
 light_mask = 2
@@ -999,7 +1001,7 @@ unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 collision_layer = 0
-collision_mask = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
 light_mask = 2
@@ -1013,7 +1015,7 @@ visible = false
 light_mask = 2
 visibility_layer = 2
 collision_layer = 0
-collision_mask = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkRange"]
 light_mask = 2
@@ -1028,12 +1030,16 @@ visible = false
 light_mask = 2
 visibility_layer = 2
 collision_layer = 0
-collision_mask = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 light_mask = 2
 visibility_layer = 2
 shape = SubResource("CircleShape2D_ww6x6")
+
+[node name="LineOfSight" type="RayCast2D" parent="."]
+target_position = Vector2(256, 0)
+collision_mask = 15
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
 one_shot = true
@@ -1089,8 +1095,8 @@ ghost_node = ExtResource("12_xwxx2")
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="SecAtkRange" to="." method="_on_prim_atk_range_body_entered"]
-[connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
+[connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_prim_atk_cooldown_timeout"]
