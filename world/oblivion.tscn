@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b8s1rx6jljyiv" path="res://assets/alpha/world/Oblivion/White Sun/Water Tileset (White Sun).png" id="3_6nccv"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="4_gag02"]
 [ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="5_wqywn"]
-[ext_resource type="PackedScene" uid="uid://bvy0bt4bf1cso" path="res://singletons/level_transition.tscn" id="6_ykrys"]
+[ext_resource type="PackedScene" uid="uid://ca7mb3kaemoma" path="res://singletons/LevelTransition.tscn" id="6_ykrys"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i2537"]
 texture = ExtResource("1_4bw6m")
@@ -247,6 +247,4 @@ position = Vector2(366, 178)
 [node name="arlithons" type="Node" parent="."]
 
 [node name="LevelTransition" parent="." instance=ExtResource("6_ykrys")]
-position = Vector2(366, 178)
-collision_layer = 2
-collision_mask = 2
+position = Vector2(365, 180)

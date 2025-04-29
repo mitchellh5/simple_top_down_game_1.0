@@ -13,7 +13,7 @@ var current_state
 @onready var sprite = $AnimatedSprite2D
 
 #Sets up the "Prim_Attack_HB" Area2D for use in states and here
-@onready var atk_area = get_node("%PrimAttackHB")
+@onready var atk_area = get_node("%Hitbox")
 #@onready var hitbox = get_node("$HurtBox/CollisionShape2D")
 
 #Variabls used for Famine (secondary attack)

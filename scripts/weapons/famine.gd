@@ -40,15 +40,16 @@ func _physics_process(delta: float) -> void:
 	#As long as Famine hasn't exceeded its range, it will continue
 	#to travel across the scene in the direction it was thrown
 	if returning == false:
+		collectable = false
 		position += dir * SPEED * delta
 		move_and_slide()
 	else:
 		return_to_mynra()	#Runs the "return_to_mynra()" function once Famine has exceeded its range of attack
 
 #Once the timer (0.05s) has ended, it marks Famine as "collectable"
-func _on_timer_timeout():
-	collectable = true
-	#print("Famine is now collectable!")
+#func _on_timer_timeout():
+	#collectable = true
+	##print("Famine is now collectable!")
 
 #Checks collisions Famine has with characters, enemies, and walls
 
@@ -61,7 +62,7 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 func _on_area_2d_body_entered(body):
 	#When Famine hits an arlithon, it signals to the arlithon to take
 	#damage, then begins to return to Mynra if it's collectable
-	if body.has_method("take_damage"):
+	if body.is_in_group("Arlithons") && body.has_method("take_damage"):
 		#print("Hit an arlithon")
 		body.take_damage()
 		
@@ -69,22 +70,15 @@ func _on_area_2d_body_entered(body):
 		#it waits for 0.07s, then returns to Mynra since by then it will be collectable.
 		#This exists to avoid issues in cases where the player is throwing Famine at an
 		#arlithon or wall at point-blank range
-		if collectable == true:
-			returning = true
-		else:
-			await get_tree().create_timer(0.07).timeout
-			returning = true
+		returning = true
 	
 	elif body.is_in_group("walls"):
-		if collectable == true:
-			returning = true
-		else:
-			await get_tree().create_timer(0.07).timeout
-			returning = true
+		returning = true
 
 #This function is used to have Famine track back towards Mynra for collection
 func return_to_mynra():
 	#print("Returning to Mynra")
+	collectable = true
 	var direction = global_position.direction_to(character.global_position)
 	velocity = direction * SPEED
 	move_and_slide()

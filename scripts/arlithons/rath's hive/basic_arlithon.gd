@@ -27,7 +27,7 @@ var speed = 50
 @onready var character = get_tree().get_first_node_in_group("Player")
 @onready var companion = get_tree().get_first_node_in_group("Companion")
 
-@onready var prim_atk_range = get_node("%Attack")
+@onready var prim_atk_range = get_node("%Hitbox")
 
 signal direction_changed(flip_h: bool)		#Used to determine the arlithon's current facing direction so that any
 var facing_left = false						#mutations can animate properly in the same direction
@@ -37,12 +37,11 @@ var red = false								#been damaged to stay consistent with the mutations (name
 
 var health: int = 3							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
-var player_in_atk_range: bool = false		#Used for tracking if player is in attack range
 var player_body: CharacterBody2D			#Represents the player body
-
 var companion_body: CharacterBody2D			#Represents the companion's body
+var target_body: CharacterBody2D			#Represents the body (player or companion) that the arlithon is currently targeting
 var companion_in_range: bool = false		#Used for tracking if companion is within range of detection
-var companion_in_atk_range: bool = false	#Used for tracking if companion is in attack range
+var body_in_atk_range: bool = false			#Used for tracking if a character (player or companion) is in attack range
 
 var damageable: bool = true					#Used for tracking i-frames
 var damaged: bool = false					#Detects when arlithon receives damage
@@ -116,23 +115,18 @@ func _physics_process(delta: float) -> void:
 		companion_in_range = false
 		nav.target_position = player_body.global_position
 	
-	for body in $Attack.get_overlapping_bodies():
-		if body.has_method("lose_health"):
-			player_body = body
-			player_in_atk_range = true
+	for area in $Hitbox.get_overlapping_areas():
+		if area.get_parent().is_in_group("Player"):
+			target_body = area.get_parent()
+			body_in_atk_range = true
 	
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
 
 func _on_attack_body_exited(body: Node2D) -> void:
-	if body.has_method("lose_health"):
-		player_in_atk_range = false
-#
-#func _on_character_detection_body_exited(body: Node2D) -> void:
-	#if body == player_body:
-		#player_in_range = false
-		##print("Player not detected in detection area")
+	if body.is_in_group("Player") || body.is_in_group("Companion"):
+		body_in_atk_range = false
 
 #Handles taking damage
 func take_damage():
@@ -163,8 +157,6 @@ func _check_mutations():
 	else:
 		damage_dealt = 1
 		is_mutated = false
-	
-	
 
 #This is the logic used for tracking when this arlithon is currently
 #being targeted by the player character
@@ -189,10 +181,6 @@ func _is_being_targeted() -> void:
 func _on_target_locked_timeout() -> void:
 	if !damaged:
 		is_targeted_by_player = false
-
-#Handles dealing damage to characters
-func deal_damage():
-	pass
 
 func set_facing_left(value: bool) -> void:
 	if facing_left != value:

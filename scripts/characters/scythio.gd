@@ -110,6 +110,7 @@ func _physics_process(delta: float) -> void:
 		for body in $SecAtkRange.get_overlapping_bodies():
 			if body == target_arlithon:
 				los.look_at(target_arlithon.global_position)
+				_check_los_enemy()
 				if enemy_spotted:
 					#print("Enemy spotted!")
 					arlithon_in_sec_atk_range = true

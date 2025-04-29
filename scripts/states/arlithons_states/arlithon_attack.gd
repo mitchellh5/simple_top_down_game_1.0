@@ -10,9 +10,9 @@ func _on_update(_delta: float) -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	if arlithon.player_in_atk_range && !arlithon.stunlocked:
+	if arlithon.body_in_atk_range && !arlithon.stunlocked:
 		
-		if arlithon.player_body.global_position.x - arlithon.global_position.x > 0:
+		if arlithon.player_body.global_position.x - arlithon.global_position.x >= 0:
 			#arlithon_animation.flip_h = true
 			arlithon.set_facing_left(true)
 		else:
@@ -28,12 +28,12 @@ func _on_physics_update(_delta: float) -> void:
 		
 		if arlithon_animation.animation == "Atk_2":
 			if arlithon_animation.frame == 6:
-				arlithon.player_body.lose_health(arlithon.damage_dealt)
+				arlithon.target_body.lose_health(arlithon.damage_dealt)
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
-	if arlithon.player_in_atk_range:
+	if arlithon.body_in_atk_range:
 		return
 	elif arlithon.player_in_range || arlithon.companion_in_range:
 		transition.emit("Hunt")

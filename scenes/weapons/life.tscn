@@ -12,8 +12,8 @@ size = Vector2(30, 6)
 [node name="Life" type="RigidBody2D" groups=["weapons"]]
 light_mask = 8
 visibility_layer = 8
-collision_layer = 0
-collision_mask = 15
+collision_layer = 8
+collision_mask = 3
 gravity_scale = 0.0
 freeze_mode = 1
 script = ExtResource("1_gq7ib")
@@ -34,8 +34,8 @@ one_way_collision_margin = 0.0
 visible = false
 light_mask = 8
 visibility_layer = 8
-collision_layer = 0
-collision_mask = 15
+collision_layer = 8
+collision_mask = 14
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
 light_mask = 8

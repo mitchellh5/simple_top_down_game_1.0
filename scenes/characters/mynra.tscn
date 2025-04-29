@@ -1,8 +1,10 @@
-[gd_scene load_steps=205 format=3 uid="uid://d2g17pauj83jm"]
+[gd_scene load_steps=207 format=3 uid="uid://d2g17pauj83jm"]
 
 [ext_resource type="Script" uid="uid://w68dkjx7jyi8" path="res://scripts/characters/mynra.gd" id="1_u4xuv"]
 [ext_resource type="Texture2D" uid="uid://cyr0kb1bo2ky5" path="res://assets/alpha/characters/Mynra-Sheet.png" id="2_xf17j"]
 [ext_resource type="Script" uid="uid://bwoeblmwd80m1" path="res://scripts/states/mynra_states/mynra_state_machine.gd" id="3_ugxf0"]
+[ext_resource type="PackedScene" uid="uid://bv03mvnn38bpe" path="res://scenes/overlap/Hurtbox.tscn" id="3_yl02y"]
+[ext_resource type="PackedScene" uid="uid://i51pf42ue06v" path="res://scenes/overlap/Hitbox.tscn" id="4_7lg0n"]
 [ext_resource type="Script" uid="uid://cvrc0yklqnp3a" path="res://scripts/states/mynra_states/mynra_idle.gd" id="4_ejkyt"]
 [ext_resource type="Script" uid="uid://bucvnk6fjstxu" path="res://scripts/states/mynra_states/mynra_movement.gd" id="4_wry53"]
 [ext_resource type="Script" uid="uid://d40vfnq45w7m" path="res://scripts/states/mynra_states/mynra_primary_attack.gd" id="6_2k2v3"]
@@ -1509,72 +1511,66 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_exrpt"]
 radius = 4.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cx0t6"]
-radius = 7.0
-height = 32.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a0pcm"]
 radius = 14.0
 height = 46.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ukj5w"]
-size = Vector2(20, 36)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7lg0n"]
+radius = 5.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7lg0n"]
+size = Vector2(28, 42)
 
 [node name="PlayerMynra" type="CharacterBody2D" groups=["Player"]]
-collision_layer = 0
-collision_mask = 0
+collision_mask = 22
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Dash_D"
+animation = &"Prim_Atk1_L"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-light_mask = 2
-visibility_layer = 2
+visible = false
 position = Vector2(0, 14)
 shape = SubResource("CircleShape2D_exrpt")
 
 [node name="Aiming_Famine" type="Node2D" parent="."]
 visible = false
 
-[node name="HurtBox" type="Area2D" parent="."]
-unique_name_in_owner = true
+[node name="CollectionArea" type="Area2D" parent="."]
 visible = false
 collision_layer = 0
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
-light_mask = 0
-visibility_layer = 2
-position = Vector2(0, 3)
-shape = SubResource("CapsuleShape2D_cx0t6")
-debug_color = Color(0.991738, 0, 0.261583, 0.42)
-
-[node name="CollectionArea" type="Area2D" parent="." groups=["Mynra"]]
-visible = false
-collision_layer = 0
-collision_mask = 0
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
 shape = SubResource("CapsuleShape2D_a0pcm")
 debug_color = Color(0.852127, 0.370926, 0, 0.42)
 
-[node name="PrimAttackHB" type="Area2D" parent="."]
-unique_name_in_owner = true
+[node name="Hurtbox" parent="." instance=ExtResource("3_yl02y")]
 visible = false
-collision_layer = 0
-collision_mask = 0
+collision_mask = 2
+monitoring = false
+monitorable = true
 
-[node name="PrimAtkHBMask" type="CollisionShape2D" parent="PrimAttackHB"]
-light_mask = 0
-visibility_layer = 2
-position = Vector2(-10, 0)
-shape = SubResource("RectangleShape2D_ukj5w")
-debug_color = Color(0.991738, 0, 0.261583, 0.42)
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_7lg0n")
+
+[node name="Hitbox" parent="." instance=ExtResource("4_7lg0n")]
+unique_name_in_owner = true
+collision_layer = 8
+collision_mask = 2
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+light_mask = 1
+visibility_layer = 1
+position = Vector2(-14, 0)
+shape = SubResource("RectangleShape2D_7lg0n")
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_mynra_state")]
 script = ExtResource("3_ugxf0")
@@ -1616,4 +1612,5 @@ script = ExtResource("11_yuc1m")
 player = NodePath("../..")
 player_animation = NodePath("../../AnimatedSprite2D")
 
-[connection signal="body_entered" from="PrimAttackHB" to="PrimAttackHB" method="_on_body_entered"]
+[editable path="Hurtbox"]
+[editable path="Hitbox"]

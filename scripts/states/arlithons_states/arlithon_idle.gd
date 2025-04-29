@@ -32,7 +32,7 @@ func wander():
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
-	if arlithon.player_in_atk_range:
+	if arlithon.body_in_atk_range:
 		transition.emit("Attack")
 	else:
 		transition.emit("Hunt")

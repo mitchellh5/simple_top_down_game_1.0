@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ca7mb3kaemoma"]
+
+[ext_resource type="Script" uid="uid://c8rxagrxt4mhj" path="res://singletons/level_transition.gd" id="1_bfm4m"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f1cxj"]
+radius = 136.004
+
+[node name="LevelTransition" type="Area2D"]
+collision_layer = 16
+script = ExtResource("1_bfm4m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_f1cxj")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

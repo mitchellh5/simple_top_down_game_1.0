@@ -20,7 +20,7 @@ func _physics_process(delta: float) -> void:
 	
 	if get_parent().health <= 0:
 		_death()
-	elif parent.player_in_atk_range && !parent.stunlocked && !sprite.is_playing():
+	elif parent.body_in_atk_range && !parent.stunlocked && !sprite.is_playing():
 		_atk()
 	elif !sprite.is_playing():
 		sprite.play("Idle")

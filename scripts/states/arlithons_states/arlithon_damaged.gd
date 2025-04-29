@@ -20,8 +20,6 @@ func damage():
 		#print("Ouchie!")
 		is_animating = true
 		
-		var mutations = get_children()
-		
 		if arlithon.character.global_position.x - arlithon.global_position.x > 0:
 			#arlithon_animation.flip_h = true
 			arlithon.set_facing_left(true)
@@ -41,7 +39,7 @@ func _on_next_transitions() -> void:
 		arlithon.is_alive = false
 		arlithon.remove_from_group("Arlithons")
 		transition.emit("Death")
-	elif arlithon.player_in_atk_range || arlithon.companion_in_atk_range:
+	elif arlithon.body_in_atk_range:
 		transition.emit("Attack")
 	else:
 		transition.emit("Hunt")

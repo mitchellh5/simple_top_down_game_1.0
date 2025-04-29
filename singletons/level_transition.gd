@@ -21,7 +21,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 			elif  GlobalState.scene ==  "Gried":
 				pass
-			elif  GlobalState.scene == "Luste":
+			elif  GlobalState.scene == "Lustt":
 				pass
 			elif  GlobalState.scene == "Nvee":
 				pass
@@ -38,7 +38,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 			elif !GlobalState.has_conquered.has("Gried"):
 				pass
-			elif !GlobalState.has_conquered.has("Luste"):
+			elif !GlobalState.has_conquered.has("Lustt"):
 				pass
 			elif !GlobalState.has_conquered.has("Nvee"):
 				pass
