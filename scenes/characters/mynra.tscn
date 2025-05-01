@@ -1576,41 +1576,41 @@ shape = SubResource("RectangleShape2D_7lg0n")
 script = ExtResource("3_ugxf0")
 initial_mynra_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("4_ejkyt")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Movement" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Movement" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("4_wry53")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_osx85")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 ghost_node = ExtResource("7_djmiq")
 
-[node name="Primary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Primary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_2k2v3")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Secondary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Secondary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_s2b13")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_worrd")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Death" type="Node" parent="StateMachine" node_paths=PackedStringArray("player", "player_animation")]
+[node name="Death" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("11_yuc1m")
-player = NodePath("../..")
-player_animation = NodePath("../../AnimatedSprite2D")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

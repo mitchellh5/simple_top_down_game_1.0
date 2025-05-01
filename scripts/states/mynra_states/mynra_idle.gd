@@ -2,20 +2,16 @@
 extends MynraState
 
 #Exports Mynra and her animation node
-@export var player: CharacterBody2D
-@export var player_animation: AnimatedSprite2D
-
-#Runs every frame
-func _on_update(_delta: float) -> void:
-	pass
+@export var mynra: CharacterBody2D
+@export var mynra_animation: AnimatedSprite2D
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	#Plays the proper animation based on the direction the player was facing
 	#when they entered the state (NOTE: there are no "Idle_U" animations)
-	if player.player_direction == Vector2.LEFT: player_animation.play("Idle_L")
-	elif player.player_direction == Vector2.RIGHT: player_animation.play("Idle_R")
-	else: player_animation.play("Idle1_D")
+	if mynra.player_direction == Vector2.LEFT: mynra_animation.play("Idle_L")
+	elif mynra.player_direction == Vector2.RIGHT: mynra_animation.play("Idle_R")
+	else: mynra_animation.play("Idle1_D")
 
 #Handles transitions between scene
 func _on_next_transitions() -> void:
@@ -27,12 +23,12 @@ func _on_next_transitions() -> void:
 	#do that
 	Game_Input_Events.movement_input()
 	
-	if player.damaged:
+	if mynra.damaged:
 		transition.emit("Damaged")
 	elif !GlobalState.input_paused:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
-		elif Game_Input_Events.is_dashing() && player.get_parent().name != "Oblivion":
+		elif Game_Input_Events.is_dashing() && mynra.get_parent().name != "Oblivion":
 			transition.emit("Dash")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("Primary_Attack")
@@ -45,4 +41,4 @@ func _on_enter():
 
 #Runs upon exiting state
 func _on_exit():
-	player_animation.stop()
+	mynra_animation.stop()

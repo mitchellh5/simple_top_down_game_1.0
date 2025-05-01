@@ -1,16 +1,23 @@
 #Game_Input_Events
 class_name Game_Input_Events
 
-static var direction: Vector2		#Tracks cardinal directions
-static var input_vector: Vector2	#Tracks all 8 directions
+static var direction: Vector2							#Tracks cardinal directions
+static var input_vector: Vector2						#Tracks all 8 directions
+static var active_player: CharacterBody2D = null		#Tracks who the current active player is
+static var all_characters: Array[CharacterBody2D] = []	#Tracks all characters in current scene
 
 #Used to detect movement input from player, returning the cardinal direction for animation purposes
 static func movement_input() -> Vector2:
-	if Input.is_action_pressed("move_left"): direction = Vector2.LEFT
-	elif Input.is_action_pressed("move_right"): direction = Vector2.RIGHT
-	elif Input.is_action_pressed("move_up"): direction = Vector2.UP
-	elif Input.is_action_pressed("move_down"): direction = Vector2.DOWN
-	else: direction = Vector2.ZERO
+	active_player = ActiveCharacters.get_primary_character()
+	if active_player == null || GlobalState.input_paused:
+		direction = Vector2.ZERO
+	else:
+		if Input.is_action_pressed("move_left"): direction = Vector2.LEFT
+		elif Input.is_action_pressed("move_right"): direction = Vector2.RIGHT
+		elif Input.is_action_pressed("move_up"): direction = Vector2.UP
+		elif Input.is_action_pressed("move_down"): direction = Vector2.DOWN
+		else: direction = Vector2.ZERO
+	
 	
 	return direction
 
@@ -50,3 +57,6 @@ static func is_prim_attacking() -> bool:
 		return true
 	else:
 		return false
+
+static func swap_characters() -> void:
+	pass

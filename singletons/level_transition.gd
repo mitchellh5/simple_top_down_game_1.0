@@ -44,11 +44,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				pass
 
 func _on_body_entered(body: Node2D) -> void:
-	print("Body entered:", body.name, "; on layer(s):", body.collision_layer)
+	#print("Body entered:", body.name, "; on layer(s):", body.collision_layer)
 	if body.is_in_group("Player"):
 		in_range = true
 
 func _on_body_exited(body: Node2D) -> void:
-	print("Body exited:", body.name)
+	#print("Body exited:", body.name)
 	if body.is_in_group("Player"):
 		in_range = false

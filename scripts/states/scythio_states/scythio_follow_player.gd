@@ -28,22 +28,27 @@ func _on_physics_update(_delta: float) -> void:
 	
 	#Checks to make sure there are no arlithons left to be attacked, then, if not, follows the player
 	#if arlithons.is_empty():
-	var direction: Vector2 = scythio.player_body.global_position - scythio.global_position
-	var normalized_direction = direction.normalized()
+	var direction = scythio.to_local(scythio.nav.get_next_path_position()).normalized()
 	
 	scythio.velocity = direction.normalized() * scythio.speed
 	
 	#Used for playing the proper animation depending on what direction Scythio is moving (Right, Left, Down, or Up)
-	if abs(normalized_direction.x) > abs(normalized_direction.y):
-		if normalized_direction.x > 0:
+	if abs(direction.x) > abs(direction.y):
+		if direction.x > 0:
 			scythio_animation.play("Run_R")
 		else:
 			scythio_animation.play("Run_L")
 	else:
-		if normalized_direction.y > 0:
+		if direction.y > 0:
 			scythio_animation.play("Run_D")
 		else:
 			scythio_animation.play("Run_U")
+
+func _make_path():
+	scythio.nav.target_position = scythio.player_body.global_position
+	
+func _on_nav_timeout() -> void:
+	_make_path()
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -56,7 +61,7 @@ func _on_next_transitions() -> void:
 
 #Runs upon entering state
 func _on_enter():
-	pass
+	_make_path()
 
 #Runs upon exiting state
 func _on_exit():

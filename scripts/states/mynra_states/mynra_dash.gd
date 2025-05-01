@@ -2,8 +2,8 @@
 extends MynraState
 
 # Exports for player and animations
-@export var player: PlayerMynra
-@export var player_animation: AnimatedSprite2D
+@export var mynra: PlayerMynra
+@export var mynra_animation: AnimatedSprite2D
 
 # Exports for ghost node and dash parameters
 @export var ghost_node: PackedScene
@@ -23,15 +23,15 @@ var dash_velocity: Vector2 = Vector2.ZERO			#Velocity of the dash
 var distance_covered: float = 0.0					#Tracks how far the character has dashed so that they don't exceed the limit
 var start_position: Vector2 = Vector2.ZERO			#Tracks starting position before the dash, used for tracking "distanced traveled"
 
-#Updates every frame
-func _on_update(_delta: float) -> void:
-	player_animation.animation_finished.connect(_on_animation_finished)
+func _ready() -> void:
+	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
+	mynra_animation.animation_finished.connect(_on_animation_finished)
 
 #Updates ever frame
 func _on_physics_update(_delta: float) -> void:
 	
 	#Prevents player from dashing while in Oblivion
-	if player.get_parent().name == "Oblivion":
+	if mynra.get_parent().name == "Oblivion":
 		can_dash = false
 	
 	#Ensures the player attempted a dash and that they can currently dash
@@ -42,24 +42,24 @@ func _on_physics_update(_delta: float) -> void:
 	if is_animating:
 		
 		#Applies dash velocity
-		player.velocity = dash_velocity
-		var prev_position = player.position
-		player.move_and_slide()
+		mynra.velocity = dash_velocity
+		var prev_position = mynra.position
+		mynra.move_and_slide()
 		
 		#Accumulated distance traveled
-		distance_covered += player.position.distance_to(prev_position)
+		distance_covered += mynra.position.distance_to(prev_position)
 		
 		#Handles Ghosting effect
 		if can_ghost:
 			can_ghost = false
 			var ghost = ghost_node.instantiate()
-			ghost.set_property(player.position, $"../../AnimatedSprite2D".scale)
+			ghost.set_property(mynra.position, $"../../AnimatedSprite2D".scale)
 			if ghost is AnimatedSprite2D:
-				ghost.animation = player_animation.animation
+				ghost.animation = mynra_animation.animation
 				ghost.frame = frame
 			get_tree().current_scene.add_child(ghost)
 			
-			frame = (frame + 1) % player_animation.sprite_frames.get_frame_count(player_animation.animation)
+			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
 			start_ghost_timer()
 		
 		#Stops dash when target distance is reached
@@ -71,9 +71,9 @@ func dash():
 	if not is_animating:
 		is_animating = true
 		can_dash = false
-		player.damageable = false
+		mynra.damageable = false
 		
-		start_position = player.position
+		start_position = mynra.position
 		distance_covered = 0.0
 		
 		var input_velocity = Game_Input_Events.velocity_of_movement()
@@ -81,21 +81,21 @@ func dash():
 		if input_velocity != Vector2.ZERO:
 			dash_direction = input_velocity.normalized()
 		else:
-			dash_direction = player.player_direction.normalized()
+			dash_direction = mynra.player_direction.normalized()
 			
 		#Uses the separate dash_speed value in place of the typical player speed from the main script
 		dash_velocity = dash_direction * dash_speed
 		
 		#Plays the proper dash animation dependant on the direction the player is moving
-		match player.player_direction:
+		match mynra.player_direction:
 			Vector2.LEFT:
-				player_animation.play("Dash_L")
+				mynra_animation.play("Dash_L")
 			Vector2.RIGHT:
-				player_animation.play("Dash_R")
+				mynra_animation.play("Dash_R")
 			Vector2.UP:
-				player_animation.play("Dash_U")
+				mynra_animation.play("Dash_U")
 			_:
-				player_animation.play("Dash_D")
+				mynra_animation.play("Dash_D")
 		
 		#Puts the dash on cooldown
 		start_cooldown()
@@ -121,11 +121,11 @@ func _on_ghost_cooldown_finished():
 func _end_dash():
 	is_animating = false
 	# Optionally, reset the player's velocity or snap to a final position
-	player.velocity = Vector2.ZERO
+	mynra.velocity = Vector2.ZERO
 
 #Used the avoid issues with the dash ending prematurely due to unexpected state changes
 func _on_animation_finished():
-	if player_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
+	if mynra_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
 		is_animating = false
 
 #Runs when the state is entered
@@ -137,15 +137,15 @@ func _on_enter():
 func _on_exit():
 	frame = 0
 	is_animating = false
-	player.damageable = true
-	player.damaged = false
+	mynra.damageable = true
+	mynra.damaged = false
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	if is_animating:
 		return
 	
-	if player.damaged:
+	if mynra.damaged:
 		transition.emit("Damage")
 	else:
 		if Game_Input_Events.is_movement_input():

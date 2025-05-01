@@ -1,9 +1,11 @@
-[gd_scene load_steps=133 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=135 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
 [ext_resource type="Script" uid="uid://dwh8oss5u1qeb" path="res://scripts/states/scythio_states/scythio_state_machine.gd" id="2_baabh"]
+[ext_resource type="PackedScene" uid="uid://i51pf42ue06v" path="res://scenes/overlap/Hitbox.tscn" id="3_v1448"]
 [ext_resource type="Script" uid="uid://dfgnjyytlyiva" path="res://scripts/states/scythio_states/scythio_idle.gd" id="4_7q1pf"]
+[ext_resource type="PackedScene" uid="uid://bv03mvnn38bpe" path="res://scenes/overlap/Hurtbox.tscn" id="4_en0im"]
 [ext_resource type="Script" uid="uid://dqsrbns48plng" path="res://scripts/states/scythio_states/scythio_movement.gd" id="5_kp31m"]
 [ext_resource type="Script" uid="uid://qsqwb8xavcsi" path="res://scripts/states/scythio_states/scythio_follow_player.gd" id="6_u0y3l"]
 [ext_resource type="Script" uid="uid://drwpv50tyug4r" path="res://scripts/states/scythio_states/scythio_hunt_arlithons.gd" id="7_hufca"]
@@ -906,9 +908,12 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_e6jrn"]
 radius = 4.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rllml"]
-radius = 7.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v1448"]
+radius = 5.0
 height = 28.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v1448"]
+size = Vector2(22, 34)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bxg1q"]
 radius = 13.0
@@ -916,9 +921,6 @@ height = 42.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rou7o"]
 size = Vector2(56, 54)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_31j7n"]
-size = Vector2(20, 36)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnlrw"]
 size = Vector2(40, 42)
@@ -938,7 +940,9 @@ State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_flski")
-animation = &"Dash_U"
+animation = &"Prim_Atk_L"
+frame = 4
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -949,16 +953,29 @@ shape = SubResource("CircleShape2D_e6jrn")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
-[node name="HurtBox" type="Area2D" parent="."]
-unique_name_in_owner = true
+[node name="Hurtbox" parent="." instance=ExtResource("4_en0im")]
 visible = false
-collision_layer = 0
+collision_layer = 32
 collision_mask = 2
+monitoring = false
+monitorable = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
-position = Vector2(0, 5)
-shape = SubResource("CapsuleShape2D_rllml")
-debug_color = Color(0.992157, 0, 0.262745, 0.419608)
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2(0, 4)
+shape = SubResource("CapsuleShape2D_v1448")
+
+[node name="Hitbox" parent="." instance=ExtResource("3_v1448")]
+unique_name_in_owner = true
+collision_layer = 8
+collision_mask = 2
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+light_mask = 1
+visibility_layer = 1
+position = Vector2(-11, 0)
+shape = SubResource("RectangleShape2D_v1448")
 
 [node name="CollectionArea" type="Area2D" parent="." groups=["collect_life"]]
 visible = false
@@ -983,22 +1000,9 @@ collision_layer = 0
 shape = SubResource("RectangleShape2D_rou7o")
 debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 
-[node name="PrimAtkHB" type="Area2D" parent="."]
-unique_name_in_owner = true
-light_mask = 4
-visibility_layer = 4
-collision_layer = 8
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkHB"]
-light_mask = 2
-visibility_layer = 2
-position = Vector2(-10, 0)
-shape = SubResource("RectangleShape2D_31j7n")
-debug_color = Color(0.992157, 0, 0.262745, 0.419608)
-
 [node name="PrimAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
+visible = false
 light_mask = 2
 visibility_layer = 2
 collision_layer = 0
@@ -1038,11 +1042,14 @@ visibility_layer = 2
 shape = SubResource("CircleShape2D_ww6x6")
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
+visible = false
 target_position = Vector2(256, 0)
 collision_mask = 63
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
 one_shot = true
+
+[node name="Nav" type="Timer" parent="."]
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]
 script = ExtResource("2_baabh")
@@ -1100,3 +1107,9 @@ ghost_node = ExtResource("12_xwxx2")
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_prim_atk_cooldown_timeout"]
+[connection signal="timeout" from="Nav" to="StateMachine/FollowPlayer" method="_on_nav_timeout"]
+[connection signal="timeout" from="Nav" to="StateMachine/HuntArlithons" method="_on_nav_timeout"]
+[connection signal="timeout" from="Nav" to="StateMachine/CollectLife" method="_on_nav_timeout"]
+
+[editable path="Hurtbox"]
+[editable path="Hitbox"]

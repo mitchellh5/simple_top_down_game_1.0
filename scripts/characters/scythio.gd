@@ -5,13 +5,16 @@ class_name PlayerScythio
 #Connects to state machine
 @export var State_Machine : Node
 
+#Links the navigation2d node to the enemy for pathfinding
+@onready var nav: NavigationAgent2D = $NavigationAgent2D
+
 #Tracks current state of Scythio
 var current_state
  
 #Connects to AnimatedSprite2D for handling animations
 @onready var spriteScythio = $AnimatedSprite2D
  
-@onready var atk_area = get_node("%PrimAtkHB")					#Sets up primary attack hit box
+@onready var atk_area = get_node("%Hitbox")					#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
 @onready var sec_atk_range = get_node("%SecAtkRange")			#Sets up sec_attack range area for ensuring an enemy is in range
@@ -20,7 +23,6 @@ var current_state
 
 @onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown		#Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
 																#just watch the companion tear everything to shreds around them)
-
 
 #Variabls used for Life (secondary attack)
 var target_pos: Vector2												#Tracks the target position so that Life always spawns from Mynra's current position
@@ -48,6 +50,7 @@ var damaged = false				#Used for state transitions
 var damageable = true			#Used for i-frames
 var damage_rate : int			#Used for determining how much damage the player takes from an attack
 
+
 #Companion specific variabls
 var arlithon_in_prim_atk_range : bool
 var arlithon_in_sec_atk_range : bool
@@ -64,9 +67,8 @@ func _ready():
 	prim_atk_range.monitoring = true
 	sec_atk_range.monitoring = true
 	interact_area.monitoring = true
- 
- 
- 
+	
+	 
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
 	if !nodes_in_group.is_empty():
 		player_body = nodes_in_group[0] as CharacterBody2D
@@ -76,7 +78,17 @@ func _ready():
  #Runs every frame
 func _physics_process(delta: float) -> void:
 	var dir
+	
+	#if Input.is_action_just_pressed("Switch_Characters"):
+		#if player:
+			#player = false
+		#else:
+			#player = true
+		#print(self, "Has switched to player: ", player)
+	
 	if player:
+		set_collision_layer_value(1, true)
+		set_collision_mask_value(6, false)
 		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 		add_to_group("Player")
 		remove_from_group("Companion")
@@ -92,6 +104,8 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
+		set_collision_layer_value(1, false)
+		set_collision_mask_value(6, true)
 		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 		wall_min_slide_angle = 0
 		add_to_group("Companion")
@@ -117,24 +131,53 @@ func _physics_process(delta: float) -> void:
 			#elif body != target_arlithon && arlithon_in_sec_atk_range:
 				#arlithon_in_sec_atk_range = false
 
-		if ammo <= 0 && target_arlithon && collectable:
-			var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
-			var distance_from_target = target_arlithon.global_position - global_position
-
-			if distance_from_life > distance_from_target:
-				collecting_life = true
-			else:
-				collecting_life = false
-		elif ammo <= 0 && collectable:
-			collecting_life = true
-		elif ammo >= 1:
+		#if ammo <= 0 && target_arlithon && collectable:
+			#var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
+			#var distance_from_target = target_arlithon.global_position - global_position
+#
+			#if distance_from_life > distance_from_target:
+				#collecting_life = true
+			#else:
+				#collecting_life = false
+		#elif ammo <= 0 && collectable:
+			#collecting_life = true
+		#elif ammo >= 1:
+			#collecting_life = false
+		
+		player_body = get_tree().get_first_node_in_group("Player")
+		
+		var distance_from_player
+		var distance_from_life
+		var distance_from_arlithon
+		
+		if ammo <= 0:
+			distance_from_life = global_position.distance_to(get_tree().root.find_child("Life", true, false).global_position)
+		else:
+			distance_from_life = 10000000000
+		
+		if target_arlithon:
+			distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
+		else:
+			distance_from_arlithon = 10000000000
+		
+		if distance_from_arlithon < distance_from_life:
+			nav.target_position = target_arlithon.global_position
 			collecting_life = false
+		elif ammo <= 0:
+			collecting_life = true
+			nav.target_position = get_tree().root.find_child("Life", true, false).global_position
+		elif player_body:
+			collecting_life = false
+			nav.target_position = player_body.global_position
+		
+		
  
  	#print(arlithon_in_prim_atk_range)
  	#print(target_arlithon)
  	#_check_player_range()
- 
- 	#angle = rad_to_deg(dir.angle())
+ 	
+	if player:
+		angle = rad_to_deg(dir.angle())
 
 func _check_los_enemy() -> bool:
 	var collider = los.get_collider()
@@ -168,11 +211,6 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 		#print("Mission failed, we'll get 'em next time.")
 		arlithon_in_sec_atk_range = false
  
-#func _on_prim_atk_range_body_entered(body: Node2D) -> void:
-	#if body == target_arlithon:
-		##print("Enemy spotted!")
-		#arlithon_in_prim_atk_range = true
- 
 func collect_life():
 	if collectable:
 		#print("Life collected")
@@ -183,13 +221,6 @@ func _secondary_atk_cd():
 	sec_atk_cooldown = true
 	await get_tree().create_timer(0.5).timeout
 	sec_atk_cooldown = false
-
-#func _on_collection_area_body_entered(body: Node2D) -> void:
-	#if body.has_method("_life_collected") && !sec_atk_cooldown:
-		#if body.collectable:
-			#body._life_collected()
-			#ammo = 1
-		
 
 #Handles dialogue (my heaven above, this is going to look like a freaking nightmare fairly
 #soon, and I am horrified at the thought of trying to trouble shoot it when that happens.)

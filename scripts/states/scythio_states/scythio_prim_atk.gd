@@ -10,8 +10,8 @@ var is_animating: bool = false
 var atk_on_cooldown: bool = false
 var atk_vel: Vector2 = Vector2.ZERO
 
-#Runs every frame
-func _on_update(_delta: float) -> void:
+func _ready() -> void:
+	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
 	scythio_animation.animation_finished.connect(_on_animation_finished)
 
 #Runs every frame

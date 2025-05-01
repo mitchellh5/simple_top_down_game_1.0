@@ -1,14 +1,14 @@
 #MynraSecondaryAttack
 extends MynraState
 
-@export var player: PlayerMynra
-@export var player_animation: AnimatedSprite2D
+@export var mynra: PlayerMynra
+@export var mynra_animation: AnimatedSprite2D
 
 var is_animating: bool = false
 
-#Runs every frame
-func _on_update(_delta: float) -> void:
-	player_animation.animation_finished.connect(_on_animation_finished)
+func _ready() -> void:
+	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
+	mynra_animation.animation_finished.connect(_on_animation_finished)
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
@@ -18,7 +18,7 @@ func _on_physics_update(_delta: float) -> void:
 #Handles throwing Famine
 func throw_famine():
 	# Check if player is animating and has ammo
-	if !is_animating and player.ammo > 0:
+	if !is_animating and mynra.ammo > 0:
 		is_animating = true
 
 		# Detect direction for animation and aiming
@@ -30,54 +30,54 @@ func throw_famine():
 			throw_direction = Vector2(x_dir, y_dir).normalized()
 		else:
 			# Use mouse position if no controller input
-			var mouse_pos = player.get_global_mouse_position()
-			throw_direction = (mouse_pos - player.global_position).normalized()
+			var mouse_pos = mynra.get_global_mouse_position()
+			throw_direction = (mouse_pos - mynra.global_position).normalized()
 
 		# Ensure a valid throw direction
 		if throw_direction.length() > 0:
 			# Determine the angle for animation
 			var throw_angle = rad_to_deg(throw_direction.angle())
 			if throw_angle >= -45 and throw_angle < 45:
-				player_animation.play("Sec_Atk_R")
+				mynra_animation.play("Sec_Atk_R")
 			elif throw_angle >= 45 and throw_angle < 135:
-				player_animation.play("Sec_Atk_D")
+				mynra_animation.play("Sec_Atk_D")
 			elif throw_angle >= -135 and throw_angle < -45:
-				player_animation.play("Sec_Atk_U")
+				mynra_animation.play("Sec_Atk_U")
 			else:
-				player_animation.play("Sec_Atk_L")
+				mynra_animation.play("Sec_Atk_L")
 
 			# Instantiate and throw Famine
-			var famine = player.FAMINE_PATH.instantiate()
-			famine.aim_famine(player.global_position, player.global_position + throw_direction * 100)  # Apply direction
+			var famine = mynra.FAMINE_PATH.instantiate()
+			famine.aim_famine(mynra.global_position, mynra.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(famine)
 
 			# Update ammo and manage collectability
-			player.ammo = 0
-			player.collectable = false
+			mynra.ammo = 0
+			mynra.collectable = false
 			await get_tree().create_timer(0.05).timeout
-			player.collectable = true
+			mynra.collectable = true
 			
 		else:
-			if player_animation.animation == "Idle_R":
+			if mynra_animation.animation == "Idle_R":
 				throw_direction = Vector2(1, 0)
-				player_animation.play("Sec_Atk_R")
-			elif player_animation.animation in ["Idle1_D", "Idle2_D", "Idle3_D"]:
+				mynra_animation.play("Sec_Atk_R")
+			elif mynra_animation.animation in ["Idle1_D", "Idle2_D", "Idle3_D"]:
 				throw_direction = Vector2(0, 1)
-				player_animation.play("Sec_Atk_D")
+				mynra_animation.play("Sec_Atk_D")
 			else:
 				throw_direction = Vector2(-1, 0)
-				player_animation.play("Sec_Atk_L")
+				mynra_animation.play("Sec_Atk_L")
 			
 			# Instantiate and throw Famine
-			var famine = player.FAMINE_PATH.instantiate()
-			famine.aim_famine(player.global_position, player.global_position + throw_direction * 100)  # Apply direction
+			var famine = mynra.FAMINE_PATH.instantiate()
+			famine.aim_famine(mynra.global_position, mynra.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(famine)
 
 			# Update ammo and manage collectability
-			player.ammo = 0
-			player.collectable = false
+			mynra.ammo = 0
+			mynra.collectable = false
 			await get_tree().create_timer(0.05).timeout
-			player.collectable = true
+			mynra.collectable = true
 			
 	
 
@@ -86,7 +86,7 @@ func _on_next_transitions() -> void:
 	if is_animating:
 		return
 	
-	if player.damaged:
+	if mynra.damaged:
 		transition.emit("Damaged")
 	else:
 		if Game_Input_Events.is_movement_input():
@@ -100,7 +100,7 @@ func _on_next_transitions() -> void:
 
 #Ensures the animation has finished to avoid overlapping animations
 func _on_animation_finished():
-	if player_animation.animation in ["Sec_Atk_R", "Sec_Atk_L", "Sec_Atk_U", "Sec_Atk_D"]:
+	if mynra_animation.animation in ["Sec_Atk_R", "Sec_Atk_L", "Sec_Atk_U", "Sec_Atk_D"]:
 		is_animating = false
 
 #Runs when the state is entered

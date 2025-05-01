@@ -45,6 +45,14 @@ func _ready():
 func _physics_process(delta: float) -> void:	
 	#Used to track direction Mynra is facing (based on player input method)
 	var dir
+	
+	#if Input.is_action_just_pressed("Switch_Characters"):
+		#if player:
+			#player = false
+		#else:
+			#player = true
+		#print(self, "Has switched to player: ", player)
+	
 	if player:
 		add_to_group("Player")
 		remove_from_group("Companion")
@@ -66,7 +74,8 @@ func _physics_process(delta: float) -> void:
 		#print("NPC")
 	
 	#Is the angle at which the player is facing
-	angle = rad_to_deg(dir.angle())
+	if player:
+		angle = rad_to_deg(dir.angle())
 
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):

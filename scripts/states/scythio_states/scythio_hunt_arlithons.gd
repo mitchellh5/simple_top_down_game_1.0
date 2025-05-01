@@ -9,10 +9,6 @@ var arlithons						#Scans current scene to check for any arlithons currently in 
 var one_still_lives : bool = true
 
 #Runs every frame
-func _on_update(_delta: float) -> void:
-	pass
-
-#Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
@@ -29,18 +25,17 @@ func _on_physics_update(_delta: float) -> void:
 	for body in arlithons:
 		# If body is alive and is the current target, move toward it.
 		if body.is_alive and body == scythio.target_arlithon:
-			var direction: Vector2 = scythio.target_arlithon.global_position - scythio.global_position
-			var normalized_direction = direction.normalized()
-			scythio.velocity = normalized_direction * scythio.speed
+			var direction = scythio.to_local(scythio.nav.get_next_path_position()).normalized()
+			scythio.velocity = direction * scythio.speed
 			
 			# Play the proper animation based on movement direction
-			if abs(normalized_direction.x) > abs(normalized_direction.y):
-				if normalized_direction.x > 0:
+			if abs(direction.x) > abs(direction.y):
+				if direction.x > 0:
 					scythio_animation.play("Run_R")
 				else:
 					scythio_animation.play("Run_L")
 			else:
-				if normalized_direction.y > 0:
+				if direction.y > 0:
 					scythio_animation.play("Run_D")
 				else:
 					scythio_animation.play("Run_U")
@@ -74,6 +69,12 @@ func _are_they_all_dead() -> bool:
 			return false
 	return true
 
+func _make_path():
+	scythio.nav.target_position = scythio.target_arlithon.global_position
+
+func _on_nav_timeout() -> void:
+	_make_path()
+
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
@@ -95,7 +96,7 @@ func _on_next_transitions() -> void:
 	
 	if scythio.ammo <= 0 && scythio.collecting_life:
 		transition.emit("CollectLife")
-	elif arlithons.is_empty() || !one_still_lives || scythio.target_arlithon == $"<Freed Object>":
+	elif arlithons.is_empty() || !one_still_lives:
 		transition.emit("FollowPlayer")
 	elif (scythio.arlithon_in_prim_atk_range || distance <= 25) && scythio.target_arlithon.is_alive:
 		transition.emit("PrimaryAttack")
@@ -110,6 +111,8 @@ func _on_enter():
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	for body in arlithons:
 		body.dead.connect(_on_target_death)
+	
+	_make_path()
 
 #Runs upon exiting state
 func _on_exit():

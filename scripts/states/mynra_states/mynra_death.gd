@@ -2,29 +2,29 @@
 extends MynraState
 
 #Exports Mynra and her animation node
-@export var player: PlayerMynra
-@export var player_animation: AnimatedSprite2D
+@export var mynra: PlayerMynra
+@export var mynra_animation: AnimatedSprite2D
 
 var is_animating: bool = false
 var has_died: bool = false
 
-#Runs every frame
-func _on_update(_delta: float) -> void:
-	player_animation.animation_finished.connect(_on_animation_finished)
+func _ready() -> void:
+	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
+	mynra_animation.animation_finished.connect(_on_animation_finished)
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	#Death animation
-	if player.health <= 0 && !has_died:
+	if mynra.health <= 0 && !has_died:
 		fatality()
 
 func fatality():
 	if !is_animating:
 		is_animating = true
 		
-		player.damageable = false
-		if player.player_direction == Vector2.LEFT: player_animation.play("Death_L")
-		else: player_animation.play("Death_R")
+		mynra.damageable = false
+		if mynra.player_direction == Vector2.LEFT: mynra_animation.play("Death_L")
+		else: mynra_animation.play("Death_R")
 		
 		has_died = true
 
@@ -33,7 +33,7 @@ func _on_next_transitions() -> void:
 	pass
 
 func _on_animation_finished():
-	if player_animation.animation in ["Death_R", "Death_L"]:
+	if mynra_animation.animation in ["Death_R", "Death_L"]:
 		is_animating = false
 
 #Runs upon entering state

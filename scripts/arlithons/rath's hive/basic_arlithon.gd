@@ -87,11 +87,6 @@ func _physics_process(delta: float) -> void:
 		#$Test_Arlithon.flip_h = false
 		set_facing_left(false)
 	
-	#for body in $Character_Detection.get_overlapping_bodies():
-		#if body.is_in_group("Player"):
-			#player_body = body
-			#player_in_range = true
-	
 	player_body = get_tree().get_first_node_in_group("Player")
 	companion_body = get_tree().get_first_node_in_group("Companion")
 	

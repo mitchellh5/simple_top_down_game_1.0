@@ -33,7 +33,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		if collider.is_in_group("walls") || collider.is_in_group("Arlithons"):
 			if collider.has_method("take_damage") && !freeze:
 				collider.take_damage()
-			freeze = true
+			call_deferred("set_freeze_enabled", true)
 			linear_velocity = Vector2.ZERO
 	
 	for area in collection_area.get_overlapping_areas():

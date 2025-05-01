@@ -21,8 +21,7 @@ var dash_velocity: Vector2 = Vector2.ZERO			#Velocity of the dash
 var distance_covered: float = 0.0					#Tracks how far the character has dashed so that they don't exceed the limit
 var start_position: Vector2 = Vector2.ZERO			#Tracks starting position before the dash, used for tracking "distanced traveled"
 
-#Runs every frame
-func _on_update(_delta: float) -> void:
+func _ready() -> void:
 	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
 	scythio_animation.animation_finished.connect(_on_animation_finished)
 

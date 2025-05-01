@@ -22,22 +22,27 @@ func _on_physics_update(_delta: float) -> void:
 		transition.emit("HuntArlithons")
 
 func _collect_life():
-	var direction: Vector2 = get_tree().root.find_child("Life", true, false).global_position - scythio.global_position
-	var normalized_direction = direction.normalized()
+	var direction = scythio.to_local(scythio.nav.get_next_path_position()).normalized()
 	
-	scythio.velocity = direction.normalized() * scythio.speed
+	scythio.velocity = direction * scythio.speed
 	
 	#Used for playing the proper animation depending on what direction Scythio is moving (Right, Left, Down, or Up)
-	if abs(normalized_direction.x) > abs(normalized_direction.y):
-		if normalized_direction.x > 0:
+	if abs(direction.x) > abs(direction.y):
+		if direction.x > 0:
 			scythio_animation.play("Run_R")
 		else:
 			scythio_animation.play("Run_L")
 	else:
-		if normalized_direction.y > 0:
+		if direction.y > 0:
 			scythio_animation.play("Run_D")
 		else:
 			scythio_animation.play("Run_U")
+
+func _make_path():
+	scythio.nav.target_position = scythio.get_tree().root.find_chukd("Life", true, false).global_position
+
+func _on_nav_timeout() -> void:
+	pass # Replace with function body.
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:

@@ -1,8 +1,9 @@
-[gd_scene load_steps=37 format=4 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=38 format=4 uid="uid://dkb8pkean1gw8"]
 
 [ext_resource type="Texture2D" uid="uid://b45s2k4e62s1f" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset (Coating).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="Texture2D" uid="uid://dksecr0fj6f74" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png" id="2_nf421"]
+[ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_fbjvc"]
 [ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Pryd's_Basic.tscn" id="4_7aavk"]
 [ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn" id="6_fbjvc"]
 
@@ -356,8 +357,11 @@ tile_set = SubResource("TileSet_fbjvc")
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
+[node name="PlayerScythio" parent="." instance=ExtResource("3_fbjvc")]
+position = Vector2(280, 249)
+
 [node name="PlayerMynra" parent="." instance=ExtResource("2_fbjvc")]
-position = Vector2(218, 298)
+position = Vector2(429, 322)
 
 [node name="Arlithons" type="Node" parent="."]
 
