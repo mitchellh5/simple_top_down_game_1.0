@@ -55,9 +55,9 @@ func secondary_attack_player():
 				scythio_animation.play("Sec_Atk_L")
 
 			# Instantiate and throw Famine
-			var famine = scythio.LIFE_PATH.instantiate()
-			famine.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
-			get_parent().add_child(famine)
+			var life = scythio.LIFE_PATH.instantiate()
+			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			get_parent().add_child(life)
 
 			# Update ammo and manage collectability
 			scythio.ammo = 0
@@ -154,10 +154,20 @@ func _on_prim_atk_cooldown_timeout() -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
+	if is_animating:
+		return
+	
 	if scythio.damaged:
 		transition.emit("Damaged")
 	elif scythio.player:
-		pass
+		if Game_Input_Events.is_movement_input():
+			transition.emit("Movement")
+		elif Game_Input_Events.is_prim_attacking():
+			transition.emit("Primary_Attack")
+		elif Game_Input_Events.is_dashing():
+			transition.emit("Dash")
+		elif !Game_Input_Events.is_movement_input():
+			transition.emit("Idle")
 	else:
 		if arlithons.is_empty() && !scythio.at_player:
 			transition.emit("FollowPlayer")

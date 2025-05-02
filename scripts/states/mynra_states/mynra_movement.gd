@@ -8,23 +8,26 @@ extends MynraState
 #Runs each frame
 func _on_physics_update(_delta: float) -> void:
 	#Gets player input from the "Game_Input_Events" class
-	var direction: Vector2 = Game_Input_Events.movement_input()					#Used to determine animation direction (cardinal)
-	var input_velocity: Vector2 = Game_Input_Events.velocity_of_movement()		#Used to determine movement velocity (8-directional)
-	
-	#Plays the appropriate animation based on the player's current movement direction
-	if direction == Vector2.LEFT: mynra_animation.play("Run_L")
-	elif direction == Vector2.RIGHT: mynra_animation.play("Run_R")
-	elif direction == Vector2.UP: mynra_animation.play("Run_U")
-	elif direction == Vector2.DOWN: mynra_animation.play("Run_D")
-	
-	#Tracks current movement direction and stores it so that other
-	#states (such as idle) animate properly when they are switched to
-	if direction != Vector2.ZERO:
-		mynra.player_direction = direction
-	
-	#Handles actual player movement
-	mynra.velocity = input_velocity * mynra.speed
-	mynra.move_and_slide()
+	if mynra.player:
+		var direction: Vector2 = Game_Input_Events.movement_input()					#Used to determine animation direction (cardinal)
+		var input_velocity: Vector2 = Game_Input_Events.velocity_of_movement()		#Used to determine movement velocity (8-directional)
+		
+		#Plays the appropriate animation based on the player's current movement direction
+		if direction == Vector2.LEFT: mynra_animation.play("Run_L")
+		elif direction == Vector2.RIGHT: mynra_animation.play("Run_R")
+		elif direction == Vector2.UP: mynra_animation.play("Run_U")
+		elif direction == Vector2.DOWN: mynra_animation.play("Run_D")
+		
+		#Tracks current movement direction and stores it so that other
+		#states (such as idle) animate properly when they are switched to
+		if direction != Vector2.ZERO:
+			mynra.player_direction = direction
+		
+		#Handles actual player movement
+		mynra.velocity = input_velocity * mynra.speed
+		mynra.move_and_slide()
+	else:
+		transition.emit("Idle")
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:

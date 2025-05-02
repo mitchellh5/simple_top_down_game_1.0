@@ -35,8 +35,10 @@ func _on_physics_update(_delta: float) -> void:
 		can_dash = false
 	
 	#Ensures the player attempted a dash and that they can currently dash
-	if Input.is_action_pressed("dash") and can_dash:
+	if mynra.player && Input.is_action_pressed("dash") && can_dash:
 		dash()
+	else:
+		transition.emit("Idle")
 	
 	#Makes sure that a dash is currently in progress
 	if is_animating:

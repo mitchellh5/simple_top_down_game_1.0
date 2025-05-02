@@ -12,8 +12,10 @@ func _ready() -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	if Input.is_action_pressed("secondary_attack"):
+	if mynra.player && Input.is_action_pressed("secondary_attack"):
 		throw_famine()
+	else:
+		transition.emit("Idle")
 
 #Handles throwing Famine
 func throw_famine():

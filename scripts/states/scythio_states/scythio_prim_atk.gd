@@ -19,8 +19,10 @@ func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
 	if scythio.player && Input.is_action_pressed("primary_attack"):
+		print("Shoulda swung")
 		primary_attack_player()
 	elif !scythio.player && scythio.arlithon_in_prim_atk_range:
+		print("I think I'm an NPC")
 		primary_attack_companion()
 		
 	
@@ -59,28 +61,28 @@ func primary_attack_player():
 		#------------------------------------------------------------------------------------
 		if Input.get_connected_joypads().size() > 0:
 			if scythio.player_direction == Vector2.LEFT:
-				scythio_animation.play("Prim_Atk1_L")
+				scythio_animation.play("Prim_Atk_L")
 				scythio.atk_area.rotation_degrees = 0
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif scythio.player_direction == Vector2.RIGHT:
-				scythio_animation.play("Prim_Atk1_R")
+				scythio_animation.play("Prim_Atk_R")
 				scythio.atk_area.rotation_degrees = 180
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif scythio.player_direction == Vector2.DOWN:
-				scythio_animation.play("Prim_Atk1_D")
+				scythio_animation.play("Prim_Atk_D")
 				scythio.atk_area.rotation_degrees = -90
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				scythio_animation.play("Prim_Atk1_U")
+				scythio_animation.play("Prim_Atk_U")
 				scythio.atk_area.rotation_degrees = 90
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -89,7 +91,7 @@ func primary_attack_player():
 		
 		else:
 			if scythio.angle >= -45 && scythio.angle < 45:
-				scythio_animation.play("Prim_Atk1_R")
+				scythio_animation.play("Prim_Atk_R")
 				scythio.atk_area.rotation_degrees = 180
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -97,7 +99,7 @@ func primary_attack_player():
 						body.take_damage()
 		
 			elif scythio.angle >= 45 && scythio.angle < 135:
-				scythio_animation.play("Prim_Atk1_D")
+				scythio_animation.play("Prim_Atk_D")
 				scythio.atk_area.rotation_degrees = -90
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -105,14 +107,14 @@ func primary_attack_player():
 						body.take_damage()
 		
 			elif scythio.angle >= -135 && scythio.angle < -45:
-				scythio_animation.play("Prim_Atk1_U")
+				scythio_animation.play("Prim_Atk_U")
 				scythio.atk_area.rotation_degrees = 90
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				scythio_animation.play("Prim_Atk1_L")
+				scythio_animation.play("Prim_Atk_L")
 				scythio.atk_area.rotation_degrees = 0
 				var bodies = scythio.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -160,10 +162,20 @@ func _on_prim_atk_cooldown_timeout() -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
+	if is_animating:
+		return
+	
 	if scythio.damaged:
 		transition.emit("Damaged")
 	elif scythio.player:
-		pass
+		if Game_Input_Events.is_movement_input():
+			transition.emit("Movement")
+		elif Game_Input_Events.is_sec_attacking():
+			transition.emit("SecondaryAttack")
+		elif Game_Input_Events.is_dashing():
+			transition.emit("Dash")
+		elif !Game_Input_Events.is_movement_input():
+			transition.emit("Idle")
 	else:
 		if arlithons.is_empty() && !scythio.at_player:
 			transition.emit("FollowPlayer")

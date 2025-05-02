@@ -28,8 +28,8 @@ var current_state
 var target_pos: Vector2												#Tracks the target position so that Life always spawns from Mynra's current position
 var throw_dir: Vector2												#Tracks the direction we want to throw Life in
 var enemy_spotted: bool = false										#Ensures the enemy is within line of sight
+var life_spotted: bool = false										#Ensures life is in los for dashing purposes
 const LIFE_PATH = preload("res://scenes/weapons/life.tscn")			#Preloads Life as a scene so that it can be thrown and caught by Mynra
-
 
 #Tracks if Scythio is the current player character, or a companion (set to false by default)
 @onready var player = false
@@ -38,6 +38,8 @@ const LIFE_PATH = preload("res://scenes/weapons/life.tscn")			#Preloads Life as 
 var arlithon_in_atk_range: bool = false		#Used for tracking if player is in attack range
 var player_body : CharacterBody2D			#Represents the player body
 var at_player : bool = false				#Tracks when this is close enough to the player to start idling when in follow mode
+var player_spotted: bool = false			#Used to make sure the player is in line of sight can be dashed towards (prevents
+											#the character from repeatedly dashing into a wall as they attempt to reach the player)
 
 #Basic variables for player
 var speed = 200					#Sets speed of player movement
@@ -79,19 +81,16 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	var dir
 	
-	#if Input.is_action_just_pressed("Switch_Characters"):
-		#if player:
-			#player = false
-		#else:
-			#player = true
+	if Input.is_action_just_pressed("Switch_Characters"):
+		if player:
+			player = false
+		else:
+			player = true
 		#print(self, "Has switched to player: ", player)
+		_character_swap()
 	
 	if player:
-		set_collision_layer_value(1, true)
-		set_collision_mask_value(6, false)
-		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
-		add_to_group("Player")
-		remove_from_group("Companion")
+		#print("I'm a player")
 		if Input.get_connected_joypads().size() > 0:
 			var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 			var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
@@ -104,12 +103,7 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
-		set_collision_layer_value(1, false)
-		set_collision_mask_value(6, true)
-		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-		wall_min_slide_angle = 0
-		add_to_group("Companion")
-		remove_from_group("Player")
+		#print("Im an NPC")
 		move_and_slide()
 		#print("NPC")
 		for body in $PrimAtkRange.get_overlapping_bodies():
@@ -130,19 +124,6 @@ func _physics_process(delta: float) -> void:
 					arlithon_in_sec_atk_range = true
 			#elif body != target_arlithon && arlithon_in_sec_atk_range:
 				#arlithon_in_sec_atk_range = false
-
-		#if ammo <= 0 && target_arlithon && collectable:
-			#var distance_from_life = get_tree().root.find_child("Life", true, false).global_position - global_position
-			#var distance_from_target = target_arlithon.global_position - global_position
-#
-			#if distance_from_life > distance_from_target:
-				#collecting_life = true
-			#else:
-				#collecting_life = false
-		#elif ammo <= 0 && collectable:
-			#collecting_life = true
-		#elif ammo >= 1:
-			#collecting_life = false
 		
 		player_body = get_tree().get_first_node_in_group("Player")
 		
@@ -164,25 +145,56 @@ func _physics_process(delta: float) -> void:
 			nav.target_position = target_arlithon.global_position
 			collecting_life = false
 		elif ammo <= 0:
+			_check_los_life()
 			collecting_life = true
 			nav.target_position = get_tree().root.find_child("Life", true, false).global_position
 		elif player_body:
+			_check_los_player()
 			collecting_life = false
 			nav.target_position = player_body.global_position
 		
-		
- 
- 	#print(arlithon_in_prim_atk_range)
- 	#print(target_arlithon)
- 	#_check_player_range()
+	#print(arlithon_in_prim_atk_range)
+	#print(target_arlithon)
+	#_check_player_range()
  	
 	if player:
 		angle = rad_to_deg(dir.angle())
+
+func _character_swap() -> void:
+	if player:
+		set_collision_layer_value(1, true)
+		set_collision_mask_value(6, false)
+		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+		add_to_group("Player")
+		remove_from_group("Companion")
+	else:
+		set_collision_layer_value(1, false)
+		set_collision_mask_value(6, true)
+		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+		wall_min_slide_angle = 0
+		add_to_group("Companion")
+		remove_from_group("Player")
 
 func _check_los_enemy() -> bool:
 	var collider = los.get_collider()
 	if collider and collider.is_in_group("Arlithons"):
 		enemy_spotted = true
+		return true
+	else:
+		return false
+
+func _check_los_player() -> bool:
+	var collider = los.get_collider()
+	if collider && collider.is_in_group("Player"):
+		player_spotted = true
+		return true
+	else:
+		return false
+
+func _check_los_life() -> bool:
+	var collider = los.get_collider()
+	if collider && collider.is_in_group("Player"):
+		life_spotted = true
 		return true
 	else:
 		return false
@@ -210,7 +222,13 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 	if body == target_arlithon:
 		#print("Mission failed, we'll get 'em next time.")
 		arlithon_in_sec_atk_range = false
- 
+
+#Used for transitioning to the "Damaged" state when Mynra takes damage
+func lose_health(dmg):
+	damage_rate = dmg
+	if damageable:
+		damaged = true 
+
 func collect_life():
 	if collectable:
 		#print("Life collected")

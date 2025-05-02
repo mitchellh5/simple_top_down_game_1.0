@@ -46,16 +46,14 @@ func _physics_process(delta: float) -> void:
 	#Used to track direction Mynra is facing (based on player input method)
 	var dir
 	
-	#if Input.is_action_just_pressed("Switch_Characters"):
-		#if player:
-			#player = false
-		#else:
-			#player = true
-		#print(self, "Has switched to player: ", player)
+	if Input.is_action_just_pressed("Switch_Characters"):
+		if player:
+			player = false
+		else:
+			player = true
+		_character_swap()
 	
 	if player:
-		add_to_group("Player")
-		remove_from_group("Companion")
 		#print("Player")
 		if Input.get_connected_joypads().size() > 0:
 			var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
@@ -69,13 +67,27 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
-		add_to_group("Companion")
-		remove_from_group("Player")
+		pass
 		#print("NPC")
 	
 	#Is the angle at which the player is facing
 	if player:
 		angle = rad_to_deg(dir.angle())
+
+func _character_swap() -> void:
+	if player:
+		set_collision_layer_value(1, true)
+		set_collision_mask_value(6, false)
+		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+		add_to_group("Player")
+		remove_from_group("Companion")
+	else:
+		set_collision_layer_value(1, false)
+		set_collision_mask_value(6, true)
+		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+		wall_min_slide_angle = 0
+		add_to_group("Companion")
+		remove_from_group("Player")
 
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):

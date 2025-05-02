@@ -14,8 +14,10 @@ func _ready() -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	if Input.is_action_pressed("primary_attack"):
+	if mynra.player && Input.is_action_pressed("primary_attack"):
 		primary_attack()
+	else:
+		transition.emit("Idle")
 	
 	if is_animating:
 		#Gets input velocity from the "Game_Input_Events" class,

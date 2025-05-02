@@ -23,8 +23,8 @@ func _on_physics_update(_delta: float) -> void:
 	elif !scythio.player && scythio.get_parent().name != "Oblivion":
 		var player = get_tree().get_first_node_in_group("Player")
 		scythio.velocity = Vector2.ZERO
-		if player.player_direction == Vector2.LEFT: anim_name = "Idle_L"
-		elif player.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
 		else: anim_name = "Idle_D"
 	else:
 		scythio.velocity = Vector2.ZERO
@@ -53,6 +53,7 @@ func _on_next_transitions() -> void:
 	#and if you remove it from the idle state the machine breaks, so don't
 	#do that
 	Game_Input_Events.movement_input()
+	
 	if scythio.damaged:
 		transition.emit("Damaged")
 	else:
@@ -63,11 +64,14 @@ func _on_next_transitions() -> void:
 			elif Game_Input_Events.is_dashing():
 				transition.emit("Dash")
 			elif Game_Input_Events.is_prim_attacking():
-				transition.emit("Primary_Attack")
+				print("Tried to swing")
+				transition.emit("PrimaryAttack")
 			elif Game_Input_Events.is_sec_attacking():
-				transition.emit("Secondary_Attack")
+				print("Tried to throw")
+				transition.emit("SecondaryAttack")
 		#States transitions used when this is the current companion
 		elif !scythio.player && scythio.get_parent().name != "Oblivion":
+			#print("I'm an NPC")
 			var arlithons = get_tree().get_nodes_in_group("arlithons")
 			if !arlithons.is_empty() || scythio.target_arlithon:
 				transition.emit("HuntArlithons")
