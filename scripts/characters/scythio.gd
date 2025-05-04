@@ -81,7 +81,7 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	var dir
 	
-	if Input.is_action_just_pressed("Switch_Characters"):
+	if Input.is_action_just_pressed("Switch_Characters") && !GlobalState.in_combat && GlobalState.scene != "Oblivion":
 		if player:
 			player = false
 		else:
@@ -227,7 +227,8 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 func lose_health(dmg):
 	damage_rate = dmg
 	if damageable:
-		damaged = true 
+		damaged = true
+		print(health)
 
 func collect_life():
 	if collectable:

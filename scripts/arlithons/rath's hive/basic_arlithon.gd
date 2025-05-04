@@ -35,7 +35,7 @@ var facing_left = false						#mutations can animate properly in the same directi
 signal modulating(is_red: bool)				#Used to check when the arlithon has modulated to red to indicate it has
 var red = false								#been damaged to stay consistent with the mutations (namely the stinger)
 
-var health: int = 3							#Used for tracking health of arlithon
+var health: int = 20							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
 var player_body: CharacterBody2D			#Represents the player body
 var companion_body: CharacterBody2D			#Represents the companion's body
@@ -90,6 +90,9 @@ func _physics_process(delta: float) -> void:
 	player_body = get_tree().get_first_node_in_group("Player")
 	companion_body = get_tree().get_first_node_in_group("Companion")
 	
+	#print("Player:", player_body)
+	#print("NPC:", companion_body)
+	
 	var distance_from_player = global_position.distance_to(player_body.global_position)
 	var distance_from_companion
 	if companion_body:
@@ -114,6 +117,11 @@ func _physics_process(delta: float) -> void:
 		if area.get_parent().is_in_group("Player"):
 			target_body = area.get_parent()
 			body_in_atk_range = true
+		elif area.get_parent().is_in_group("Companion"):
+			target_body = area.get_parent()
+			body_in_atk_range = true
+		else:
+			body_in_atk_range = false
 	
 	_check_mutations()
 	_is_being_targeted()

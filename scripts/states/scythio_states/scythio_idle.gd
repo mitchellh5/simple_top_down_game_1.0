@@ -26,13 +26,13 @@ func _on_physics_update(_delta: float) -> void:
 		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
 		else: anim_name = "Idle_D"
-	else:
-		scythio.velocity = Vector2.ZERO
-		if waiting:
-			scythio_animation.pause()
-		else:
-			scythio_animation.play("Idle_L")
-			_waiting()
+	#else:
+		#scythio.velocity = Vector2.ZERO
+		#if waiting:
+			#scythio_animation.pause()
+		#else:
+			#scythio_animation.play("Idle_L")
+			#_waiting()
 		
 	if scythio_animation.animation != anim_name && scythio.get_parent().name != "Oblivion":
 		#print(anim_name)

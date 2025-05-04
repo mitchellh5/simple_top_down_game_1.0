@@ -44,15 +44,15 @@ func _on_next_transitions() -> void:
 	
 	if scythio.damaged:
 		transition.emit("Damaged")
-	elif !GlobalState.input_paused:
-		if Game_Input_Events.is_dashing() && scythio.get_parent().name != "Oblivion":
-			transition.emit("Dash")
+	else:
+		if Game_Input_Events.is_sec_attacking():
+			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("PrimaryAttack")
-		elif Game_Input_Events.is_sec_attacking():
-			transition.emit("SecondaryAttack")
-		elif Game_Input_Events.is_movement_input():
-			transition.emit("Movement")
+		elif !Game_Input_Events.is_movement_input():
+			transition.emit("Idle")
+		elif Game_Input_Events.is_dashing() && scythio.get_parent().name != "Oblivion":
+			transition.emit("Dash")
 
 #Runs upon entering state
 func _on_enter():

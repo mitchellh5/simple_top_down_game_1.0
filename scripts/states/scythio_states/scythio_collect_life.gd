@@ -46,8 +46,11 @@ func _on_nav_timeout() -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if scythio.ammo >= 1:
-		transition.emit("HuntArlithons")
+	if !scythio.player:
+		if scythio.ammo >= 1:
+			transition.emit("HuntArlithons")
+	else:
+		transition.emit("Idle")
 
 #Runs upon entering state
 func _on_enter():

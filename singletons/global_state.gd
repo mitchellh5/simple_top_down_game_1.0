@@ -27,3 +27,5 @@ var player: String = "Mynra"				#Tracks the current PC (starting as Mynra)
 #Tracks current pause and transition state for the game
 var input_paused: bool = false				#Handles pausing player input during dialogue and cutscenes
 var ready_to_go: bool = true				#Handles waiting for scene transitions
+var in_combat: bool = false					#As long as the player is in combat (an arlithon exists within the current main scene)
+											#this returns true, and prevents character swapping

@@ -20,10 +20,12 @@ script = ExtResource("1_1r042")
 texture = ExtResource("1_aid84")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 show_behind_parent = true
 shape = SubResource("RectangleShape2D_xk7xs")
 
 [node name="Area2D" type="Area2D" parent="."]
+visible = false
 show_behind_parent = true
 light_mask = 8
 visibility_layer = 8

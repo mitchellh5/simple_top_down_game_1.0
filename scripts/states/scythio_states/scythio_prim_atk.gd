@@ -19,10 +19,8 @@ func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
 	if scythio.player && Input.is_action_pressed("primary_attack"):
-		print("Shoulda swung")
 		primary_attack_player()
 	elif !scythio.player && scythio.arlithon_in_prim_atk_range:
-		print("I think I'm an NPC")
 		primary_attack_companion()
 		
 	

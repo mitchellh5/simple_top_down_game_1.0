@@ -48,4 +48,4 @@ func transition_to(mynra_state_name: String) -> void:
 	
 	current_mynra_state = new_mynra_state
 	current_mynra_state_name = current_mynra_state.name.to_lower()
-	print("Current State: ", current_mynra_state_name)
+	#print("Current State: ", current_mynra_state_name)

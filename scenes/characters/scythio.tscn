@@ -1,4 +1,4 @@
-[gd_scene load_steps=135 format=3 uid="uid://wvpsju4km047"]
+[gd_scene load_steps=136 format=3 uid="uid://wvpsju4km047"]
 
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="1_c4d5j"]
 [ext_resource type="Script" uid="uid://bkg2cso3bphpl" path="res://scripts/characters/scythio.gd" id="1_qbh1l"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://ctga8dbxigkf2" path="res://scripts/states/scythio_states/scythio_collect_life.gd" id="10_e6jrn"]
 [ext_resource type="Script" uid="uid://cnh5q550lqfwl" path="res://scripts/states/scythio_states/scythio_dash.gd" id="11_t40pp"]
 [ext_resource type="PackedScene" uid="uid://dluwwlc5g42j7" path="res://scenes/effects/Ghost_Scythio.tscn" id="12_xwxx2"]
+[ext_resource type="Script" uid="uid://bt5vr8gymklo7" path="res://scripts/states/scythio_states/scythio_damaged.gd" id="15_en0im"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3us2h"]
 atlas = ExtResource("1_c4d5j")
@@ -477,7 +478,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_xktor")
 }],
-"loop": true,
+"loop": false,
 "name": &"DMG_D",
 "speed": 20.0
 }, {
@@ -941,9 +942,7 @@ State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_flski")
-animation = &"Prim_Atk_L"
-frame = 4
-frame_progress = 1.0
+animation = &"DMG_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -1066,6 +1065,12 @@ script = ExtResource("5_kp31m")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("11_t40pp")
+scythio = NodePath("../..")
+scythio_animation = NodePath("../../AnimatedSprite2D")
+ghost_node = ExtResource("12_xwxx2")
+
 [node name="FollowPlayer" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
 script = ExtResource("6_u0y3l")
 scythio = NodePath("../..")
@@ -1091,11 +1096,10 @@ script = ExtResource("10_e6jrn")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
-script = ExtResource("11_t40pp")
+[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("15_en0im")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
-ghost_node = ExtResource("12_xwxx2")
 
 [connection signal="body_entered" from="CollectionArea" to="." method="_on_collection_area_body_entered"]
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
@@ -1103,8 +1107,8 @@ ghost_node = ExtResource("12_xwxx2")
 [connection signal="body_entered" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_entered"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="SecAtkRange" to="." method="_on_prim_atk_range_body_entered"]
-[connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
+[connection signal="body_exited" from="SecAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/SecondaryAttack" method="_on_prim_atk_cooldown_timeout"]

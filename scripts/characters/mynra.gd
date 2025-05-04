@@ -46,7 +46,7 @@ func _physics_process(delta: float) -> void:
 	#Used to track direction Mynra is facing (based on player input method)
 	var dir
 	
-	if Input.is_action_just_pressed("Switch_Characters"):
+	if Input.is_action_just_pressed("Switch_Characters") && !GlobalState.in_combat && GlobalState.scene != "Oblivion":
 		if player:
 			player = false
 		else:

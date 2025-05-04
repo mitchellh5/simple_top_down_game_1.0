@@ -34,6 +34,7 @@ func _on_physics_update(_delta: float) -> void:
 func _on_next_transitions() -> void:
 	
 	if arlithon.body_in_atk_range:
+		print(arlithon.body_in_atk_range)
 		return
 	elif arlithon.player_in_range || arlithon.companion_in_range:
 		transition.emit("Hunt")

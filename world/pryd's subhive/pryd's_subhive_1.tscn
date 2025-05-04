@@ -1,5 +1,6 @@
-[gd_scene load_steps=38 format=4 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=39 format=4 uid="uid://dkb8pkean1gw8"]
 
+[ext_resource type="Script" uid="uid://h7tnw6t4uj5w" path="res://world/pryd's subhive/pryd's_subhive_1.gd" id="1_gj8ej"]
 [ext_resource type="Texture2D" uid="uid://b45s2k4e62s1f" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset (Coating).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="Texture2D" uid="uid://dksecr0fj6f74" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png" id="2_nf421"]
@@ -342,6 +343,7 @@ navigation_layer_0/layers = 1
 sources/2 = SubResource("TileSetAtlasSource_nf421")
 
 [node name="Pryd\'sSubhive1" type="Node2D"]
+script = ExtResource("1_gj8ej")
 
 [node name="TheFirstHiveTileMap" type="Node2D" parent="."]
 y_sort_enabled = true

@@ -52,12 +52,15 @@ func _on_nav_timeout() -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if eligible_targets > 0:
-		transition.emit("HuntArlithons")
-	elif scythio.at_player:
+	if !scythio.player:
+		if eligible_targets > 0:
+			transition.emit("HuntArlithons")
+		elif scythio.at_player:
+			transition.emit("Idle")
+		elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 120:
+			transition.emit("Dash")
+	else:
 		transition.emit("Idle")
-	elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 120:
-		transition.emit("Dash")
 
 #Runs upon entering state
 func _on_enter():
