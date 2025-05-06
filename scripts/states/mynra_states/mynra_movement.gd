@@ -1,11 +1,14 @@
-#MynraMovement
+#MovementState
 extends MynraState
 
-#Exports Mynra and her animation node
 @export var mynra: PlayerMynra
-@export var mynra_animation: AnimatedSprite2D
+@export var mynra_animation : AnimatedSprite2D
 
-#Runs each frame
+#Runs every frame
+func _on_update(_delta: float) -> void:
+	pass
+
+#Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	#Gets player input from the "Game_Input_Events" class
 	if mynra.player:
@@ -31,14 +34,21 @@ func _on_physics_update(_delta: float) -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
+	#Gets movement input from "Game_Input_Events" class
+	#to allow the state to detect movement and change
+	#states appropriately based on that
+	#NOTE: For some reason, this is only necessary in the idle state
+	#and if you remove it from the idle state the machine breaks, so don't
+	#do that
+	Game_Input_Events.movement_input()
 	
 	if mynra.damaged:
 		transition.emit("Damaged")
 	else:
 		if Game_Input_Events.is_sec_attacking():
-			transition.emit("Secondary_Attack")
+			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_prim_attacking():
-			transition.emit("Primary_Attack")
+			transition.emit("PrimaryAttack")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
 		elif Game_Input_Events.is_dashing() && mynra.get_parent().name != "Oblivion":
@@ -50,4 +60,4 @@ func _on_enter():
 
 #Runs upon exiting state
 func _on_exit():
-	mynra_animation.stop()
+	pass

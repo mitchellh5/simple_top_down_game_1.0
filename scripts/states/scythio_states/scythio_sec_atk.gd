@@ -23,7 +23,7 @@ func _on_physics_update(_delta: float) -> void:
 	elif !scythio.player && scythio.arlithon_in_sec_atk_range:
 		secondary_attack_companion()
 
-#Handles throwing Famine
+#Handles throwing Life
 func secondary_attack_player():
 	# Check if player is animating and has ammo
 	if !is_animating and scythio.ammo > 0:
@@ -54,7 +54,7 @@ func secondary_attack_player():
 			else:
 				scythio_animation.play("Sec_Atk_L")
 
-			# Instantiate and throw Famine
+			# Instantiate and throw Life
 			var life = scythio.LIFE_PATH.instantiate()
 			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(life)
@@ -76,9 +76,9 @@ func secondary_attack_player():
 				throw_direction = Vector2(-1, 0)
 				scythio_animation.play("Sec_Atk_L")
 			
-			# Instantiate and throw Famine
-			var life = scythio.FAMINE_PATH.instantiate()
-			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			# Instantiate and throw Life
+			var life = scythio.LIFE_PATH.instantiate()
+			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(life)
 
 			# Update ammo and manage collectability
@@ -116,7 +116,7 @@ func secondary_attack_companion():
 			else:
 				scythio_animation.play("Sec_Atk_L")
 
-			# Instantiate and throw Famine
+			# Instantiate and throw Life
 			var life = scythio.LIFE_PATH.instantiate()
 			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(life)
@@ -138,9 +138,9 @@ func secondary_attack_companion():
 				throw_direction = Vector2(-1, 0)
 				scythio_animation.play("Sec_Atk_L")
 			
-			# Instantiate and throw Famine
-			var life = scythio.FAMINE_PATH.instantiate()
-			life.aim_famine(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
+			# Instantiate and throw Life
+			var life = scythio.LIFE_PATH.instantiate()
+			life.aim_life(scythio.global_position, scythio.global_position + throw_direction * 100)  # Apply direction
 			get_parent().add_child(life)
 
 			# Update ammo and manage collectability

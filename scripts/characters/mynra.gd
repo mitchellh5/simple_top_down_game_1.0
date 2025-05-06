@@ -1,49 +1,84 @@
 #PlayerMynra
-class_name PlayerMynra
 extends CharacterBody2D
+class_name PlayerMynra
 
-#Connects to the "State_Machine" script (the main one) and the "State_Machine" node (used specifically for this scene)
-@export var State_Machine : NodePath
-#@onready var state_machine_instance = get_node("StateMachine") #don't think this is important, commented out, but just incase not deleted (my confidence in my code is unfounded)
+#Connects to state machine
+@export var State_Machine: Node
 
-#Tracks current state of player
+#Links the navigation2d node to the enemy for pathfinding
+@onready var nav: NavigationAgent2D = $NavigationAgent2D
+
+#Tracks current state of Mynra
 var current_state
+ 
+#Connects to AnimatedSprite2D for handling animations
+@onready var spriteMynra = $AnimatedSprite2D
+ 
+@onready var atk_area = get_node("%Hitbox")					#Sets up primary attack hit box
+@onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
+@onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
+@onready var sec_atk_range = get_node("%SecAtkRange")			#Sets up sec_attack range area for ensuring an enemy is in range
+@onready var interact_area = get_node("%InteractionArea")		#Sets up interaction area for player interactions
+@onready var los = $LineOfSight									#Sets up line of sight
 
-#Connects to the player's sprite for animation purposes
-@onready var sprite = $AnimatedSprite2D
-
-#Sets up the "Prim_Attack_HB" Area2D for use in states and here
-@onready var atk_area = get_node("%Hitbox")
-#@onready var hitbox = get_node("$HurtBox/CollisionShape2D")
+@onready var atk_cooldown_timer: Timer = $Prim_Atk_Cooldown		#Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
+																#just watch the companion tear everything to shreds around them)
 
 #Variabls used for Famine (secondary attack)
 var target_pos: Vector2												#Tracks the target position so that Famine always spawns from Mynra's current position
 var throw_dir: Vector2												#Tracks the direction we want to throw Famine in
-const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")		#Preloads Famine as a scene so that it can be thrown and caught by Mynra
+var enemy_spotted: bool = false										#Ensures the enemy is within line of sight
+var famine_spotted: bool = false										#Ensures Famine is in los for dashing purposes
+const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")			#Preloads Famine as a scene so that it can be thrown and caught by Mynra
 
-#Tracks if Mynra is the current player character or a companion (set to true by default since she is the main character)
-var player = true
+#Tracks if Mynra is the current player character, or a companion (set to false by default)
+@onready var player = true
+
+#Used for tracking player in main scene
+var arlithon_in_atk_range: bool = false		#Used for tracking if player is in attack range
+var player_body : CharacterBody2D			#Represents the player body
+var at_player : bool = false				#Tracks when this is close enough to the player to start idling when in follow mode
+var player_spotted: bool = false			#Used to make sure the player is in line of sight can be dashed towards (prevents
+											#the character from repeatedly dashing into a wall as they attempt to reach the player)
 
 #Basic variables for player
 var speed = 200					#Sets speed of player movement
-var angle: float				#Tracks the direction Mynra is facing
-var player_direction: Vector2	#Used to track the direction the player was last facing for idling
+var angle : float				#Tracks the direction Mynra is facing
+var player_direction : Vector2	#Used to track the direction the player was last facing for idling
 var health = 10					#Sets health value for Mynra
 var ammo = 1					#Sets ammo for Famine (1, because there is only one)
 var collectable: bool			#Sets variable to determine if Famine is currently collectable
 var damaged = false				#Used for state transitions
 var damageable = true			#Used for i-frames
-var damage_rate: int			#Used for determining how much damage the player takes from an attack
+var damage_rate : int			#Used for determining how much damage the player takes from an attack
+
+
+#Companion specific variabls
+var arlithon_in_prim_atk_range : bool
+var arlithon_in_sec_atk_range : bool
+var target_arlithon : CharacterBody2D
+var sec_atk_cooldown : bool = false
+var collecting_famine : bool = false			#Used to track if Mynra is currently going to collect Famine instead of hunt arlithons
 
 #Runs on startup
 func _ready():
 	#Sets up "atk_area" to monitor the "Prim_Attack_HB" mask, which is
 	#used for "get_overlapping_bodies()" script in "Primary_Attack" state
 	atk_area.monitoring = true
-
-#This script updates every frame
-func _physics_process(delta: float) -> void:	
-	#Used to track direction Mynra is facing (based on player input method)
+	player_detect.monitoring = true
+	prim_atk_range.monitoring = true
+	sec_atk_range.monitoring = true
+	interact_area.monitoring = true
+	
+	 
+	var nodes_in_group = get_tree().get_nodes_in_group("Player")
+	if !nodes_in_group.is_empty():
+		player_body = nodes_in_group[0] as CharacterBody2D
+	else:
+		print("That's weird, I don't see any players here")
+ 
+ #Runs every frame
+func _physics_process(delta: float) -> void:
 	var dir
 	
 	if Input.is_action_just_pressed("Switch_Characters") && !GlobalState.in_combat && GlobalState.scene != "Oblivion":
@@ -51,10 +86,11 @@ func _physics_process(delta: float) -> void:
 			player = false
 		else:
 			player = true
+		#print(self, "Has switched to player: ", player)
 		_character_swap()
 	
 	if player:
-		#print("Player")
+		#print("I'm a player")
 		if Input.get_connected_joypads().size() > 0:
 			var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 			var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
@@ -67,10 +103,60 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
-		pass
+		#print("Im an NPC")
+		move_and_slide()
 		#print("NPC")
-	
-	#Is the angle at which the player is facing
+		for body in $PrimAtkRange.get_overlapping_bodies():
+			if body == target_arlithon:
+				#print(target_arlithon)
+				#print("enemy spotted")
+				arlithon_in_prim_atk_range = true
+			elif body != target_arlithon && arlithon_in_prim_atk_range:
+				arlithon_in_prim_atk_range = false
+				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
+ 
+		for body in $SecAtkRange.get_overlapping_bodies():
+			if body == target_arlithon:
+				los.look_at(target_arlithon.global_position)
+				_check_los_enemy()
+				if enemy_spotted:
+					#print("Enemy spotted!")
+					arlithon_in_sec_atk_range = true
+			#elif body != target_arlithon && arlithon_in_sec_atk_range:
+				#arlithon_in_sec_atk_range = false
+		
+		player_body = get_tree().get_first_node_in_group("Player")
+		
+		var distance_from_player
+		var distance_from_famine
+		var distance_from_arlithon
+		
+		if ammo <= 0:
+			distance_from_famine = global_position.distance_to(get_tree().root.find_child("Famine", true, false).global_position)
+		else:
+			distance_from_famine = 10000000000
+		
+		if target_arlithon:
+			distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
+		else:
+			distance_from_arlithon = 10000000000
+		
+		if distance_from_arlithon < distance_from_famine:
+			nav.target_position = target_arlithon.global_position
+			collecting_famine = false
+		elif ammo <= 0:
+			_check_los_famine()
+			collecting_famine = true
+			nav.target_position = get_tree().root.find_child("Famine", true, false).global_position
+		elif player_body:
+			_check_los_player()
+			collecting_famine = false
+			nav.target_position = player_body.global_position
+		
+	#print(arlithon_in_prim_atk_range)
+	#print(target_arlithon)
+	#_check_player_range()
+ 	
 	if player:
 		angle = rad_to_deg(dir.angle())
 
@@ -89,20 +175,68 @@ func _character_swap() -> void:
 		add_to_group("Companion")
 		remove_from_group("Player")
 
+func _check_los_enemy() -> bool:
+	var collider = los.get_collider()
+	if collider and collider.is_in_group("Arlithons"):
+		enemy_spotted = true
+		return true
+	else:
+		return false
+
+func _check_los_player() -> bool:
+	var collider = los.get_collider()
+	if collider && collider.is_in_group("Player"):
+		player_spotted = true
+		return true
+	else:
+		return false
+
+func _check_los_famine() -> bool:
+	var collider = los.get_collider()
+	if collider && collider.is_in_group("Player"):
+		famine_spotted = true
+		return true
+	else:
+		return false
+
+func _find_player_node() -> void:
+	var nodes_in_group = get_tree().get_nodes_in_group("Player")
+	if !nodes_in_group.is_empty():
+		player_body = nodes_in_group[0] as CharacterBody2D
+	else:
+		print("That's weird, I don't see any players here")
+
+func _on_player_detection_body_entered(body: Node2D) -> void:
+	if body == player_body:
+		at_player = true
+ 
+func _on_player_detection_body_exited(body: Node2D) -> void:
+	if body == player_body:
+		at_player = false
+ 
+func _on_prim_atk_range_body_exited(body: Node2D) -> void:
+	if body == target_arlithon:
+		arlithon_in_prim_atk_range = false
+ 
+func _on_sec_atk_range_body_exited(body: Node2D) -> void:
+	if body == target_arlithon:
+		#print("Mission failed, we'll get 'em next time.")
+		arlithon_in_sec_atk_range = false
+
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):
 	damage_rate = dmg
 	if damageable:
 		damaged = true
+		print(health)
 
-#Allows the player to retrieve Famine when the "collectable" bool is set to true, setting the "ammo" value to 1 so that Famine can be thrown again,
-#and sets "collectable" back to false to avoid problems with Famine being collected multiple times or immediately after it was thrown
 func collect_famine():
-	if collectable == true:
+	if collectable:
+		#print("Famine collected")
 		ammo = 1
-
-#Handles i-frames for Mynra (0.67s)
-func i_frames():
-	damageable = false
-	await get_tree().create_timer(0.67).timeout
-	damageable = true
+		_secondary_atk_cd()
+ 
+func _secondary_atk_cd():
+	sec_atk_cooldown = true
+	await get_tree().create_timer(0.5).timeout
+	sec_atk_cooldown = false

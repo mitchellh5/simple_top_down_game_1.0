@@ -1,7 +1,7 @@
 #scythio_damaged
 extends ScythioState
 
-#Exports Mynra and her animation node
+#Exports Scythio and her animation node
 @export var scythio: PlayerScythio
 @export var scythio_animation: AnimatedSprite2D
 
@@ -13,7 +13,7 @@ func _ready() -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	#Handles hurt box and Mynra taking damage
+	#Handles hurt box and Scythio taking damage
 	if scythio.damageable == true && scythio.damaged == true:
 		lose_health()
 
@@ -34,14 +34,14 @@ func lose_health():
 			#Triggers i-frames
 			i_frames()
 		else:
-			#print("Mynra has fallen")
+			#print("Scythio has fallen")
 			transition.emit("Death")
 
 func i_frames():
 	scythio.damageable = false
 	#print("I-Frames active")
 	await get_tree().create_timer(1.5).timeout
-	#print("Mynra is no longer immune")
+	#print("Scythio is no longer immune")
 	scythio.damaged = false
 	scythio.damageable = true
 

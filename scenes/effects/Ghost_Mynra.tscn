@@ -141,5 +141,5 @@ animations = [{
 [node name="GhostMynra" type="AnimatedSprite2D"]
 modulate = Color(0.470588, 0.470588, 0.470588, 1)
 sprite_frames = SubResource("SpriteFrames_rkiuy")
-animation = &"Dash_D"
+animation = &"Dash_U"
 script = ExtResource("2_5fvpk")

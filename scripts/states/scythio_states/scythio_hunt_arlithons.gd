@@ -70,7 +70,10 @@ func _are_they_all_dead() -> bool:
 	return true
 
 func _make_path():
-	scythio.nav.target_position = scythio.target_arlithon.global_position
+	if scythio.target_arlithon:
+		scythio.nav.target_position = scythio.target_arlithon.global_position
+	else:
+		transition.emit("Idle")
 
 func _on_nav_timeout() -> void:
 	_make_path()

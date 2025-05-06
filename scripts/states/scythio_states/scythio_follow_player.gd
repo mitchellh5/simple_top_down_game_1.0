@@ -1,8 +1,8 @@
 #FollowPlayerState
 extends ScythioState
 
-@export var scythio : PlayerScythio
-@export var scythio_animation : AnimatedSprite2D
+@export var scythio: PlayerScythio
+@export var scythio_animation: AnimatedSprite2D
 
 #Scans current scene to check for any arlithons currently in it
 var arlithons

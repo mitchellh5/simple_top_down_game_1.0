@@ -1,8 +1,8 @@
 #MovementState
 extends ScythioState
 
-@export var scythio : PlayerScythio
-@export var scythio_animation : AnimatedSprite2D
+@export var scythio: PlayerScythio
+@export var scythio_animation: AnimatedSprite2D
 
 #Runs every frame
 func _on_update(_delta: float) -> void:

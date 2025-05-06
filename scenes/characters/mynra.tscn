@@ -1,4 +1,4 @@
-[gd_scene load_steps=207 format=3 uid="uid://d2g17pauj83jm"]
+[gd_scene load_steps=214 format=3 uid="uid://d2g17pauj83jm"]
 
 [ext_resource type="Script" uid="uid://w68dkjx7jyi8" path="res://scripts/characters/mynra.gd" id="1_u4xuv"]
 [ext_resource type="Texture2D" uid="uid://cyr0kb1bo2ky5" path="res://assets/alpha/characters/Mynra-Sheet.png" id="2_xf17j"]
@@ -11,8 +11,11 @@
 [ext_resource type="Script" uid="uid://cs26d84c0n3ck" path="res://scripts/states/mynra_states/mynra_dash.gd" id="6_osx85"]
 [ext_resource type="Script" uid="uid://bm3egklqjv2jv" path="res://scripts/states/mynra_states/mynra_secondary_attack.gd" id="6_s2b13"]
 [ext_resource type="PackedScene" uid="uid://blc4bahx057yw" path="res://scenes/effects/Ghost_Mynra.tscn" id="7_djmiq"]
+[ext_resource type="Script" uid="uid://blriq0p75oc06" path="res://scripts/states/mynra_states/mynra_follow_player.gd" id="10_bnqng"]
 [ext_resource type="Script" uid="uid://defja2gpn4o5h" path="res://scripts/states/mynra_states/mynra_damaged.gd" id="10_worrd"]
+[ext_resource type="Script" uid="uid://db8qps01k6no8" path="res://scripts/states/mynra_states/mynra_hunt_arlithons.gd" id="11_k76i0"]
 [ext_resource type="Script" uid="uid://c6vks2onrcf7g" path="res://scripts/states/mynra_states/mynra_death.gd" id="11_yuc1m"]
+[ext_resource type="Script" uid="uid://c0t3pdj33a5ub" path="res://scripts/states/mynra_states/mynra_collect_famine.gd" id="14_h3vsm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_naa0s"]
 atlas = ExtResource("2_xf17j")
@@ -1511,17 +1514,29 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_exrpt"]
 radius = 4.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a0pcm"]
-radius = 14.0
-height = 46.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7lg0n"]
 radius = 5.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7lg0n"]
 size = Vector2(28, 42)
 
-[node name="PlayerMynra" type="CharacterBody2D" groups=["Player"]]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a0pcm"]
+radius = 14.0
+height = 46.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bnqng"]
+size = Vector2(56, 54)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k76i0"]
+size = Vector2(40, 42)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7lg0n"]
+radius = 256.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bnqng"]
+radius = 142.004
+
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Player"]]
 collision_mask = 22
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
@@ -1537,17 +1552,7 @@ visible = false
 position = Vector2(0, 14)
 shape = SubResource("CircleShape2D_exrpt")
 
-[node name="Aiming_Famine" type="Node2D" parent="."]
-visible = false
-
-[node name="CollectionArea" type="Area2D" parent="."]
-visible = false
-collision_layer = 0
-collision_mask = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
-shape = SubResource("CapsuleShape2D_a0pcm")
-debug_color = Color(0.852127, 0.370926, 0, 0.42)
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
 [node name="Hurtbox" parent="." instance=ExtResource("3_yl02y")]
 visible = false
@@ -1561,6 +1566,7 @@ shape = SubResource("CapsuleShape2D_7lg0n")
 
 [node name="Hitbox" parent="." instance=ExtResource("4_7lg0n")]
 unique_name_in_owner = true
+visible = false
 collision_layer = 8
 collision_mask = 2
 monitoring = true
@@ -1571,6 +1577,65 @@ light_mask = 1
 visibility_layer = 1
 position = Vector2(-14, 0)
 shape = SubResource("RectangleShape2D_7lg0n")
+
+[node name="CollectionArea" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
+shape = SubResource("CapsuleShape2D_a0pcm")
+debug_color = Color(0.852127, 0.370926, 0, 0.42)
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+shape = SubResource("RectangleShape2D_bnqng")
+debug_color = Color(0.225677, 0.638571, 0, 0.419608)
+
+[node name="PrimAtkRange" type="Area2D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
+light_mask = 2
+visibility_layer = 2
+shape = SubResource("RectangleShape2D_k76i0")
+debug_color = Color(0.718829, 0.480597, 5.77569e-07, 0.42)
+
+[node name="SecAtkRange" type="Area2D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkRange"]
+light_mask = 2
+visibility_layer = 2
+shape = SubResource("CircleShape2D_7lg0n")
+one_way_collision_margin = 0.0
+debug_color = Color(0.85258, 0.370438, 1.92523e-07, 0.42)
+
+[node name="InteractionArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+light_mask = 2
+visibility_layer = 2
+shape = SubResource("CircleShape2D_bnqng")
+
+[node name="LineOfSight" type="RayCast2D" parent="."]
+visible = false
+target_position = Vector2(-256, 0)
+collision_mask = 63
+
+[node name="Prim_Atk_Cooldown" type="Timer" parent="."]
+one_shot = true
+
+[node name="Nav" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_mynra_state")]
 script = ExtResource("3_ugxf0")
@@ -1592,15 +1657,28 @@ mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
 ghost_node = ExtResource("7_djmiq")
 
-[node name="Primary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="FollowPlayer" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+script = ExtResource("10_bnqng")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
+
+[node name="HuntArlithons" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+script = ExtResource("11_k76i0")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
+
+[node name="PrimaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_2k2v3")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Secondary_Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="SecondaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_s2b13")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
+
+[node name="CollectFamine" type="Node" parent="StateMachine"]
+script = ExtResource("14_h3vsm")
 
 [node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_worrd")

@@ -1,7 +1,7 @@
 #CollectLifeState
 extends ScythioState
 
-@export var scythio : PlayerScythio
+@export var scythio: PlayerScythio
 @export var scythio_animation : AnimatedSprite2D
 
 #tracks current player character for following between levels
@@ -39,7 +39,7 @@ func _collect_life():
 			scythio_animation.play("Run_U")
 
 func _make_path():
-	scythio.nav.target_position = scythio.get_tree().root.find_chukd("Life", true, false).global_position
+	scythio.nav.target_position = scythio.get_tree().root.find_child("Life", true, false).global_position
 
 func _on_nav_timeout() -> void:
 	pass # Replace with function body.

@@ -1,12 +1,10 @@
-#MynraDash
+#DashState
 extends MynraState
 
-# Exports for player and animations
 @export var mynra: PlayerMynra
-@export var mynra_animation: AnimatedSprite2D
+@export var mynra_animation : AnimatedSprite2D
 
-# Exports for ghost node and dash parameters
-@export var ghost_node: PackedScene
+@export var ghost_node: PackedScene				#Exports ghost for ghost frames for after affects of dash animation
 @export var dash_cooldown: float = 0.75
 @export var ghost_cooldown: float = 0.1
 
@@ -27,21 +25,49 @@ func _ready() -> void:
 	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
 	mynra_animation.animation_finished.connect(_on_animation_finished)
 
-#Updates ever frame
+#Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	
-	#Prevents player from dashing while in Oblivion
 	if mynra.get_parent().name == "Oblivion":
 		can_dash = false
 	
-	#Ensures the player attempted a dash and that they can currently dash
-	if mynra.player && Input.is_action_pressed("dash") && can_dash:
-		dash()
-	else:
-		transition.emit("Idle")
+	if mynra.player:
+		#Awaits input from player, then, if the cooldown is inactive, runs the "dash()" function
+		if Input.is_action_pressed("dash") && can_dash:
+			_dash_as_player()
+	elif !mynra.player && can_dash:
+		_dash_as_companion()
 	
-	#Makes sure that a dash is currently in progress
-	if is_animating:
+	#While dashing:
+	if is_animating && mynra.player:
+		#Applies dash velocity
+		mynra.velocity = dash_velocity
+		var prev_position = mynra.position
+		mynra.move_and_slide()
+		
+		#Accumulated distance traveled
+		distance_covered += mynra.position.distance_to(prev_position)
+		
+		#Handles Ghosting effect
+		if can_ghost:
+			can_ghost = false
+			var ghost = ghost_node.instantiate()
+			ghost.set_property(mynra.position, $"../../AnimatedSprite2D".scale)
+			if ghost is AnimatedSprite2D:
+				ghost.animation = mynra_animation.animation
+				ghost.frame = frame
+			get_tree().current_scene.add_child(ghost)
+			
+			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
+			start_ghost_timer()
+		
+		#Stops dash when target distance is reached
+		if distance_covered >= dash_distance:
+			_end_dash()
+	
+	#While dashing:
+	elif is_animating && !mynra.player:
+		#Gets input velocity from the "Game_Input_Events" class,
+		#and uses it to calculate the proper direction of the dash
 		
 		#Applies dash velocity
 		mynra.velocity = dash_velocity
@@ -68,9 +94,10 @@ func _on_physics_update(_delta: float) -> void:
 		if distance_covered >= dash_distance:
 			_end_dash()
 
-#Handles the actual dashing
-func dash():
-	if not is_animating:
+#Handles dashing for player
+func _dash_as_player():
+	#As long as there is not a dash animation already in play
+	if !is_animating:
 		is_animating = true
 		can_dash = false
 		mynra.damageable = false
@@ -102,45 +129,68 @@ func dash():
 		#Puts the dash on cooldown
 		start_cooldown()
 
-#Handles the cooldown for the dash
+#Handles dashing for companion
+func _dash_as_companion():
+	if !is_animating:
+		is_animating = true																#Set "is_animating" and  "can_dash" to true to avoid spamming
+		can_dash = false
+		
+		mynra.damageable = false														#Dashing grants free i-frames
+		
+		var input_velocity																			#Gets player's current velocity_vector from the "Game_Input_Events" class
+		if mynra.target_arlithon && !mynra.collecting_life:
+			input_velocity = mynra.target_arlithon.global_position - mynra.global_position
+		elif mynra.collecting_life:
+			input_velocity = mynra.get_tree().root.find_child("Famine", true, false).global_position - mynra.global_position
+		else:
+			input_velocity = mynra.player_body.global_position - mynra.global_position
+		
+		var dash_direction: Vector2
+		if input_velocity != Vector2.ZERO:
+			dash_direction = input_velocity.normalized()
+		else:
+			dash_direction = mynra.player_direction.normalized()
+			
+		#Uses the separate dash_speed value in place of the typical player speed from the main script
+		dash_velocity = dash_direction * dash_speed
+		
+		#Plays the proper dash animation dependant on the direction the player is moving
+		match mynra.player_direction:
+			Vector2.LEFT:
+				mynra_animation.play("Dash_L")
+			Vector2.RIGHT:
+				mynra_animation.play("Dash_R")
+			Vector2.UP:
+				mynra_animation.play("Dash_U")
+			_:
+				mynra_animation.play("Dash_D")
+		
+		#Puts the dash on cooldown
+		start_cooldown()
+
+#Starts the "dash_cooldown" timer
 func start_cooldown():
 	var cooldown_timer = get_tree().create_timer(dash_cooldown)
 	cooldown_timer.timeout.connect(_on_cooldown_finished)
 
-#When the timer ends, allows the player to dash again
+#Once the "dash_cooldown" timer has finished, it sets "can_dash"
+#back to true to allow the player to once again dash
 func _on_cooldown_finished():
 	can_dash = true
 
-#Handles timing the ghost effect to avoid smearing
+#Starts the "ghost_cooldown" timer
 func start_ghost_timer():
 	var ghost_timer = get_tree().create_timer(ghost_cooldown)
 	ghost_timer.timeout.connect(_on_ghost_cooldown_finished)
 
+#Once the "ghost_cooldown" timer has finished, it sets "can_ghost"
+#back to true to allow the ghosting to continue
 func _on_ghost_cooldown_finished():
 	can_ghost = true
 
-#Once the player has reached their max distance, the dash ends and their velocity is set to zero
+#Ends the dash when the character has met the max travel distance
 func _end_dash():
-	is_animating = false
-	# Optionally, reset the player's velocity or snap to a final position
-	mynra.velocity = Vector2.ZERO
-
-#Used the avoid issues with the dash ending prematurely due to unexpected state changes
-func _on_animation_finished():
-	if mynra_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
-		is_animating = false
-
-#Runs when the state is entered
-func _on_enter():
-	frame = 0
-	is_animating = false
-
-#Runs when the state is exited
-func _on_exit():
-	frame = 0
-	is_animating = false
-	mynra.damageable = true
-	mynra.damaged = false
+	pass
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -149,7 +199,7 @@ func _on_next_transitions() -> void:
 	
 	if mynra.damaged:
 		transition.emit("Damage")
-	else:
+	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
 		elif Game_Input_Events.is_prim_attacking():
@@ -158,3 +208,30 @@ func _on_next_transitions() -> void:
 			transition.emit("Secondary_Attack")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
+	else:
+		var arlithons = get_tree().get_nodes_in_group("arlithons")
+		if mynra.collecting_life:
+			transition.emit("CollectLife")
+		if !arlithons.is_empty() || mynra.target_arlithon:
+			transition.emit("HuntArlithons")
+		elif arlithons.is_empty() && !mynra.at_player:
+			transition.emit("FollowPlayer")
+		elif mynra.at_player && !mynra.target_arlithon:
+			transition.emit("Idle")
+
+#Tracks when animation is finished
+func _on_animation_finished():
+	if mynra_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
+		is_animating = false
+
+#Runs upon entering state
+func _on_enter():
+	frame = 0
+	is_animating = false
+
+#Runs upon exiting state
+func _on_exit():
+	frame = 0
+	is_animating = false
+	mynra.damageable = true
+	mynra.damaged = false

@@ -1,11 +1,13 @@
-#MynraPrimaryAttack
+#PrimaryAttack
 extends MynraState
 
-#Exports Mynra and her animation node
 @export var mynra: PlayerMynra
 @export var mynra_animation: AnimatedSprite2D
 
+var arlithons
+
 var is_animating: bool = false
+var atk_on_cooldown: bool = false
 var atk_vel: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
@@ -14,20 +16,22 @@ func _ready() -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	if mynra.player && Input.is_action_pressed("primary_attack"):
-		primary_attack()
-	else:
-		transition.emit("Idle")
+	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
-	if is_animating:
+	if mynra.player && Input.is_action_pressed("primary_attack"):
+		primary_attack_player()
+	elif !mynra.player && mynra.arlithon_in_prim_atk_range:
+		primary_attack_companion()
+		
+	
+	if mynra.player && is_animating:
 		#Gets input velocity from the "Game_Input_Events" class,
 		#and uses it to calculate the proper direction of the dash
 		var input_velocity: Vector2 = Game_Input_Events.velocity_of_movement()
 		mynra.velocity = atk_vel
 		mynra.move_and_slide()
 
-#Handles primary attack
-func primary_attack():
+func primary_attack_player():
 	#Makes sure the player is not currently animating to avoid overlapping animations
 	if !is_animating:
 		is_animating = true
@@ -55,28 +59,28 @@ func primary_attack():
 		#------------------------------------------------------------------------------------
 		if Input.get_connected_joypads().size() > 0:
 			if mynra.player_direction == Vector2.LEFT:
-				mynra_animation.play("Prim_Atk1_L")
+				mynra_animation.play("Prim_Atk_L")
 				mynra.atk_area.rotation_degrees = 0
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif mynra.player_direction == Vector2.RIGHT:
-				mynra_animation.play("Prim_Atk1_R")
+				mynra_animation.play("Prim_Atk_R")
 				mynra.atk_area.rotation_degrees = 180
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif mynra.player_direction == Vector2.DOWN:
-				mynra_animation.play("Prim_Atk1_D")
+				mynra_animation.play("Prim_Atk_D")
 				mynra.atk_area.rotation_degrees = -90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				mynra_animation.play("Prim_Atk1_U")
+				mynra_animation.play("Prim_Atk_U")
 				mynra.atk_area.rotation_degrees = 90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -85,7 +89,7 @@ func primary_attack():
 		
 		else:
 			if mynra.angle >= -45 && mynra.angle < 45:
-				mynra_animation.play("Prim_Atk1_R")
+				mynra_animation.play("Prim_Atk_R")
 				mynra.atk_area.rotation_degrees = 180
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -93,7 +97,7 @@ func primary_attack():
 						body.take_damage()
 		
 			elif mynra.angle >= 45 && mynra.angle < 135:
-				mynra_animation.play("Prim_Atk1_D")
+				mynra_animation.play("Prim_Atk_D")
 				mynra.atk_area.rotation_degrees = -90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -101,19 +105,58 @@ func primary_attack():
 						body.take_damage()
 		
 			elif mynra.angle >= -135 && mynra.angle < -45:
-				mynra_animation.play("Prim_Atk1_U")
+				mynra_animation.play("Prim_Atk_U")
 				mynra.atk_area.rotation_degrees = 90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				mynra_animation.play("Prim_Atk1_L")
+				mynra_animation.play("Prim_Atk_L")
 				mynra.atk_area.rotation_degrees = 0
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+
+func primary_attack_companion():
+	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_prim_atk_range:
+		is_animating = true
+		atk_on_cooldown = true
+		mynra.atk_cooldown_timer.start()
+		
+		
+		var input_velocity = mynra.target_arlithon.global_position - mynra.global_position	#Gets the direction Mynra is currently attacking in
+		
+		var direction = mynra.target_arlithon.global_position - mynra.global_position
+		var abs_x = abs(direction.x)
+		var abs_y = abs(direction.y)
+		
+		var bodies = mynra.atk_area.get_overlapping_bodies()
+		
+		mynra.velocity = Vector2.ZERO
+		
+		if abs_x > abs_y:
+			if direction.x > 0:
+				mynra.atk_area.rotation_degrees = 180
+				mynra_animation.play("Prim_Atk_R")
+			else:
+				mynra.atk_area.rotation_degrees = 0
+				mynra_animation.play("Prim_Atk_L")
+		else:
+			if direction.y > 0:
+				mynra.atk_area.rotation_degrees = -90
+				mynra_animation.play("Prim_Atk_D")
+			else:
+				mynra.atk_area.rotation_degrees = 90
+				mynra_animation.play("Prim_Atk_U")
+		
+		for body in bodies:
+			if body.has_method("take_damage"):
+				body.take_damage()
+
+func _on_prim_atk_cooldown_timeout() -> void:
+	atk_on_cooldown = false
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -122,19 +165,29 @@ func _on_next_transitions() -> void:
 	
 	if mynra.damaged:
 		transition.emit("Damaged")
-	else:
+	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
 		elif Game_Input_Events.is_sec_attacking():
-			transition.emit("Secondary_Attack")
+			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_dashing():
 			transition.emit("Dash")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
+	else:
+		if arlithons.is_empty() && !mynra.at_player:
+			transition.emit("FollowPlayer")
+			#print("Tried to transition to FP")
+		elif !arlithons.is_empty() && !mynra.target_arlithon.is_alive:
+			transition.emit("HuntArlithons")
+			#print("Tried to transition to HA 1")
+		elif !arlithons.is_empty() && !mynra.arlithon_in_prim_atk_range:
+			transition.emit("HuntArlithons")
+			#print("Tried to transition to HA 2")
 
 #Tracks when animation is finished
 func _on_animation_finished():
-	if mynra_animation.animation in ["Prim_Atk1_R", "Prim_Atk1_L", "Prim_Atk1_U", "Prim_Atk1_D"]:
+	if mynra_animation.animation in ["Prim_Atk_R", "Prim_Atk_L", "Prim_Atk_U", "Prim_Atk_D"]:
 		is_animating = false
 
 #Runs upon entering state
