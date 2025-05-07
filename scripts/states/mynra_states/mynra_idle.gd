@@ -6,16 +6,12 @@ extends MynraState
 
 var waiting: bool = false
 
-#Runs every frame
-func _on_update(_delta: float) -> void:
-	pass
 
-#Runs every frame
-func _on_physics_update(_delta: float) -> void:
-	#Plays the proper animation based on the direction the player was facing
-	#when they entered the state (NOTE: there are no "Idle_U" animations)
-	var anim_name : String
-	
+#Plays the proper animation based on the direction the player was facing
+#when they entered the state (NOTE: there are no "Idle_U" animations)
+var anim_name: String
+
+func _ready() -> void:
 	if mynra.player:
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
@@ -26,6 +22,29 @@ func _on_physics_update(_delta: float) -> void:
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
 		else: anim_name = "Idle_D"
+	
+	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion":
+		#print(anim_name)
+		mynra_animation.play(anim_name)
+
+#Runs every frame
+func _on_update(_delta: float) -> void:
+	pass
+
+#Runs every frame
+func _on_physics_update(_delta: float) -> void:
+	print("here in OPU")
+	if mynra.player:
+		print("I'm a player")
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle1_D"
+	elif !mynra.player && mynra.get_parent().name != "Oblivion":
+		var player = get_tree().get_first_node_in_group("Player")
+		mynra.velocity = Vector2.ZERO
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle1_D"
 	#else:
 		#mynra.velocity = Vector2.ZERO
 		#if waiting:
@@ -33,11 +52,12 @@ func _on_physics_update(_delta: float) -> void:
 		#else:
 			#mynra_animation.play("Idle_L")
 			#_waiting()
-		
-	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion":
-		#print(anim_name)
+	
+	print("Getting ready to play")
+	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion" || mynra.player:
+		print(anim_name)
 		mynra_animation.play(anim_name)
-		#print("Current frame: ", mynra_animation.frame)
+		print("Just played ", mynra_animation.frame)
 
 func _waiting():
 	waiting = true
@@ -82,7 +102,8 @@ func _on_next_transitions() -> void:
 
 #Runs upon entering state
 func _on_enter():
-	pass
+	print("Hey bitches we're idle now")
+	
 
 #Runs upon exiting state
 func _on_exit():

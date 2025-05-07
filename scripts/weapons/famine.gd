@@ -56,7 +56,7 @@ func _physics_process(delta: float) -> void:
 func _on_area_2d_area_entered(area: Area2D) -> void:
 	if area.get_parent().has_method("collect_famine") && collectable:
 		area.get_parent().collect_famine()
-		#print("I has been grabbed!")
+		print("I has been grabbed!")
 		queue_free()
 
 func _on_area_2d_body_entered(body):
@@ -77,7 +77,7 @@ func _on_area_2d_body_entered(body):
 
 #This function is used to have Famine track back towards Mynra for collection
 func return_to_mynra():
-	#print("Returning to Mynra")
+	print("Returning to Mynra")
 	collectable = true
 	var direction = global_position.direction_to(character.global_position)
 	velocity = direction * SPEED

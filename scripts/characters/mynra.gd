@@ -14,7 +14,7 @@ var current_state
 #Connects to AnimatedSprite2D for handling animations
 @onready var spriteMynra = $AnimatedSprite2D
  
-@onready var atk_area = get_node("%Hitbox")					#Sets up primary attack hit box
+@onready var atk_area = get_node("%Hitbox")						#Sets up primary attack hit box
 @onready var player_detect = get_node("%PlayerDetection")		#Sets up player detection area
 @onready var prim_atk_range = get_node("%PrimAtkRange")			#Sets up primary attack range area to detect when enemy is within primary attack range (companion mode only)
 @onready var sec_atk_range = get_node("%SecAtkRange")			#Sets up sec_attack range area for ensuring an enemy is in range
@@ -25,9 +25,9 @@ var current_state
 																#just watch the companion tear everything to shreds around them)
 
 #Variabls used for Famine (secondary attack)
-var target_pos: Vector2												#Tracks the target position so that Famine always spawns from Mynra's current position
-var throw_dir: Vector2												#Tracks the direction we want to throw Famine in
-var enemy_spotted: bool = false										#Ensures the enemy is within line of sight
+var target_pos: Vector2													#Tracks the target position so that Famine always spawns from Mynra's current position
+var throw_dir: Vector2													#Tracks the direction we want to throw Famine in
+var enemy_spotted: bool = false											#Ensures the enemy is within line of sight
 var famine_spotted: bool = false										#Ensures Famine is in los for dashing purposes
 const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")			#Preloads Famine as a scene so that it can be thrown and caught by Mynra
 
@@ -42,15 +42,15 @@ var player_spotted: bool = false			#Used to make sure the player is in line of s
 											#the character from repeatedly dashing into a wall as they attempt to reach the player)
 
 #Basic variables for player
-var speed = 200					#Sets speed of player movement
-var angle : float				#Tracks the direction Mynra is facing
-var player_direction : Vector2	#Used to track the direction the player was last facing for idling
-var health = 10					#Sets health value for Mynra
-var ammo = 1					#Sets ammo for Famine (1, because there is only one)
-var collectable: bool			#Sets variable to determine if Famine is currently collectable
-var damaged = false				#Used for state transitions
-var damageable = true			#Used for i-frames
-var damage_rate : int			#Used for determining how much damage the player takes from an attack
+var speed = 200						#Sets speed of player movement
+var angle : float					#Tracks the direction Mynra is facing
+var player_direction : Vector2		#Used to track the direction the player was last facing for idling
+var health = 10						#Sets health value for Mynra
+var ammo = 1						#Sets ammo for Famine (1, because there is only one)
+var collectable: bool				#Sets variable to determine if Famine is currently collectable
+var damaged = false					#Used for state transitions
+var damageable = true				#Used for i-frames
+var damage_rate : int				#Used for determining how much damage the player takes from an attack
 
 
 #Companion specific variabls

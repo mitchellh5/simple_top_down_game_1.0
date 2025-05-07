@@ -59,28 +59,28 @@ func primary_attack_player():
 		#------------------------------------------------------------------------------------
 		if Input.get_connected_joypads().size() > 0:
 			if mynra.player_direction == Vector2.LEFT:
-				mynra_animation.play("Prim_Atk_L")
+				mynra_animation.play("Prim_Atk1_L")
 				mynra.atk_area.rotation_degrees = 0
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif mynra.player_direction == Vector2.RIGHT:
-				mynra_animation.play("Prim_Atk_R")
+				mynra_animation.play("Prim_Atk1_R")
 				mynra.atk_area.rotation_degrees = 180
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			elif mynra.player_direction == Vector2.DOWN:
-				mynra_animation.play("Prim_Atk_D")
+				mynra_animation.play("Prim_Atk1_D")
 				mynra.atk_area.rotation_degrees = -90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				mynra_animation.play("Prim_Atk_U")
+				mynra_animation.play("Prim_Atk1_U")
 				mynra.atk_area.rotation_degrees = 90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -89,7 +89,7 @@ func primary_attack_player():
 		
 		else:
 			if mynra.angle >= -45 && mynra.angle < 45:
-				mynra_animation.play("Prim_Atk_R")
+				mynra_animation.play("Prim_Atk1_R")
 				mynra.atk_area.rotation_degrees = 180
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -97,7 +97,7 @@ func primary_attack_player():
 						body.take_damage()
 		
 			elif mynra.angle >= 45 && mynra.angle < 135:
-				mynra_animation.play("Prim_Atk_D")
+				mynra_animation.play("Prim_Atk1_D")
 				mynra.atk_area.rotation_degrees = -90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -105,14 +105,14 @@ func primary_attack_player():
 						body.take_damage()
 		
 			elif mynra.angle >= -135 && mynra.angle < -45:
-				mynra_animation.play("Prim_Atk_U")
+				mynra_animation.play("Prim_Atk1_U")
 				mynra.atk_area.rotation_degrees = 90
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
 			else:
-				mynra_animation.play("Prim_Atk_L")
+				mynra_animation.play("Prim_Atk1_L")
 				mynra.atk_area.rotation_degrees = 0
 				var bodies = mynra.atk_area.get_overlapping_bodies()
 				for body in bodies:
@@ -139,17 +139,17 @@ func primary_attack_companion():
 		if abs_x > abs_y:
 			if direction.x > 0:
 				mynra.atk_area.rotation_degrees = 180
-				mynra_animation.play("Prim_Atk_R")
+				mynra_animation.play("Prim_Atk1_R")
 			else:
 				mynra.atk_area.rotation_degrees = 0
-				mynra_animation.play("Prim_Atk_L")
+				mynra_animation.play("Prim_Atk1_L")
 		else:
 			if direction.y > 0:
 				mynra.atk_area.rotation_degrees = -90
-				mynra_animation.play("Prim_Atk_D")
+				mynra_animation.play("Prim_Atk1_D")
 			else:
 				mynra.atk_area.rotation_degrees = 90
-				mynra_animation.play("Prim_Atk_U")
+				mynra_animation.play("Prim_Atk1_U")
 		
 		for body in bodies:
 			if body.has_method("take_damage"):
@@ -187,13 +187,15 @@ func _on_next_transitions() -> void:
 
 #Tracks when animation is finished
 func _on_animation_finished():
-	if mynra_animation.animation in ["Prim_Atk_R", "Prim_Atk_L", "Prim_Atk_U", "Prim_Atk_D"]:
+	if mynra_animation.animation in ["Prim_Atk1_R", "Prim_Atk1_L", "Prim_Atk1_U", "Prim_Atk1_D"]:
 		is_animating = false
 
 #Runs upon entering state
 func _on_enter():
+	print("I'm attacking now")
 	is_animating = false
 
 #Runs upon exiting state
 func _on_exit():
 	is_animating = false
+	#mynra_animation.stop()

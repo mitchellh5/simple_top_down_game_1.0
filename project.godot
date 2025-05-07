@@ -140,6 +140,7 @@ Switch_Characters={
 2d_physics/layer_4="Weapons"
 2d_physics/layer_5="Interactables"
 2d_physics/layer_6="Companion"
+2d_physics/layer_7="CollectionAreas"
 
 [rendering]
 

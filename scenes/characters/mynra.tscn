@@ -1,4 +1,4 @@
-[gd_scene load_steps=214 format=3 uid="uid://d2g17pauj83jm"]
+[gd_scene load_steps=213 format=3 uid="uid://d2g17pauj83jm"]
 
 [ext_resource type="Script" uid="uid://w68dkjx7jyi8" path="res://scripts/characters/mynra.gd" id="1_u4xuv"]
 [ext_resource type="Texture2D" uid="uid://cyr0kb1bo2ky5" path="res://assets/alpha/characters/Mynra-Sheet.png" id="2_xf17j"]
@@ -15,7 +15,6 @@
 [ext_resource type="Script" uid="uid://defja2gpn4o5h" path="res://scripts/states/mynra_states/mynra_damaged.gd" id="10_worrd"]
 [ext_resource type="Script" uid="uid://db8qps01k6no8" path="res://scripts/states/mynra_states/mynra_hunt_arlithons.gd" id="11_k76i0"]
 [ext_resource type="Script" uid="uid://c6vks2onrcf7g" path="res://scripts/states/mynra_states/mynra_death.gd" id="11_yuc1m"]
-[ext_resource type="Script" uid="uid://c0t3pdj33a5ub" path="res://scripts/states/mynra_states/mynra_collect_famine.gd" id="14_h3vsm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_naa0s"]
 atlas = ExtResource("2_xf17j")
@@ -1544,7 +1543,7 @@ State_Machine = NodePath("StateMachine")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Prim_Atk1_L"
+animation = &"Prim_Atk1_D"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -1580,7 +1579,7 @@ shape = SubResource("RectangleShape2D_7lg0n")
 
 [node name="CollectionArea" type="Area2D" parent="."]
 visible = false
-collision_layer = 0
+collision_layer = 64
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
@@ -1590,6 +1589,7 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 [node name="PlayerDetection" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
 shape = SubResource("RectangleShape2D_bnqng")
@@ -1598,6 +1598,8 @@ debug_color = Color(0.225677, 0.638571, 0, 0.419608)
 [node name="PrimAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PrimAtkRange"]
 light_mask = 2
@@ -1608,6 +1610,9 @@ debug_color = Color(0.718829, 0.480597, 5.77569e-07, 0.42)
 [node name="SecAtkRange" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+show_behind_parent = true
+light_mask = 0
+visibility_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SecAtkRange"]
 light_mask = 2
@@ -1619,6 +1624,7 @@ debug_color = Color(0.85258, 0.370438, 1.92523e-07, 0.42)
 [node name="InteractionArea" type="Area2D" parent="."]
 unique_name_in_owner = true
 visible = false
+collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 light_mask = 2
@@ -1676,9 +1682,6 @@ mynra_animation = NodePath("../../AnimatedSprite2D")
 script = ExtResource("6_s2b13")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
-
-[node name="CollectFamine" type="Node" parent="StateMachine"]
-script = ExtResource("14_h3vsm")
 
 [node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_worrd")
