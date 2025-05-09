@@ -1,8 +1,8 @@
 #DashState
 extends MynraState
 
-@export var scythio: PlayerScythio
-@export var scythio_animation : AnimatedSprite2D
+@export var mynra: PlayerMynra
+@export var mynra_animation : AnimatedSprite2D
 
 @export var ghost_node: PackedScene				#Exports ghost for ghost frames for after affects of dash animation
 @export var dash_cooldown: float = 0.75
@@ -22,42 +22,42 @@ var start_position: Vector2 = Vector2.ZERO			#Tracks starting position before th
 
 func _ready() -> void:
 	#Tracks if animation has finished, and when it has, it runs the "_on_animation_finished()" function
-	scythio_animation.animation_finished.connect(_on_animation_finished)
+	mynra_animation.animation_finished.connect(_on_animation_finished)
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	if scythio.get_parent().name == "Oblivion":
+	if mynra.get_parent().name == "Oblivion":
 		can_dash = false
 	
-	if scythio.player:
+	if mynra.player:
 		#Awaits input from player, then, if the cooldown is inactive, runs the "dash()" function
 		if Input.is_action_pressed("dash") && can_dash:
 			_dash_as_player()
-	elif !scythio.player && can_dash:
+	elif !mynra.player && can_dash:
 		_dash_as_companion()
 	
 	#While dashing:
-	if is_animating && scythio.player:
+	if is_animating && mynra.player:
 		#Applies dash velocity
-		scythio.velocity = dash_velocity
-		var prev_position = scythio.position
-		scythio.move_and_slide()
+		mynra.velocity = dash_velocity
+		var prev_position = mynra.position
+		mynra.move_and_slide()
 		
 		#Accumulated distance traveled
-		distance_covered += scythio.position.distance_to(prev_position)
+		distance_covered += mynra.position.distance_to(prev_position)
 		
 		#Handles Ghosting effect
 		if can_ghost:
 			can_ghost = false
 			var ghost = ghost_node.instantiate()
-			ghost.set_property(scythio.position, $"../../AnimatedSprite2D".scale)
+			ghost.set_property(mynra.position, $"../../AnimatedSprite2D".scale)
 			if ghost is AnimatedSprite2D:
-				ghost.animation = scythio_animation.animation
+				ghost.animation = mynra_animation.animation
 				ghost.frame = frame
-				#print("scythio's dash frame: ", frame)
+				#print("Mynra's dash frame: ", frame)
 			get_tree().current_scene.add_child(ghost)
 			
-			frame = (frame + 1) % scythio_animation.sprite_frames.get_frame_count(scythio_animation.animation)
+			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
 			start_ghost_timer()
 		
 		#Stops dash when target distance is reached
@@ -65,30 +65,30 @@ func _on_physics_update(_delta: float) -> void:
 			_end_dash()
 	
 	#While dashing:
-	elif is_animating && !scythio.player:
+	elif is_animating && !mynra.player:
 		#Gets input velocity from the "Game_Input_Events" class,
 		#and uses it to calculate the proper direction of the dash
 		
 		#Applies dash velocity
-		scythio.velocity = dash_velocity
-		var prev_position = scythio.position
-		scythio.move_and_slide()
+		mynra.velocity = dash_velocity
+		var prev_position = mynra.position
+		mynra.move_and_slide()
 		
 		#Accumulated distance traveled
-		distance_covered += scythio.position.distance_to(prev_position)
+		distance_covered += mynra.position.distance_to(prev_position)
 		
 		#Handles Ghosting effect
 		if can_ghost:
 			can_ghost = false
 			var ghost = ghost_node.instantiate()
-			ghost.set_property(scythio.position, $"../../AnimatedSprite2D".scale)
+			ghost.set_property(mynra.position, $"../../AnimatedSprite2D".scale)
 			if ghost is AnimatedSprite2D:
-				ghost.animation = scythio_animation.animation
+				ghost.animation = mynra_animation.animation
 				ghost.frame = frame
 				#print(frame)
 			get_tree().current_scene.add_child(ghost)
 			
-			frame = (frame + 1) % scythio_animation.sprite_frames.get_frame_count(scythio_animation.animation)
+			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
 			start_ghost_timer()
 		
 		#Stops dash when target distance is reached
@@ -101,9 +101,9 @@ func _dash_as_player():
 	if !is_animating:
 		is_animating = true
 		can_dash = false
-		scythio.damageable = false
+		mynra.damageable = false
 		
-		start_position = scythio.position
+		start_position = mynra.position
 		distance_covered = 0.0
 		
 		var input_velocity = Game_Input_Events.velocity_of_movement()
@@ -111,21 +111,21 @@ func _dash_as_player():
 		if input_velocity != Vector2.ZERO:
 			dash_direction = input_velocity.normalized()
 		else:
-			dash_direction = scythio.player_direction.normalized()
+			dash_direction = mynra.player_direction.normalized()
 			
 		#Uses the separate dash_speed value in place of the typical player speed from the main script
 		dash_velocity = dash_direction * dash_speed
 		
 		#Plays the proper dash animation dependant on the direction the player is moving
-		match scythio.player_direction:
+		match mynra.player_direction:
 			Vector2.LEFT:
-				scythio_animation.play("Dash_L")
+				mynra_animation.play("Dash_L")
 			Vector2.RIGHT:
-				scythio_animation.play("Dash_R")
+				mynra_animation.play("Dash_R")
 			Vector2.UP:
-				scythio_animation.play("Dash_U")
+				mynra_animation.play("Dash_U")
 			_:
-				scythio_animation.play("Dash_D")
+				mynra_animation.play("Dash_D")
 		
 		#Puts the dash on cooldown
 		start_cooldown()
@@ -136,33 +136,33 @@ func _dash_as_companion():
 		is_animating = true																#Set "is_animating" and  "can_dash" to true to avoid spamming
 		can_dash = false
 		
-		scythio.damageable = false														#Dashing grants free i-frames
+		mynra.damageable = false														#Dashing grants free i-frames
 		
 		var input_velocity																			#Gets player's current velocity_vector from the "Game_Input_Events" class
-		if scythio.target_arlithon:
-			input_velocity = scythio.target_arlithon.global_position - scythio.global_position
+		if mynra.target_arlithon:
+			input_velocity = mynra.target_arlithon.global_position - mynra.global_position
 		else:
-			input_velocity = scythio.player_body.global_position - scythio.global_position
+			input_velocity = mynra.player_body.global_position - mynra.global_position
 		
 		var dash_direction: Vector2
 		if input_velocity != Vector2.ZERO:
 			dash_direction = input_velocity.normalized()
 		else:
-			dash_direction = scythio.player_direction.normalized()
+			dash_direction = mynra.player_direction.normalized()
 			
 		#Uses the separate dash_speed value in place of the typical player speed from the main script
 		dash_velocity = dash_direction * dash_speed
 		
 		#Plays the proper dash animation dependant on the direction the player is moving
-		match scythio.player_direction:
+		match mynra.player_direction:
 			Vector2.LEFT:
-				scythio_animation.play("Dash_L")
+				mynra_animation.play("Dash_L")
 			Vector2.RIGHT:
-				scythio_animation.play("Dash_R")
+				mynra_animation.play("Dash_R")
 			Vector2.UP:
-				scythio_animation.play("Dash_U")
+				mynra_animation.play("Dash_U")
 			_:
-				scythio_animation.play("Dash_D")
+				mynra_animation.play("Dash_D")
 		
 		#Puts the dash on cooldown
 		start_cooldown()
@@ -196,9 +196,9 @@ func _on_next_transitions() -> void:
 	if is_animating:
 		return
 	
-	if scythio.damaged:
+	if mynra.damaged:
 		transition.emit("Damage")
-	elif scythio.player:
+	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
 		elif Game_Input_Events.is_prim_attacking():
@@ -209,16 +209,16 @@ func _on_next_transitions() -> void:
 			transition.emit("Idle")
 	else:
 		var arlithons = get_tree().get_nodes_in_group("arlithons")
-		if !arlithons.is_empty() || scythio.target_arlithon:
+		if !arlithons.is_empty() || mynra.target_arlithon:
 			transition.emit("HuntArlithons")
-		elif arlithons.is_empty() && !scythio.at_player:
+		elif arlithons.is_empty() && !mynra.at_player:
 			transition.emit("FollowPlayer")
-		elif scythio.at_player && !scythio.target_arlithon:
+		elif mynra.at_player && !mynra.target_arlithon:
 			transition.emit("Idle")
 
 #Tracks when animation is finished
 func _on_animation_finished():
-	if scythio_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
+	if mynra_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
 		is_animating = false
 
 #Runs upon entering stated
@@ -231,5 +231,5 @@ func _on_exit():
 	#print(distance_covered)
 	frame = 0
 	is_animating = false
-	scythio.damageable = true
-	scythio.damaged = false
+	mynra.damageable = true
+	mynra.damaged = false

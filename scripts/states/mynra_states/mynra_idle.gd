@@ -1,30 +1,31 @@
 #Idle
 extends MynraState
 
-@onready var scythio = get_parent().get_parent()
-@onready var scythio_animation = get_parent().get_parent().get_child(0)
+@export var mynra : PlayerMynra
+@export var mynra_animation : AnimatedSprite2D
+
 var waiting: bool = false
+
 
 #Plays the proper animation based on the direction the player was facing
 #when they entered the state (NOTE: there are no "Idle_U" animations)
 var anim_name: String
 
 func _ready() -> void:
-	print(scythio, scythio_animation)
-	if scythio.player:
-		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
-		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle_D"
-	elif !scythio.player && scythio.get_parent().name != "Oblivion":
+	if mynra.player:
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle_D1"
+	elif !mynra.player && mynra.get_parent().name != "Oblivion":
 		var player = get_tree().get_first_node_in_group("Player")
-		scythio.velocity = Vector2.ZERO
-		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
-		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle_D"
+		mynra.velocity = Vector2.ZERO
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		else: anim_name = "Idle_D1"
 	
-	if scythio_animation.animation != anim_name && scythio.get_parent().name != "Oblivion":
+	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion":
 		#print(anim_name)
-		scythio_animation.play(anim_name)
+		mynra_animation.play(anim_name)
 
 #Runs every frame
 func _on_update(_delta: float) -> void:
@@ -33,30 +34,30 @@ func _on_update(_delta: float) -> void:
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	#print("here in OPU")
-	if scythio.player:
+	if mynra.player:
 		#print("I'm a player")
-		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
-		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
 		else: anim_name = "Idle_D1"
-	elif !scythio.player && scythio.get_parent().name != "Oblivion":
+	elif !mynra.player && mynra.get_parent().name != "Oblivion":
 		var player = get_tree().get_first_node_in_group("Player")
-		scythio.velocity = Vector2.ZERO
-		if scythio.player_direction == Vector2.LEFT: anim_name = "Idle_L"
-		elif scythio.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
+		mynra.velocity = Vector2.ZERO
+		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
+		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
 		else: anim_name = "Idle_D1"
 	#else:
-		#scythio.velocity = Vector2.ZERO
+		#mynra.velocity = Vector2.ZERO
 		#if waiting:
-			#scythio_animation.pause()
+			#mynra_animation.pause()
 		#else:
-			#scythio_animation.play("Idle_L")
+			#mynra_animation.play("Idle_L")
 			#_waiting()
 	
 	#print("Getting ready to play")
-	if scythio_animation.animation != anim_name && scythio.get_parent().name != "Oblivion" || scythio.player:
+	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion" || mynra.player:
 		#print(anim_name)
-		scythio_animation.play(anim_name)
-		#print("Just played ", scythio_animation.frame)
+		mynra_animation.play(anim_name)
+		#print("Just played ", mynra_animation.frame)
 
 func _waiting():
 	waiting = true
@@ -73,11 +74,11 @@ func _on_next_transitions() -> void:
 	#do that
 	Game_Input_Events.movement_input()
 	
-	if scythio.damaged:
+	if mynra.damaged:
 		transition.emit("Damaged")
 	else:
 		#State transitions used when this is the current player character
-		if scythio.player:
+		if mynra.player:
 			if Game_Input_Events.is_movement_input():
 				transition.emit("Movement")
 			elif Game_Input_Events.is_dashing():
@@ -87,14 +88,14 @@ func _on_next_transitions() -> void:
 			elif Game_Input_Events.is_sec_attacking():
 				transition.emit("SecondaryAttack")
 		#States transitions used when this is the current companion
-		elif !scythio.player && scythio.get_parent().name != "Oblivion":
+		elif !mynra.player && mynra.get_parent().name != "Oblivion":
 			#print("I'm an NPC")
 			var arlithons = get_tree().get_nodes_in_group("arlithons")
-			if !arlithons.is_empty() || scythio.target_arlithon:
+			if !arlithons.is_empty() || mynra.target_arlithon:
 				transition.emit("HuntArlithons")
-			elif arlithons.is_empty() && !scythio.at_player:
+			elif arlithons.is_empty() && !mynra.at_player:
 				transition.emit("FollowPlayer")
-			elif scythio.at_player && !scythio.target_arlithon:
+			elif mynra.at_player && !mynra.target_arlithon:
 				transition.emit("Idle")
 		else:
 			return
@@ -106,4 +107,4 @@ func _on_enter():
 
 #Runs upon exiting state
 func _on_exit():
-	scythio_animation.stop()
+	mynra_animation.stop()

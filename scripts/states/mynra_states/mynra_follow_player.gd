@@ -1,8 +1,8 @@
 #FollowPlayerState
 extends MynraState
 
-@export var scythio: PlayerScythio
-@export var scythio_animation: AnimatedSprite2D
+@export var mynra: PlayerMynra
+@export var mynra_animation: AnimatedSprite2D
 
 #Scans current scene to check for any arlithons currently in it
 var arlithons
@@ -28,36 +28,36 @@ func _on_physics_update(_delta: float) -> void:
 	
 	#Checks to make sure there are no arlithons left to be attacked, then, if not, follows the player
 	#if arlithons.is_empty():
-	var direction = scythio.to_local(scythio.nav.get_next_path_position()).normalized()
+	var direction = mynra.to_local(mynra.nav.get_next_path_position()).normalized()
 	
-	scythio.velocity = direction.normalized() * scythio.speed
+	mynra.velocity = direction.normalized() * mynra.speed
 	
-	#Used for playing the proper animation depending on what direction scythio is moving (Right, Left, Down, or Up)
+	#Used for playing the proper animation depending on what direction Mynra is moving (Right, Left, Down, or Up)
 	if abs(direction.x) > abs(direction.y):
 		if direction.x > 0:
-			scythio_animation.play("Run_R")
+			mynra_animation.play("Run_R")
 		else:
-			scythio_animation.play("Run_L")
+			mynra_animation.play("Run_L")
 	else:
 		if direction.y > 0:
-			scythio_animation.play("Run_D")
+			mynra_animation.play("Run_D")
 		else:
-			scythio_animation.play("Run_U")
+			mynra_animation.play("Run_U")
 
 func _make_path():
-	scythio.nav.target_position = scythio.player_body.global_position
+	mynra.nav.target_position = mynra.player_body.global_position
 	
 func _on_nav_timeout() -> void:
 	_make_path()
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if !scythio.player:
+	if !mynra.player:
 		if eligible_targets > 0:
 			transition.emit("HuntArlithons")
-		elif scythio.global_position.distance_to(scythio.player_body.global_position) <= 32 || scythio.at_player:
+		elif mynra.global_position.distance_to(mynra.player_body.global_position) <= 32 || mynra.at_player:
 			transition.emit("Idle")
-		elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 120:
+		elif mynra.global_position.distance_to(mynra.player_body.global_position) >= 120:
 			transition.emit("Dash")
 	else:
 		transition.emit("Idle")

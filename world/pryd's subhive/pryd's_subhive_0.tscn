@@ -1,10 +1,8 @@
-[gd_scene load_steps=10 format=4 uid="uid://dkadql6sapk1y"]
+[gd_scene load_steps=8 format=4 uid="uid://dkadql6sapk1y"]
 
 [ext_resource type="Texture2D" uid="uid://dmrh5sel2w2eh" path="res://assets/alpha/world/Oblivion/White Sun/Oblivion Tileset (White Sun).png" id="1_yktfh"]
 [ext_resource type="Texture2D" uid="uid://cfkw1ppit8pik" path="res://assets/alpha/world/Oblivion/White Sun/Nature Tileset (White Sun).png" id="2_e3nsg"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="3_1eruh"]
-[ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="4_hcdqj"]
-[ext_resource type="PackedScene" uid="uid://bvy0bt4bf1cso" path="res://singletons/level_transition.tscn" id="5_yc5qa"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e3nsg"]
 texture = ExtResource("1_yktfh")
@@ -89,9 +87,3 @@ tile_set = SubResource("TileSet_1eruh")
 position = Vector2(320, 180)
 
 [node name="Camera2D" type="Camera2D" parent="PlayerMynra"]
-
-[node name="PlayerScythio" parent="." instance=ExtResource("4_hcdqj")]
-position = Vector2(-260, 165)
-
-[node name="LevelTransition" parent="." instance=ExtResource("5_yc5qa")]
-position = Vector2(144, 168)

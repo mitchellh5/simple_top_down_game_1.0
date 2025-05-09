@@ -1535,11 +1535,12 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
+spriteMynra = NodePath("AnimatedSprite2D")
 nav = NodePath("NavigationAgent2D")
 hit_box = NodePath("Hitbox")
 player_detect = NodePath("PlayerDetection")
@@ -1655,33 +1656,55 @@ autostart = true
 script = ExtResource("3_ugxf0")
 initial_mynra_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="StateMachine"]
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("4_ejkyt")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Movement" type="Node" parent="StateMachine"]
+[node name="Movement" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("4_wry53")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Dash" type="Node" parent="StateMachine"]
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_osx85")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 ghost_node = ExtResource("7_djmiq")
+dash_cooldown = null
+ghost_cooldown = null
+dash_speed = null
+dash_distance = null
 
-[node name="FollowPlayer" type="Node" parent="StateMachine"]
+[node name="FollowPlayer" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_bnqng")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="HuntArlithons" type="Node" parent="StateMachine"]
+[node name="HuntArlithons" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("11_k76i0")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="PrimaryAttack" type="Node" parent="StateMachine"]
+[node name="PrimaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_2k2v3")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="SecondaryAttack" type="Node" parent="StateMachine"]
+[node name="SecondaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("6_s2b13")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Damaged" type="Node" parent="StateMachine"]
+[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_worrd")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Death" type="Node" parent="StateMachine"]
+[node name="Death" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("11_yuc1m")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
 
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

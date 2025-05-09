@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cfkw1ppit8pik" path="res://assets/alpha/world/Oblivion/White Sun/Nature Tileset (White Sun).png" id="2_ykrys"]
 [ext_resource type="Texture2D" uid="uid://b8s1rx6jljyiv" path="res://assets/alpha/world/Oblivion/White Sun/Water Tileset (White Sun).png" id="3_6nccv"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="4_gag02"]
-[ext_resource type="PackedScene" uid="uid://gmo51surli8t" path="res://scenes/characters/scythio.tscn" id="5_wqywn"]
+[ext_resource type="PackedScene" uid="uid://dwryiq4gcfblj" path="res://scenes/characters/scythio.tscn" id="5_ykrys"]
 [ext_resource type="PackedScene" uid="uid://ca7mb3kaemoma" path="res://singletons/LevelTransition.tscn" id="6_ykrys"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i2537"]
@@ -241,10 +241,10 @@ position = Vector2(211, 177)
 
 [node name="Camera2D" type="Camera2D" parent="PlayerMynra"]
 
-[node name="PlayerScythio" parent="." instance=ExtResource("5_wqywn")]
-position = Vector2(366, 178)
+[node name="PlayerScythio" parent="." instance=ExtResource("5_ykrys")]
+position = Vector2(365, 181)
 
 [node name="arlithons" type="Node" parent="."]
 
 [node name="LevelTransition" parent="." instance=ExtResource("6_ykrys")]
-position = Vector2(365, 180)
+position = Vector2(365, 181)
