@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b45s2k4e62s1f" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset (Coating).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="Texture2D" uid="uid://dksecr0fj6f74" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png" id="2_nf421"]
-[ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_fbjvc"]
+[ext_resource type="PackedScene" uid="uid://gmo51surli8t" path="res://scenes/characters/scythio.tscn" id="3_fbjvc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fbjvc"]
 texture = ExtResource("1_nf421")

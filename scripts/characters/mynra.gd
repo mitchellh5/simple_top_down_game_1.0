@@ -1,11 +1,11 @@
-# PlayerMynra
+# PlayerScythio
 extends CharacterBody2D
-class_name PlayerMynra
+class_name PlayerScythio
 
 # Exported variables, these are assigned at start up and can easily be reassigned
 # in the inspector as needed and dynamically work with the renaming of nodes
 @export var State_Machine: Node											# Connects to state machine
-@export var spriteMynra: AnimatedSprite2D								# Connects to AnimatedSprite2D for handling animations
+@export var spriteScythio: AnimatedSprite2D								# Connects to AnimatedSprite2D for handling animations
 @export var nav: NavigationAgent2D 										# Links the navigation2d node to the enemy for pathfinding
 @export var hit_box: Area2D												# Sets up primary attack hit box
 @export var player_detect: Area2D										# Sets up player detection area
@@ -16,25 +16,25 @@ class_name PlayerMynra
 @export var prim_atk_cd: Timer											# Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
 																		# just watch the companion tear everything to shreds around them)
 
-# Tracks if Mynra is the current player character, or a companion
-# (set to true by default since Mynra is the "anchor" character)
-@onready var player = true
+# Tracks if Scythio is the current player character, or a companion
+# (set to false by default)
+@onready var player = false
 
-# Tracks Mynra's current state within the "StateMachine"
+# Tracks Scythio's current state within the "StateMachine"
 var current_state
 
-# Variabls used for Famine (secondary attack)
-const FAMINE_PATH = preload("res://scenes/weapons/famine.tscn")			# Preloads Famine as a scene so that it can be thrown and caught by Mynra
-var target_pos: Vector2													# Tracks the target position so that Famine always spawns from Mynra's current position
-var throw_dir: Vector2													# Tracks the direction we want to throw Famine in
+# Variabls used for Life (secondary attack)
+const LIFE_PATH = preload("res://scenes/weapons/life.tscn")				# Preloads Life as a scene so that it can be thrown and caught by Scythio
+var target_pos: Vector2													# Tracks the target position so that Life always spawns from Scythio's current position
+var throw_dir: Vector2													# Tracks the direction we want to throw Life in
 
 # Basic variables for player
 var speed = 200															# Sets speed of player movement
-var angle : float														# Tracks the direction Mynra is facing
+var angle : float														# Tracks the direction Scythio is facing
 var player_direction : Vector2											# Used to track the direction the player was last facing for idling
-var health = 10															# Sets health value for Mynra
-var ammo = 1															# Sets ammo for Famine (1, because there is only one)
-var collectable: bool													# Sets variable to determine if Famine is currently collectable
+var health = 10															# Sets health value for Scythio
+var ammo = 1															# Sets ammo for Life (1, because there is only one)
+var collectable: bool													# Sets variable to determine if Life is currently collectable
 var damaged = false														# Used for state transitions
 var damageable = true													# Used for i-frames
 var damage_rate : int													# Used for determining how much damage the player takes from an attack
@@ -53,6 +53,8 @@ var arlithon_in_prim_atk_range : bool
 var arlithon_in_sec_atk_range : bool
 var target_arlithon : CharacterBody2D
 var sec_atk_cooldown : bool = false
+var life_spotted : bool = false											# Used to ensure life is in LOS for dashing purposes
+var collecting_life : bool = false										# Used to track if Scythio is currently collecting Life for state changes
 
 # Runs on startup
 func _ready():
@@ -64,7 +66,7 @@ func _ready():
 	sec_atk_range.monitoring = true
 	interact_area.monitoring = true
 	
-	# For future use only, incase Mynra is ever set as the companion by default instead of the current player character
+	# For future use only, incase Scythio is ever set as the companion by default instead of the current player character
 	if !player:
 		var nodes_in_group = get_tree().get_nodes_in_group("Player")
 		if !nodes_in_group.is_empty():
@@ -123,44 +125,31 @@ func _physics_process(delta: float) -> void:
 		player_body = get_tree().get_first_node_in_group("Player")
 		
 		var distance_from_player
-		#var distance_from_famine
+		var distance_from_life
 		var distance_from_arlithon
 		
-		if player_body:
-			distance_from_player = global_position.distance_to(player_body.global_position)
+		if ammo <= 0:
+			distance_from_life = global_position.distance_to(get_tree().root.find_child("Life", true, false).global_position)
+		else:
+			distance_from_life = 10000000000
 		
 		if target_arlithon:
 			distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
 		else:
 			distance_from_arlithon = 10000000000
 		
-		if distance_from_arlithon < distance_from_player:
+		if distance_from_arlithon < distance_from_life:
 			nav.target_position = target_arlithon.global_position
-		else:
+			collecting_life = false
+		elif ammo <= 0:
+			_check_los_life()
+			collecting_life = true
+			nav.target_position = get_tree().root.find_child("Life", true, false).global_position
+		elif player_body:
+			_check_los_player()
+			collecting_life = false
 			nav.target_position = player_body.global_position
 		
-		#if ammo <= 0:
-			#distance_from_famine = global_position.distance_to(get_tree().root.find_child("Famine", true, false).global_position)
-		#else:
-			#distance_from_famine = 10000000000
-		#
-		#if target_arlithon:
-			#distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
-		#else:
-			#distance_from_arlithon = 10000000000
-		#
-		#if distance_from_arlithon < distance_from_famine:
-			#nav.target_position = target_arlithon.global_position
-			#collecting_famine = false
-		#elif ammo <= 0:
-			#_check_los_famine()
-			#collecting_famine = true
-			#nav.target_position = get_tree().root.find_child("Famine", true, false).global_position
-		#elif player_body:
-			#_check_los_player()
-			#collecting_famine = false
-			#nav.target_position = player_body.global_position
-		#
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)
 	#_check_player_range()
@@ -175,7 +164,7 @@ func _character_swap() -> void:
 		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 		add_to_group("Player")
 		remove_from_group("Companion")
-		#print("I am, Mynra, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
+		#print("I am, Scythio, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
 	else:
 		set_collision_layer_value(1, false)
 		set_collision_layer_value(6, true)
@@ -188,7 +177,7 @@ func _character_swap() -> void:
 			player_body = nodes_in_group[0] as CharacterBody2D
 		else:
 			print("That's weird, I don't see any players here")
-		#print("I am, Mynra, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
+		#print("I am, Scythio, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
 
 func _check_los_enemy() -> bool:
 	var collider = los.get_collider()
@@ -206,13 +195,13 @@ func _check_los_player() -> bool:
 	else:
 		return false
 
-#func _check_los_famine() -> bool:
-	#var collider = los.get_collider()
-	#if collider && collider.is_in_group("Player"):
-		#famine_spotted = true
-		#return true
-	#else:
-		#return false
+func _check_los_life() -> bool:
+	var collider = los.get_collider()
+	if collider && collider.is_in_group("Player"):
+		life_spotted = true
+		return true
+	else:
+		return false
 
 func _find_player_node() -> void:
 	var nodes_in_group = get_tree().get_nodes_in_group("Player")
@@ -238,16 +227,16 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 		#print("Mission failed, we'll get 'em next time.")
 		arlithon_in_sec_atk_range = false
 
-#Used for transitioning to the "Damaged" state when Mynra takes damage
+#Used for transitioning to the "Damaged" state when Scythio takes damage
 func lose_health(dmg):
 	damage_rate = dmg
 	if damageable:
 		damaged = true
 		print(health)
 
-func collect_famine():
+func collect_life():
 	if collectable:
-		#print("Famine collected")
+		#print("Life collected")
 		ammo = 1
 		_secondary_atk_cd()
  

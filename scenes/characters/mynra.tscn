@@ -904,7 +904,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"DMG_U",
-"speed": 20.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 0.5,
@@ -1054,28 +1054,28 @@ animations = [{
 "duration": 20.0,
 "texture": SubResource("AtlasTexture_p6nah")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_dcgqb")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_vruj7")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_lqipp")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_nkrns")
 }, {
 "duration": 10.0,
 "texture": SubResource("AtlasTexture_x6oly")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_fbpfv")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_o82bh")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_8bk35")
 }],
 "loop": false,
@@ -1086,28 +1086,28 @@ animations = [{
 "duration": 20.0,
 "texture": SubResource("AtlasTexture_1oj1s")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_vohpj")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_wx34x")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_cep7f")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_i23au")
 }, {
 "duration": 10.0,
 "texture": SubResource("AtlasTexture_qdkh6")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_ax3b2")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_thhdd")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_h542p")
 }],
 "loop": false,
@@ -1135,31 +1135,31 @@ animations = [{
 "duration": 20.0,
 "texture": SubResource("AtlasTexture_7apug")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_4sfqn")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_qxt4v")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_siqm1")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_thwm0")
 }, {
 "duration": 10.0,
 "texture": SubResource("AtlasTexture_tf5c3")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_g65u5")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_82sxx")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_bu0h4")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_enfvi")
 }],
 "loop": false,
@@ -1170,31 +1170,31 @@ animations = [{
 "duration": 20.0,
 "texture": SubResource("AtlasTexture_3fnvn")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_qip02")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_ews32")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_auhm7")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_dbav3")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_1ltv3")
 }, {
 "duration": 10.0,
 "texture": SubResource("AtlasTexture_awcsp")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_jrcpx")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_4d74y")
 }, {
-"duration": 1.0,
+"duration": 0.75,
 "texture": SubResource("AtlasTexture_5twoo")
 }],
 "loop": true,
@@ -1535,12 +1535,11 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
-spriteMynra = NodePath("AnimatedSprite2D")
 nav = NodePath("NavigationAgent2D")
 hit_box = NodePath("Hitbox")
 player_detect = NodePath("PlayerDetection")
@@ -1553,7 +1552,7 @@ prim_atk_cd = NodePath("Prim_Atk_Cooldown")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Idle_D3"
+animation = &"Sec_Atk_D"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -1656,51 +1655,33 @@ autostart = true
 script = ExtResource("3_ugxf0")
 initial_mynra_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="Idle" type="Node" parent="StateMachine"]
 script = ExtResource("4_ejkyt")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Movement" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="Movement" type="Node" parent="StateMachine"]
 script = ExtResource("4_wry53")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="Dash" type="Node" parent="StateMachine"]
 script = ExtResource("6_osx85")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 ghost_node = ExtResource("7_djmiq")
 
-[node name="FollowPlayer" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="FollowPlayer" type="Node" parent="StateMachine"]
 script = ExtResource("10_bnqng")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="HuntArlithons" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="HuntArlithons" type="Node" parent="StateMachine"]
 script = ExtResource("11_k76i0")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="PrimaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="PrimaryAttack" type="Node" parent="StateMachine"]
 script = ExtResource("6_2k2v3")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="SecondaryAttack" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="SecondaryAttack" type="Node" parent="StateMachine"]
 script = ExtResource("6_s2b13")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="Damaged" type="Node" parent="StateMachine"]
 script = ExtResource("10_worrd")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Death" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+[node name="Death" type="Node" parent="StateMachine"]
 script = ExtResource("11_yuc1m")
-mynra = NodePath("../..")
-mynra_animation = NodePath("../../AnimatedSprite2D")
 
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
