@@ -163,17 +163,24 @@ func _physics_process(delta: float) -> void:
 func _character_swap() -> void:
 	if player:
 		set_collision_layer_value(1, true)
-		set_collision_mask_value(6, false)
+		set_collision_layer_value(6, false)
 		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 		add_to_group("Player")
 		remove_from_group("Companion")
+		#print("I am, Scythio, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
 	else:
 		set_collision_layer_value(1, false)
-		set_collision_mask_value(6, true)
+		set_collision_layer_value(6, true)
 		motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 		wall_min_slide_angle = 0
 		add_to_group("Companion")
 		remove_from_group("Player")
+		var nodes_in_group = get_tree().get_nodes_in_group("Player")
+		if !nodes_in_group.is_empty():
+			player_body = nodes_in_group[0] as CharacterBody2D
+		else:
+			print("That's weird, I don't see any players here")
+		
 
 func _check_los_enemy() -> bool:
 	var collider = los.get_collider()

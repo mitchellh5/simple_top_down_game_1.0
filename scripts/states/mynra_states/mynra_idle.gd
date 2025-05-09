@@ -15,13 +15,13 @@ func _ready() -> void:
 	if mynra.player:
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle_D"
+		else: anim_name = "Idle_D1"
 	elif !mynra.player && mynra.get_parent().name != "Oblivion":
 		var player = get_tree().get_first_node_in_group("Player")
 		mynra.velocity = Vector2.ZERO
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle_D"
+		else: anim_name = "Idle_D1"
 	
 	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion":
 		#print(anim_name)
@@ -33,18 +33,18 @@ func _on_update(_delta: float) -> void:
 
 #Runs every frame
 func _on_physics_update(_delta: float) -> void:
-	print("here in OPU")
+	#print("here in OPU")
 	if mynra.player:
-		print("I'm a player")
+		#print("I'm a player")
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle1_D"
+		else: anim_name = "Idle_D1"
 	elif !mynra.player && mynra.get_parent().name != "Oblivion":
 		var player = get_tree().get_first_node_in_group("Player")
 		mynra.velocity = Vector2.ZERO
 		if mynra.player_direction == Vector2.LEFT: anim_name = "Idle_L"
 		elif mynra.player_direction == Vector2.RIGHT: anim_name = "Idle_R"
-		else: anim_name = "Idle1_D"
+		else: anim_name = "Idle_D1"
 	#else:
 		#mynra.velocity = Vector2.ZERO
 		#if waiting:
@@ -53,11 +53,11 @@ func _on_physics_update(_delta: float) -> void:
 			#mynra_animation.play("Idle_L")
 			#_waiting()
 	
-	print("Getting ready to play")
+	#print("Getting ready to play")
 	if mynra_animation.animation != anim_name && mynra.get_parent().name != "Oblivion" || mynra.player:
-		print(anim_name)
+		#print(anim_name)
 		mynra_animation.play(anim_name)
-		print("Just played ", mynra_animation.frame)
+		#print("Just played ", mynra_animation.frame)
 
 func _waiting():
 	waiting = true
@@ -102,8 +102,8 @@ func _on_next_transitions() -> void:
 
 #Runs upon entering state
 func _on_enter():
-	print("Hey bitches we're idle now")
-	
+	#print("Hey bitches we're idle now")
+	pass
 
 #Runs upon exiting state
 func _on_exit():

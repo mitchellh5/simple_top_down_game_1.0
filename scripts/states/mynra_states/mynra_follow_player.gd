@@ -55,7 +55,7 @@ func _on_next_transitions() -> void:
 	if !mynra.player:
 		if eligible_targets > 0:
 			transition.emit("HuntArlithons")
-		elif mynra.at_player:
+		elif mynra.global_position.distance_to(mynra.player_body.global_position) <= 32 || mynra.at_player:
 			transition.emit("Idle")
 		elif mynra.global_position.distance_to(mynra.player_body.global_position) >= 120:
 			transition.emit("Dash")

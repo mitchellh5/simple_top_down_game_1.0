@@ -942,7 +942,7 @@ State_Machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_flski")
-animation = &"DMG_R"
+animation = &"Dash_U"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -994,7 +994,6 @@ debug_color = Color(0.85098, 0.372549, 0, 0.419608)
 
 [node name="PlayerDetection" type="Area2D" parent="."]
 unique_name_in_owner = true
-visible = false
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
@@ -1051,7 +1050,7 @@ collision_mask = 63
 one_shot = true
 
 [node name="Nav" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.5
 autostart = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_scythio_state")]

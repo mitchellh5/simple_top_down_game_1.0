@@ -96,9 +96,7 @@ func _on_next_transitions() -> void:
 		else:
 			distance = 0
 		
-		if mynra.ammo <= 0 && mynra.collecting_life:
-			transition.emit("CollectLife")
-		elif arlithons.is_empty() || !one_still_lives:
+		if arlithons.is_empty() || !one_still_lives:
 			transition.emit("FollowPlayer")
 		elif (mynra.arlithon_in_prim_atk_range || distance <= 25) && mynra.target_arlithon.is_alive:
 			transition.emit("PrimaryAttack")

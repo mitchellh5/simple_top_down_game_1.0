@@ -1,12 +1,10 @@
-[gd_scene load_steps=39 format=4 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=37 format=4 uid="uid://dkb8pkean1gw8"]
 
 [ext_resource type="Script" uid="uid://h7tnw6t4uj5w" path="res://world/pryd's subhive/pryd's_subhive_1.gd" id="1_gj8ej"]
 [ext_resource type="Texture2D" uid="uid://b45s2k4e62s1f" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset (Coating).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="Texture2D" uid="uid://dksecr0fj6f74" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png" id="2_nf421"]
 [ext_resource type="PackedScene" uid="uid://wvpsju4km047" path="res://scenes/characters/scythio.tscn" id="3_fbjvc"]
-[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Pryd's_Basic.tscn" id="4_7aavk"]
-[ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn" id="6_fbjvc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fbjvc"]
 texture = ExtResource("1_nf421")
@@ -366,9 +364,3 @@ position = Vector2(280, 249)
 position = Vector2(429, 322)
 
 [node name="Arlithons" type="Node" parent="."]
-
-[node name="PrydsBasic" parent="Arlithons" instance=ExtResource("4_7aavk")]
-position = Vector2(480, 336)
-
-[node name="Stinger_Mutation" parent="Arlithons/PrydsBasic" instance=ExtResource("6_fbjvc")]
-visible = false

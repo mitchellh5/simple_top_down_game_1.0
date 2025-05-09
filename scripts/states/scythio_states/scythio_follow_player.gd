@@ -57,7 +57,7 @@ func _on_next_transitions() -> void:
 			transition.emit("HuntArlithons")
 		elif scythio.at_player:
 			transition.emit("Idle")
-		elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 120:
+		elif scythio.global_position.distance_to(scythio.player_body.global_position) >= 250:
 			transition.emit("Dash")
 	else:
 		transition.emit("Idle")

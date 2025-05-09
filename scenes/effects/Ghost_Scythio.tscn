@@ -82,7 +82,7 @@ animations = [{
 "duration": 0.5,
 "texture": SubResource("AtlasTexture_el85d")
 }],
-"loop": false,
+"loop": true,
 "name": &"Dash_D",
 "speed": 5.0
 }, {
@@ -99,7 +99,7 @@ animations = [{
 "duration": 0.5,
 "texture": SubResource("AtlasTexture_iq7sf")
 }],
-"loop": false,
+"loop": true,
 "name": &"Dash_L",
 "speed": 5.0
 }, {
@@ -116,7 +116,7 @@ animations = [{
 "duration": 0.5,
 "texture": SubResource("AtlasTexture_0nqmv")
 }],
-"loop": false,
+"loop": true,
 "name": &"Dash_R",
 "speed": 5.0
 }, {
@@ -133,12 +133,12 @@ animations = [{
 "duration": 0.5,
 "texture": SubResource("AtlasTexture_r2syt")
 }],
-"loop": false,
+"loop": true,
 "name": &"Dash_U",
 "speed": 5.0
 }]
 
-[node name="GhostMynra" type="AnimatedSprite2D"]
+[node name="GhostScythio" type="AnimatedSprite2D"]
 modulate = Color(0.470588, 0.470588, 0.470588, 1)
 sprite_frames = SubResource("SpriteFrames_me0n0")
 animation = &"Dash_U"

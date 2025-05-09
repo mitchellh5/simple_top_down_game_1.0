@@ -1,7 +1,7 @@
 #DashState
 extends ScythioState
 
-@export var scythio : PlayerScythio
+@export var scythio: PlayerScythio
 @export var scythio_animation : AnimatedSprite2D
 
 @export var ghost_node: PackedScene				#Exports ghost for ghost frames for after affects of dash animation
@@ -12,7 +12,6 @@ extends ScythioState
 @export var dash_speed: float = 500.0				#Speed at which the character will dash
 @export var dash_distance: float = 150.0			#Distance traveled by the dash
 
-var dash_duration: float							#Duration of the dash
 var frame: int										#Used to track the current frame of animation for ghosting
 var can_dash: bool = true							#Used to track when the dash is on "cool down"
 var can_ghost: bool = true							#Used to avoid smearing from the ghosting effect
@@ -47,6 +46,9 @@ func _on_physics_update(_delta: float) -> void:
 		#Accumulated distance traveled
 		distance_covered += scythio.position.distance_to(prev_position)
 		
+		if distance_covered >= dash_distance:
+			_end_dash()
+		
 		#Handles Ghosting effect
 		if can_ghost:
 			can_ghost = false
@@ -55,14 +57,11 @@ func _on_physics_update(_delta: float) -> void:
 			if ghost is AnimatedSprite2D:
 				ghost.animation = scythio_animation.animation
 				ghost.frame = frame
+				print("Scythio's dash frame: ", frame)
 			get_tree().current_scene.add_child(ghost)
 			
 			frame = (frame + 1) % scythio_animation.sprite_frames.get_frame_count(scythio_animation.animation)
 			start_ghost_timer()
-		
-		#Stops dash when target distance is reached
-		if distance_covered >= dash_distance:
-			_end_dash()
 	
 	#While dashing:
 	elif is_animating && !scythio.player:
@@ -77,6 +76,9 @@ func _on_physics_update(_delta: float) -> void:
 		#Accumulated distance traveled
 		distance_covered += scythio.position.distance_to(prev_position)
 		
+		if distance_covered >= dash_distance:
+			_end_dash()
+		
 		#Handles Ghosting effect
 		if can_ghost:
 			can_ghost = false
@@ -89,10 +91,6 @@ func _on_physics_update(_delta: float) -> void:
 			
 			frame = (frame + 1) % scythio_animation.sprite_frames.get_frame_count(scythio_animation.animation)
 			start_ghost_timer()
-		
-		#Stops dash when target distance is reached
-		if distance_covered >= dash_distance:
-			_end_dash()
 
 #Handles dashing for player
 func _dash_as_player():
@@ -129,19 +127,20 @@ func _dash_as_player():
 		#Puts the dash on cooldown
 		start_cooldown()
 
+
 #Handles dashing for companion
 func _dash_as_companion():
 	if !is_animating:
 		is_animating = true																#Set "is_animating" and  "can_dash" to true to avoid spamming
 		can_dash = false
-		
 		scythio.damageable = false														#Dashing grants free i-frames
 		
+		start_position = scythio.position
+		distance_covered = 0.0
+		
 		var input_velocity																			#Gets player's current velocity_vector from the "Game_Input_Events" class
-		if scythio.target_arlithon && !scythio.collecting_life:
+		if scythio.target_arlithon:
 			input_velocity = scythio.target_arlithon.global_position - scythio.global_position
-		elif scythio.collecting_life:
-			input_velocity = scythio.get_tree().root.find_child("Life", true, false).global_position - scythio.global_position
 		else:
 			input_velocity = scythio.player_body.global_position - scythio.global_position
 		
@@ -188,9 +187,11 @@ func start_ghost_timer():
 func _on_ghost_cooldown_finished():
 	can_ghost = true
 
-#Ends the dash when the character has met the max travel distance
 func _end_dash():
-	pass
+	scythio.velocity = Vector2.ZERO
+	is_animating = false
+	distance_covered = 0.0
+	_on_next_transitions()
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -203,15 +204,13 @@ func _on_next_transitions() -> void:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
 		elif Game_Input_Events.is_prim_attacking():
-			transition.emit("Primary_Attack")
+			transition.emit("PrimaryAttack")
 		elif Game_Input_Events.is_sec_attacking():
-			transition.emit("Secondary_Attack")
+			transition.emit("SecondaryAttack")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
 	else:
 		var arlithons = get_tree().get_nodes_in_group("arlithons")
-		if scythio.collecting_life:
-			transition.emit("CollectLife")
 		if !arlithons.is_empty() || scythio.target_arlithon:
 			transition.emit("HuntArlithons")
 		elif arlithons.is_empty() && !scythio.at_player:
@@ -224,13 +223,14 @@ func _on_animation_finished():
 	if scythio_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
 		is_animating = false
 
-#Runs upon entering state
+#Runs upon entering stated
 func _on_enter():
 	frame = 0
 	is_animating = false
 
 #Runs upon exiting state
 func _on_exit():
+	#print(distance_covered)
 	frame = 0
 	is_animating = false
 	scythio.damageable = true

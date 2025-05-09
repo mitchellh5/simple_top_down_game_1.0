@@ -12,7 +12,6 @@ extends MynraState
 @export var dash_speed: float = 500.0				#Speed at which the character will dash
 @export var dash_distance: float = 150.0			#Distance traveled by the dash
 
-var dash_duration: float							#Duration of the dash
 var frame: int										#Used to track the current frame of animation for ghosting
 var can_dash: bool = true							#Used to track when the dash is on "cool down"
 var can_ghost: bool = true							#Used to avoid smearing from the ghosting effect
@@ -55,6 +54,7 @@ func _on_physics_update(_delta: float) -> void:
 			if ghost is AnimatedSprite2D:
 				ghost.animation = mynra_animation.animation
 				ghost.frame = frame
+				#print("Mynra's dash frame: ", frame)
 			get_tree().current_scene.add_child(ghost)
 			
 			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
@@ -85,6 +85,7 @@ func _on_physics_update(_delta: float) -> void:
 			if ghost is AnimatedSprite2D:
 				ghost.animation = mynra_animation.animation
 				ghost.frame = frame
+				#print(frame)
 			get_tree().current_scene.add_child(ghost)
 			
 			frame = (frame + 1) % mynra_animation.sprite_frames.get_frame_count(mynra_animation.animation)
@@ -138,10 +139,8 @@ func _dash_as_companion():
 		mynra.damageable = false														#Dashing grants free i-frames
 		
 		var input_velocity																			#Gets player's current velocity_vector from the "Game_Input_Events" class
-		if mynra.target_arlithon && !mynra.collecting_life:
+		if mynra.target_arlithon:
 			input_velocity = mynra.target_arlithon.global_position - mynra.global_position
-		elif mynra.collecting_life:
-			input_velocity = mynra.get_tree().root.find_child("Famine", true, false).global_position - mynra.global_position
 		else:
 			input_velocity = mynra.player_body.global_position - mynra.global_position
 		
@@ -203,15 +202,13 @@ func _on_next_transitions() -> void:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
 		elif Game_Input_Events.is_prim_attacking():
-			transition.emit("Primary_Attack")
+			transition.emit("PrimaryAttack")
 		elif Game_Input_Events.is_sec_attacking():
-			transition.emit("Secondary_Attack")
+			transition.emit("SecondaryAttack")
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
 	else:
 		var arlithons = get_tree().get_nodes_in_group("arlithons")
-		if mynra.collecting_life:
-			transition.emit("CollectLife")
 		if !arlithons.is_empty() || mynra.target_arlithon:
 			transition.emit("HuntArlithons")
 		elif arlithons.is_empty() && !mynra.at_player:
@@ -224,13 +221,14 @@ func _on_animation_finished():
 	if mynra_animation.animation in ["Dash_L", "Dash_R", "Dash_D", "Dash_U"]:
 		is_animating = false
 
-#Runs upon entering state
+#Runs upon entering stated
 func _on_enter():
 	frame = 0
 	is_animating = false
 
 #Runs upon exiting state
 func _on_exit():
+	#print(distance_covered)
 	frame = 0
 	is_animating = false
 	mynra.damageable = true

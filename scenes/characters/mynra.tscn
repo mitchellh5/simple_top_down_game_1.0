@@ -1079,7 +1079,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_8bk35")
 }],
 "loop": false,
-"name": &"Idle1_D",
+"name": &"Idle_D1",
 "speed": 5.0
 }, {
 "frames": [{
@@ -1111,7 +1111,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_h542p")
 }],
 "loop": false,
-"name": &"Idle2_D",
+"name": &"Idle_D2",
 "speed": 5.0
 }, {
 "frames": [{
@@ -1128,7 +1128,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_6mkek")
 }],
 "loop": false,
-"name": &"Idle3_D",
+"name": &"Idle_D3",
 "speed": 5.0
 }, {
 "frames": [{
@@ -1519,10 +1519,6 @@ radius = 5.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7lg0n"]
 size = Vector2(28, 42)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a0pcm"]
-radius = 14.0
-height = 46.0
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bnqng"]
 size = Vector2(56, 54)
 
@@ -1535,15 +1531,29 @@ radius = 256.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_bnqng"]
 radius = 142.004
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine") groups=["Player"]]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a0pcm"]
+radius = 14.0
+height = 46.0
+
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
 collision_mask = 22
+wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
 State_Machine = NodePath("StateMachine")
+spriteMynra = NodePath("AnimatedSprite2D")
+nav = NodePath("NavigationAgent2D")
+hit_box = NodePath("Hitbox")
+player_detect = NodePath("PlayerDetection")
+prim_atk_range = NodePath("PrimAtkRange")
+sec_atk_range = NodePath("SecAtkRange")
+interact_area = NodePath("InteractionArea")
+los = NodePath("LineOfSight")
+prim_atk_cd = NodePath("Prim_Atk_Cooldown")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Prim_Atk1_D"
+animation = &"Idle_D3"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -1577,18 +1587,8 @@ visibility_layer = 1
 position = Vector2(-14, 0)
 shape = SubResource("RectangleShape2D_7lg0n")
 
-[node name="CollectionArea" type="Area2D" parent="."]
-visible = false
-collision_layer = 64
-collision_mask = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
-shape = SubResource("CapsuleShape2D_a0pcm")
-debug_color = Color(0.852127, 0.370926, 0, 0.42)
-
 [node name="PlayerDetection" type="Area2D" parent="."]
 unique_name_in_owner = true
-visible = false
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
@@ -1631,10 +1631,19 @@ light_mask = 2
 visibility_layer = 2
 shape = SubResource("CircleShape2D_bnqng")
 
+[node name="CollectionArea" type="Area2D" parent="."]
+visible = false
+collision_layer = 64
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionArea"]
+shape = SubResource("CapsuleShape2D_a0pcm")
+debug_color = Color(0.852127, 0.370926, 0, 0.42)
+
 [node name="LineOfSight" type="RayCast2D" parent="."]
 visible = false
 target_position = Vector2(-256, 0)
-collision_mask = 63
+collision_mask = 7
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
 one_shot = true
@@ -1692,6 +1701,11 @@ mynra_animation = NodePath("../../AnimatedSprite2D")
 script = ExtResource("11_yuc1m")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
+[connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
+[connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]
