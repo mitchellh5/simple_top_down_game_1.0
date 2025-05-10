@@ -41,8 +41,10 @@ func _on_next_transitions() -> void:
 		transition.emit("Death")
 	elif arlithon.body_in_atk_range:
 		transition.emit("Attack")
-	else:
+	elif arlithon.player_in_range || arlithon.companion_in_range:
 		transition.emit("Hunt")
+	else:
+		transition.emit("Idle")
 
 #Runs upon entering state
 func _on_enter():

@@ -120,11 +120,13 @@ func primary_attack_player():
 						body.take_damage()
 
 func primary_attack_companion():
+	#print("Preparing an attack")
+	#print(!is_animating, scythio.target_arlithon.is_alive, !atk_on_cooldown, scythio.arlithon_in_prim_atk_range)
 	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_prim_atk_range:
+		#print("Attack locked on")
 		is_animating = true
 		atk_on_cooldown = true
-		scythio.atk_cooldown_timer.start()
-		
+		scythio.prim_atk_cd.start()
 		
 		var input_velocity = scythio.target_arlithon.global_position - scythio.global_position	#Gets the direction scythio is currently attacking in
 		
@@ -160,10 +162,12 @@ func _on_prim_atk_cooldown_timeout() -> void:
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
-	if is_animating:
-		return
+	#if is_animating:
+		#print("Ah shit, here we go again")
+		#return
 	
 	if scythio.damaged:
+		#print("Ouchers")
 		transition.emit("Damaged")
 	elif scythio.player:
 		if Game_Input_Events.is_movement_input():
@@ -175,7 +179,12 @@ func _on_next_transitions() -> void:
 		elif !Game_Input_Events.is_movement_input():
 			transition.emit("Idle")
 	else:
-		if arlithons.is_empty() && !scythio.at_player:
+		#print("Trying to transition as companion")
+		#print(scythio.arlithon_in_prim_atk_range && scythio.target_arlithon.is_alive)
+		if scythio.arlithon_in_prim_atk_range && scythio.target_arlithon.is_alive:
+			#print("I think I still need to attack")
+			return
+		elif arlithons.is_empty() && !scythio.at_player:
 			transition.emit("FollowPlayer")
 			#print("Tried to transition to FP")
 		elif !arlithons.is_empty() && !scythio.target_arlithon.is_alive:

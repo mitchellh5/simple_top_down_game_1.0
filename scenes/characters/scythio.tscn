@@ -1,4 +1,4 @@
-[gd_scene load_steps=159 format=3 uid="uid://dwryiq4gcfblj"]
+[gd_scene load_steps=160 format=3 uid="uid://dwryiq4gcfblj"]
 
 [ext_resource type="Script" uid="uid://brdyr8v3nm174" path="res://scripts/characters/scythio.gd" id="1_boc82"]
 [ext_resource type="Texture2D" uid="uid://jd043jpyan2b" path="res://assets/alpha/characters/Scythio-Sheet.png" id="2_en0im"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://bgkp6lsio0qdb" path="res://scripts/states/scythio_states/scythio_secondary_attack.gd" id="12_6sy31"]
 [ext_resource type="Script" uid="uid://c165ahl6vcxnv" path="res://scripts/states/scythio_states/scythio_death.gd" id="13_had4h"]
 [ext_resource type="Script" uid="uid://b4ruom727yoev" path="res://scripts/states/scythio_states/scythio_collect_life.gd" id="15_jclwe"]
+[ext_resource type="Script" uid="uid://drey1glj14txd" path="res://scripts/states/scythio_states/scythio_damaged.gd" id="16_38was"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jclwe"]
 atlas = ExtResource("2_en0im")
@@ -1206,8 +1207,8 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
 visible = false
-target_position = Vector2(-256, 0)
-collision_mask = 7
+target_position = Vector2(256, 0)
+collision_mask = 6
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
 one_shot = true
@@ -1261,8 +1262,8 @@ script = ExtResource("15_jclwe")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
-[node name="Damage" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
-script = ExtResource("13_had4h")
+[node name="Damaged" type="Node" parent="StateMachine" node_paths=PackedStringArray("scythio", "scythio_animation")]
+script = ExtResource("16_38was")
 scythio = NodePath("../..")
 scythio_animation = NodePath("../../AnimatedSprite2D")
 
@@ -1275,6 +1276,7 @@ scythio_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
+[connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

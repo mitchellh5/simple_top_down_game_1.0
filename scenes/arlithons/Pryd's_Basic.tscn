@@ -464,8 +464,9 @@ height = 32.0
 radius = 12.0
 height = 52.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8ok4h"]
-radius = 75.71
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_51va2"]
+radius = 11.0
+height = 48.0
 
 [node name="PrydsBasic" type="CharacterBody2D" node_paths=PackedStringArray("sprite") groups=["Arlithons"]]
 collision_layer = 2
@@ -477,8 +478,6 @@ sprite = NodePath("Test_Arlithon")
 State_Machine = NodePath("State_Machine")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-path_desired_distance = 5.0
-target_desired_distance = 5.0
 debug_enabled = true
 
 [node name="Test_Arlithon" type="AnimatedSprite2D" parent="."]
@@ -511,7 +510,7 @@ shape = SubResource("CapsuleShape2D_4jx0k")
 [node name="Hitbox" parent="." instance=ExtResource("4_51va2")]
 unique_name_in_owner = true
 collision_layer = 2
-collision_mask = 35
+collision_mask = 33
 monitoring = true
 monitorable = false
 
@@ -528,7 +527,9 @@ collision_layer = 0
 collision_mask = 33
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Character_Detection"]
-shape = SubResource("CircleShape2D_8ok4h")
+position = Vector2(2, 1)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_51va2")
 debug_color = Color(0.623175, 0.533003, 7.70092e-07, 0.42)
 
 [node name="Nav" type="Timer" parent="."]
@@ -568,6 +569,8 @@ script = ExtResource("8_3ncui")
 arlithon = NodePath("../..")
 arlithon_animation = NodePath("../../Test_Arlithon")
 
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
+[connection signal="body_exited" from="Hitbox" to="." method="_on_hitbox_body_exited"]
 [connection signal="body_entered" from="Character_Detection" to="." method="_on_character_detection_body_entered"]
 [connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
 [connection signal="timeout" from="Nav" to="State_Machine/Hunt" method="_on_nav_timeout"]

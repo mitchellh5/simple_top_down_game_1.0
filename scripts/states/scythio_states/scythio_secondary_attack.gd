@@ -88,13 +88,14 @@ func secondary_attack_player():
 			scythio.collectable = true
 
 func secondary_attack_companion():
-	#print("scythio prepares an attack")
 	var distance = scythio.target_arlithon.global_position.distance_to(scythio.global_position)
-	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0 && distance >= 100:
+	print("scythio prepares an attack")
+	print(!is_animating, scythio.target_arlithon.is_alive, !atk_on_cooldown, scythio.arlithon_in_sec_atk_range, scythio.ammo > 0, distance >= 50)
+	if !is_animating && scythio.target_arlithon.is_alive && !atk_on_cooldown && scythio.arlithon_in_sec_atk_range && scythio.ammo > 0:
 		#print("scythio has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true
-		scythio.atk_cooldown_timer.start()
+		scythio.prim_atk_cd.start()
 		
 		# Detect direction for animation and aiming
 		var throw_direction: Vector2

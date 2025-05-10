@@ -27,12 +27,15 @@ func _on_nav_timeout() -> void:
 #Handles transitioning between states
 func _on_next_transitions() -> void:
 	
-	if arlithon.body_in_atk_range:
-		transition.emit("Attack")
-	elif !arlithon.player_in_range:
-		transition.emit("Follow_Companion")
-	elif !arlithon.player_in_range:
-		transition.emit("Idle")
+	if arlithon.damaged:
+		transition.emit("Damaged")
+	else:
+		if arlithon.body_in_atk_range:
+			transition.emit("Attack")
+		elif arlithon.player_in_range || arlithon.companion_in_range:
+			return
+		elif !arlithon.player_in_range:
+			transition.emit("Idle")
 
 #Runs upon entering state
 func _on_enter():

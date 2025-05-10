@@ -90,11 +90,11 @@ func secondary_attack_player():
 func secondary_attack_companion():
 	#print("Mynra prepares an attack")
 	var distance = mynra.target_arlithon.global_position.distance_to(mynra.global_position)
-	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_sec_atk_range && mynra.ammo > 0 && distance >= 100:
+	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_sec_atk_range && mynra.ammo > 0 && distance <= 32:
 		#print("Mynra has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true
-		mynra.atk_cooldown_timer.start()
+		mynra.prim_atk_cd.start()
 		
 		# Detect direction for animation and aiming
 		var throw_direction: Vector2

@@ -35,7 +35,7 @@ var facing_left = false						#mutations can animate properly in the same directi
 signal modulating(is_red: bool)				#Used to check when the arlithon has modulated to red to indicate it has
 var red = false								#been damaged to stay consistent with the mutations (namely the stinger)
 
-var health: int = 20							#Used for tracking health of arlithon
+var health: int = 5							#Used for tracking health of arlithon
 var player_in_range: bool = false			#Used for tracking if player is within range of detection
 var player_body: CharacterBody2D			#Represents the player body
 var companion_body: CharacterBody2D			#Represents the companion's body
@@ -96,6 +96,7 @@ func _physics_process(delta: float) -> void:
 	var distance_from_player = global_position.distance_to(player_body.global_position)
 	var distance_from_companion
 	if companion_body:
+		#print(companion_body)
 		distance_from_companion = global_position.distance_to(companion_body.global_position)
 	else:
 		distance_from_companion = 1000000000000000
@@ -106,30 +107,25 @@ func _physics_process(delta: float) -> void:
 		#print(self, " is targeting the companion")
 		player_in_range = false
 		companion_in_range = true
+		target_body = companion_body
 		nav.target_position = companion_body.global_position
 	else:
 		#print(self, " is targeting the player")
 		player_in_range = true
 		companion_in_range = false
+		target_body = player_body
 		nav.target_position = player_body.global_position
 	
-	for area in $Hitbox.get_overlapping_areas():
-		if area.get_parent().is_in_group("Player"):
-			target_body = area.get_parent()
+	#print("Player in range: ", player_in_range)
+	#print("Companion in range: ", companion_in_range)
+	
+	for body in prim_atk_range.get_overlapping_bodies():
+		if body == target_body:
 			body_in_atk_range = true
-		elif area.get_parent().is_in_group("Companion"):
-			target_body = area.get_parent()
-			body_in_atk_range = true
-		else:
-			body_in_atk_range = false
 	
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
-
-func _on_attack_body_exited(body: Node2D) -> void:
-	if body.is_in_group("Player") || body.is_in_group("Companion"):
-		body_in_atk_range = false
 
 #Handles taking damage
 func take_damage():
@@ -199,3 +195,12 @@ func set_modulation(value: bool) -> void:
 		else:
 			$Test_Arlithon.modulate = Color.WHITE
 		emit_signal("modulating", value)
+
+func _on_hitbox_body_exited(body: Node2D) -> void:
+	if body == target_body:
+		body_in_atk_range = false
+#
+#
+#func _on_hitbox_body_entered(body: Node2D) -> void:
+	#if body == target_body:
+		#body_in_atk_range = true

@@ -13,7 +13,7 @@ func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
 	# Immediately check if the current target is no longer alive
-	if scythio.target_arlithon and !scythio.target_arlithon.is_alive:
+	if scythio.target_arlithon && !scythio.target_arlithon.is_alive:
 		scythio.target_arlithon = null  # Clear the target reference if needed
 		_hunt_arlithons()               # Find a new target if possible
 	
@@ -24,7 +24,7 @@ func _on_physics_update(_delta: float) -> void:
 	
 	for body in arlithons:
 		# If body is alive and is the current target, move toward it.
-		if scythio.is_alive and body == scythio.target_arlithon:
+		if body.is_alive && body == scythio.target_arlithon:
 			var direction = scythio.to_local(scythio.nav.get_next_path_position()).normalized()
 			scythio.velocity = direction * scythio.speed
 			
@@ -96,11 +96,16 @@ func _on_next_transitions() -> void:
 		else:
 			distance = 0
 		
-		if arlithons.is_empty() || !one_still_lives:
-			transition.emit("FollowPlayer")
-		elif (scythio.arlithon_in_prim_atk_range || distance <= 25) && scythio.target_arlithon.is_alive:
-			transition.emit("PrimaryAttack")
-		elif scythio.arlithon_in_sec_atk_range && scythio.target_arlithon.is_alive && scythio.ammo > 0 && !scythio.arlithon_in_prim_atk_range && !scythio.sec_atk_cooldown && !too_close:
+		if arlithons.is_empty() || !one_still_lives || !scythio.target_arlithon:
+			if scythio.ammo <= 0:
+				transition.emit("CollectLife")
+			else:
+				transition.emit("FollowPlayer")
+		elif (scythio.arlithon_in_prim_atk_range || distance <= 25):
+			if scythio.target_arlithon:
+				if scythio.target_arlithon.is_alive:
+					transition.emit("PrimaryAttack")
+		elif scythio.arlithon_in_sec_atk_range && scythio.target_arlithon.is_alive && scythio.ammo > 0 && !scythio.arlithon_in_prim_atk_range && !scythio.sec_atk_cooldown:
 			transition.emit("SecondaryAttack")
 		elif (scythio.at_player) && (arlithons.is_empty() || !one_still_lives):
 			transition.emit("Idle")

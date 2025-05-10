@@ -18,7 +18,7 @@ class_name PlayerScythio
 
 # Tracks if Scythio is the current player character, or a companion
 # (set to true by default since Scythio is the "anchor" character)aw
-@onready var player = false
+@onready var player = true
 
 # Tracks Scythio's current state within the "StateMachine"
 var current_state
@@ -68,11 +68,11 @@ func _ready():
 	
 	# For future use only, incase Scythio is ever set as the companion by default instead of the current player character
 	if !player:
-		var nodes_in_group = get_tree().get_nodes_in_group("Player")
-		if !nodes_in_group.is_empty():
-			player_body = nodes_in_group[0] as CharacterBody2D
-		else:
-			print("That's weird, I don't see any players here")
+		player_body = get_tree().get_first_node_in_group("Player")
+		#if player_body:
+			#print("Player found as ", player_body)
+		#else:
+			#print("That's weird, I don't see any players here")
  
 # Runs every frame
 func _physics_process(delta: float) -> void:
@@ -108,13 +108,14 @@ func _physics_process(delta: float) -> void:
 				#print(target_arlithon)
 				#print("enemy spotted")
 				arlithon_in_prim_atk_range = true
-			elif body != target_arlithon && arlithon_in_prim_atk_range:
-				arlithon_in_prim_atk_range = false
+			#elif body != target_arlithon && arlithon_in_prim_atk_range:
+				#arlithon_in_prim_atk_range = false
 				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
- 
+ 		
 		for body in sec_atk_range.get_overlapping_bodies():
 			if body == target_arlithon:
-				los.look_at(target_arlithon.global_position)
+				#print("Found target arlithon: ", target_arlithon)
+				los.look_at(body.global_position)
 				_check_los_enemy()
 				if enemy_spotted:
 					#print("Enemy spotted!")
@@ -164,7 +165,7 @@ func _character_swap() -> void:
 		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 		add_to_group("Player")
 		remove_from_group("Companion")
-		#print("I am, Scythio, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
+		print("I am, Scythio, I am now in group ", self.get_groups(), " and my layer 1 is set to ", get_collision_layer_value(1), " and my layer 6 is ", get_collision_layer_value(6))
 	else:
 		set_collision_layer_value(1, false)
 		set_collision_layer_value(6, true)
@@ -181,7 +182,7 @@ func _character_swap() -> void:
 
 func _check_los_enemy() -> bool:
 	var collider = los.get_collider()
-	if collider and collider.is_in_group("Arlithons"):
+	if collider && collider.is_in_group("Arlithons"):
 		enemy_spotted = true
 		return true
 	else:
@@ -232,7 +233,6 @@ func lose_health(dmg):
 	damage_rate = dmg
 	if damageable:
 		damaged = true
-		print(health)
 
 func collect_life():
 	if collectable:

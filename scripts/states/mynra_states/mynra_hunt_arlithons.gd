@@ -13,7 +13,7 @@ func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
 	# Immediately check if the current target is no longer alive
-	if mynra.target_arlithon and !mynra.target_arlithon.is_alive:
+	if mynra.target_arlithon && !mynra.target_arlithon.is_alive:
 		mynra.target_arlithon = null  # Clear the target reference if needed
 		_hunt_arlithons()               # Find a new target if possible
 	
@@ -24,7 +24,7 @@ func _on_physics_update(_delta: float) -> void:
 	
 	for body in arlithons:
 		# If body is alive and is the current target, move toward it.
-		if mynra.is_alive and body == mynra.target_arlithon:
+		if body.is_alive && body == mynra.target_arlithon:
 			var direction = mynra.to_local(mynra.nav.get_next_path_position()).normalized()
 			mynra.velocity = direction * mynra.speed
 			
@@ -96,11 +96,16 @@ func _on_next_transitions() -> void:
 		else:
 			distance = 0
 		
-		if arlithons.is_empty() || !one_still_lives:
-			transition.emit("FollowPlayer")
-		elif (mynra.arlithon_in_prim_atk_range || distance <= 25) && mynra.target_arlithon.is_alive:
-			transition.emit("PrimaryAttack")
-		elif mynra.arlithon_in_sec_atk_range && mynra.target_arlithon.is_alive && mynra.ammo > 0 && !mynra.arlithon_in_prim_atk_range && !mynra.sec_atk_cooldown && !too_close:
+		if arlithons.is_empty() || !one_still_lives || !mynra.target_arlithon:
+			if mynra.ammo <= 0:
+				transition.emit("CollectLife")
+			else:
+				transition.emit("FollowPlayer")
+		elif (mynra.arlithon_in_prim_atk_range || distance <= 25):
+			if mynra.target_arlithon:
+				if mynra.target_arlithon.is_alive:
+					transition.emit("PrimaryAttack")
+		elif mynra.arlithon_in_sec_atk_range && mynra.target_arlithon.is_alive && mynra.ammo > 0 && !mynra.arlithon_in_prim_atk_range && !mynra.sec_atk_cooldown:
 			transition.emit("SecondaryAttack")
 		elif (mynra.at_player) && (arlithons.is_empty() || !one_still_lives):
 			transition.emit("Idle")

@@ -1,10 +1,12 @@
-[gd_scene load_steps=37 format=4 uid="uid://dkb8pkean1gw8"]
+[gd_scene load_steps=39 format=4 uid="uid://dkb8pkean1gw8"]
 
 [ext_resource type="Script" uid="uid://h7tnw6t4uj5w" path="res://world/pryd's subhive/pryd's_subhive_1.gd" id="1_gj8ej"]
 [ext_resource type="Texture2D" uid="uid://b45s2k4e62s1f" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset (Coating).png" id="1_nf421"]
 [ext_resource type="PackedScene" uid="uid://d2g17pauj83jm" path="res://scenes/characters/mynra.tscn" id="2_fbjvc"]
 [ext_resource type="Texture2D" uid="uid://dksecr0fj6f74" path="res://assets/alpha/world/Hives/Pryd/Pryd's Hive Tileset 3.png" id="2_nf421"]
 [ext_resource type="PackedScene" uid="uid://dwryiq4gcfblj" path="res://scenes/characters/scythio.tscn" id="4_nf421"]
+[ext_resource type="PackedScene" uid="uid://djulfym54bhm0" path="res://scenes/arlithons/Pryd's_Basic.tscn" id="6_fbjvc"]
+[ext_resource type="PackedScene" uid="uid://casiyrgnqyyxb" path="res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn" id="7_gj8ej"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fbjvc"]
 texture = ExtResource("1_nf421")
@@ -357,10 +359,21 @@ tile_set = SubResource("TileSet_fbjvc")
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[node name="PlayerMynra" parent="." instance=ExtResource("2_fbjvc")]
-position = Vector2(344, 297)
-
 [node name="PlayerScythio" parent="." instance=ExtResource("4_nf421")]
-position = Vector2(198, 224)
+position = Vector2(517, 155)
+
+[node name="PlayerMynra" parent="." instance=ExtResource("2_fbjvc")]
+position = Vector2(348, 260)
 
 [node name="Arlithons" type="Node" parent="."]
+
+[node name="PrydsBasic" parent="Arlithons" instance=ExtResource("6_fbjvc")]
+position = Vector2(458, 217)
+
+[node name="Stinger_Mutation" parent="Arlithons/PrydsBasic" instance=ExtResource("7_gj8ej")]
+
+[node name="PrydsBasic2" parent="Arlithons" instance=ExtResource("6_fbjvc")]
+position = Vector2(108, 92)
+
+[node name="PrydsBasic3" parent="Arlithons" instance=ExtResource("6_fbjvc")]
+position = Vector2(179, 201)

@@ -1535,7 +1535,7 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Companion"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
@@ -1642,7 +1642,7 @@ debug_color = Color(0.852127, 0.370926, 0, 0.42)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
 visible = false
-target_position = Vector2(-256, 0)
+target_position = Vector2(256, 0)
 collision_mask = 7
 
 [node name="Prim_Atk_Cooldown" type="Timer" parent="."]
@@ -1710,6 +1710,7 @@ mynra_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
+[connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

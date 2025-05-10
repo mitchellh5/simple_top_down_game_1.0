@@ -18,7 +18,7 @@ class_name PlayerMynra
 
 # Tracks if Mynra is the current player character, or a companion
 # (set to true by default since Mynra is the "anchor" character)
-@onready var player = true
+@onready var player = false
 
 # Tracks Mynra's current state within the "StateMachine"
 var current_state
@@ -106,13 +106,14 @@ func _physics_process(delta: float) -> void:
 				#print(target_arlithon)
 				#print("enemy spotted")
 				arlithon_in_prim_atk_range = true
-			elif body != target_arlithon && arlithon_in_prim_atk_range:
-				arlithon_in_prim_atk_range = false
+			#elif body != target_arlithon && arlithon_in_prim_atk_range:
+				#arlithon_in_prim_atk_range = false
 				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
- 
+ 		
 		for body in sec_atk_range.get_overlapping_bodies():
 			if body == target_arlithon:
-				los.look_at(target_arlithon.global_position)
+				#print("Found target arlithon: ", target_arlithon)
+				los.look_at(body.global_position)
 				_check_los_enemy()
 				if enemy_spotted:
 					#print("Enemy spotted!")
@@ -123,7 +124,6 @@ func _physics_process(delta: float) -> void:
 		player_body = get_tree().get_first_node_in_group("Player")
 		
 		var distance_from_player
-		#var distance_from_famine
 		var distance_from_arlithon
 		
 		if player_body:
@@ -139,28 +139,6 @@ func _physics_process(delta: float) -> void:
 		else:
 			nav.target_position = player_body.global_position
 		
-		#if ammo <= 0:
-			#distance_from_famine = global_position.distance_to(get_tree().root.find_child("Famine", true, false).global_position)
-		#else:
-			#distance_from_famine = 10000000000
-		#
-		#if target_arlithon:
-			#distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
-		#else:
-			#distance_from_arlithon = 10000000000
-		#
-		#if distance_from_arlithon < distance_from_famine:
-			#nav.target_position = target_arlithon.global_position
-			#collecting_famine = false
-		#elif ammo <= 0:
-			#_check_los_famine()
-			#collecting_famine = true
-			#nav.target_position = get_tree().root.find_child("Famine", true, false).global_position
-		#elif player_body:
-			#_check_los_player()
-			#collecting_famine = false
-			#nav.target_position = player_body.global_position
-		#
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)
 	#_check_player_range()
@@ -243,7 +221,7 @@ func lose_health(dmg):
 	damage_rate = dmg
 	if damageable:
 		damaged = true
-		print(health)
+		#print("Mynra's health", health)
 
 func collect_famine():
 	if collectable:

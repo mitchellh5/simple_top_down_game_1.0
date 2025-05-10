@@ -123,7 +123,7 @@ func primary_attack_companion():
 	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_prim_atk_range:
 		is_animating = true
 		atk_on_cooldown = true
-		mynra.atk_cooldown_timer.start()
+		mynra.prim_atk_cd.start()
 		
 		
 		var input_velocity = mynra.target_arlithon.global_position - mynra.global_position	#Gets the direction Mynra is currently attacking in
@@ -192,7 +192,7 @@ func _on_animation_finished():
 
 #Runs upon entering state
 func _on_enter():
-	print("I'm attacking now")
+	#print("I'm attacking now")
 	is_animating = false
 
 #Runs upon exiting state
