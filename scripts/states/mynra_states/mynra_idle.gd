@@ -83,6 +83,8 @@ func _on_next_transitions() -> void:
 				transition.emit("Movement")
 			elif Game_Input_Events.is_dashing():
 				transition.emit("Dash")
+			elif Game_Input_Events.is_blocking():
+				transition.emit("Block")
 			elif Game_Input_Events.is_prim_attacking():
 				transition.emit("PrimaryAttack")
 			elif Game_Input_Events.is_sec_attacking():

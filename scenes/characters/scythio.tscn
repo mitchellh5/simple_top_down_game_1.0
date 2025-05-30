@@ -1097,7 +1097,7 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteScythio", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Player"]]
+[node name="PlayerScythio" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteScythio", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Companion"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_boc82")
@@ -1115,7 +1115,7 @@ prim_atk_cd = NodePath("Prim_Atk_Cooldown")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Sec_Atk_L"
+animation = &"Idle_R"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -23,7 +23,7 @@ func lose_health():
 		
 		mynra.damageable = false
 		mynra.health -= mynra.damage_rate
-		#print(player.health)
+		print(mynra.health)
 		
 		if mynra.health > 0:
 			#Plays correct animation based on the direction the player is facing
@@ -41,7 +41,7 @@ func lose_health():
 func i_frames():
 	mynra.damageable = false
 	#print("I-Frames active")
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(0.5).timeout
 	#print("Mynra is no longer immune")
 	mynra.damaged = false
 	mynra.damageable = true
@@ -57,6 +57,8 @@ func _on_next_transitions() -> void:
 		transition.emit("Movement")
 	elif Game_Input_Events.is_dashing():
 		transition.emit("Dashing")
+	elif Game_Input_Events.is_blocking():
+		transition.emit("Block")
 	elif Game_Input_Events.is_prim_attacking():
 		transition.emit("Primary_Attack")
 	elif Game_Input_Events.is_sec_attacking():

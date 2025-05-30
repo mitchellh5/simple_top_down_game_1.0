@@ -15,10 +15,13 @@ class_name PlayerMynra
 @export var los: RayCast2D												# Sets up line of sight
 @export var prim_atk_cd: Timer											# Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
 																		# just watch the companion tear everything to shreds around them)
+@export var parry_window: Timer											# Times the parry window for a successful perfect parry versus a standard guard
+@export var guard_recov_window: Timer									# Works for slowly depleting the player's guard recovery bar after blocking damage
+
 
 # Tracks if Mynra is the current player character, or a companion
 # (set to true by default since Mynra is the "anchor" character)
-@onready var player = false
+@onready var player = true
 
 # Tracks Mynra's current state within the "StateMachine"
 var current_state
@@ -30,15 +33,19 @@ var throw_dir: Vector2													# Tracks the direction we want to throw Famin
 
 # Basic variables for player
 var speed = 200															# Sets speed of player movement
-var angle : float														# Tracks the direction Mynra is facing
+var angle: float														# Tracks the direction Mynra is facing
 var player_direction : Vector2											# Used to track the direction the player was last facing for idling
-var health = 10															# Sets health value for Mynra
+var health = 100														# Sets health value for Mynra
+var stamina = 100														# Sets stamina value
+var guard_recov: int													# Used to track current gguard regain amount
 var ammo = 1															# Sets ammo for Famine (1, because there is only one)
 var collectable: bool													# Sets variable to determine if Famine is currently collectable
 var damaged = false														# Used for state transitions
 var damageable = true													# Used for i-frames
-var damage_rate : int													# Used for determining how much damage the player takes from an attack
-
+var damage : int = 1													# Used to track how much damage the player deals to enemies
+var damage_rate: int													# Used for determining how much damage the player takes from an attack
+var is_parrying: bool = false											# Used to track if character is currently parrying (transitions to blocking after the first few frames)
+var is_blocking: bool = false											# Used to track if character is currently blocking
 
 ## Companion specific variabls
 
@@ -142,9 +149,21 @@ func _physics_process(delta: float) -> void:
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)
 	#_check_player_range()
- 	
+	
 	if player:
 		angle = rad_to_deg(dir.angle())
+	
+	if Input.is_action_just_pressed("H"):
+		print("Mynra health")
+
+# Slowly depletes guard recov after a guard until it has either been
+# fully depleted for fully healed back from the player's attacks.
+func _on_guard_recovery_timer_timeout() -> void:
+	print("Current available guard recovery:", guard_recov)
+	guard_recov -= 1
+	if guard_recov == 0:
+		print("Current available guard recovery:", guard_recov, ", ending decay.")
+		guard_recov_window.stop()
 
 func _character_swap() -> void:
 	if player:
@@ -219,9 +238,21 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):
 	damage_rate = dmg
-	if damageable:
+	if damageable && is_parrying:
+		damaged = false
+		print("Mynra parried! Health unchanged: ", health)
+	elif damageable && is_blocking:
+		health -= damage_rate / 2
+		guard_recov += damage_rate / 2
+		guard_recov_window.start()
+		print("Mynra blocked! Half damage received: ", health)
+		damageable = false
+		await get_tree().create_timer(0.5).timeout
+		damageable = true
+	elif damageable:
 		damaged = true
-		#print("Mynra's health", health)
+	
+	#print("Mynra's health", health)
 
 func collect_famine():
 	if collectable:

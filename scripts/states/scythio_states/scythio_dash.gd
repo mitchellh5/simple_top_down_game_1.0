@@ -10,7 +10,7 @@ extends ScythioState
 
 #Dash parameters
 @export var dash_speed: float = 500.0				#Speed at which the character will dash
-@export var dash_distance: float = 150.0			#Distance traveled by the dash
+@export var dash_distance: float = 0.0				#Distance traveled by the dash
 
 var frame: int										#Used to track the current frame of animation for ghosting
 var can_dash: bool = true							#Used to track when the dash is on "cool down"

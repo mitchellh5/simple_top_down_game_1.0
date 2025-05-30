@@ -1,4 +1,4 @@
-[gd_scene load_steps=213 format=3 uid="uid://d2g17pauj83jm"]
+[gd_scene load_steps=214 format=3 uid="uid://d2g17pauj83jm"]
 
 [ext_resource type="Script" uid="uid://w68dkjx7jyi8" path="res://scripts/characters/mynra.gd" id="1_u4xuv"]
 [ext_resource type="Texture2D" uid="uid://cyr0kb1bo2ky5" path="res://assets/alpha/characters/Mynra-Sheet.png" id="2_xf17j"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://defja2gpn4o5h" path="res://scripts/states/mynra_states/mynra_damaged.gd" id="10_worrd"]
 [ext_resource type="Script" uid="uid://db8qps01k6no8" path="res://scripts/states/mynra_states/mynra_hunt_arlithons.gd" id="11_k76i0"]
 [ext_resource type="Script" uid="uid://c6vks2onrcf7g" path="res://scripts/states/mynra_states/mynra_death.gd" id="11_yuc1m"]
+[ext_resource type="Script" uid="uid://cibwrbepy3bi8" path="res://scripts/states/mynra_states/mynra_block_state.gd" id="16_h3vsm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_naa0s"]
 atlas = ExtResource("2_xf17j")
@@ -1535,7 +1536,7 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd") groups=["Companion"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd", "parry_window", "guard_recov_window") groups=["Player"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
@@ -1549,11 +1550,13 @@ sec_atk_range = NodePath("SecAtkRange")
 interact_area = NodePath("InteractionArea")
 los = NodePath("LineOfSight")
 prim_atk_cd = NodePath("Prim_Atk_Cooldown")
+parry_window = NodePath("Parry")
+guard_recov_window = NodePath("Guard_Recovery_Timer")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_h3gh5")
-animation = &"Sec_Atk_D"
+animation = &"Idle_R"
 autoplay = "Idle_R"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -1652,6 +1655,12 @@ one_shot = true
 wait_time = 0.1
 autostart = true
 
+[node name="Parry" type="Timer" parent="."]
+wait_time = 0.33
+one_shot = true
+
+[node name="Guard_Recovery_Timer" type="Timer" parent="."]
+
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_mynra_state")]
 script = ExtResource("3_ugxf0")
 initial_mynra_state = NodePath("Idle")
@@ -1671,10 +1680,6 @@ script = ExtResource("6_osx85")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
 ghost_node = ExtResource("7_djmiq")
-dash_cooldown = null
-ghost_cooldown = null
-dash_speed = null
-dash_distance = null
 
 [node name="FollowPlayer" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
 script = ExtResource("10_bnqng")
@@ -1706,11 +1711,18 @@ script = ExtResource("11_yuc1m")
 mynra = NodePath("../..")
 mynra_animation = NodePath("../../AnimatedSprite2D")
 
+[node name="Block" type="Node" parent="StateMachine" node_paths=PackedStringArray("mynra", "mynra_animation")]
+script = ExtResource("16_h3vsm")
+mynra = NodePath("../..")
+mynra_animation = NodePath("../../AnimatedSprite2D")
+
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
 [connection signal="body_exited" from="PrimAtkRange" to="." method="_on_prim_atk_range_body_exited"]
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
+[connection signal="timeout" from="Parry" to="StateMachine/Block" method="_on_parry_timeout"]
+[connection signal="timeout" from="Guard_Recovery_Timer" to="." method="_on_guard_recovery_timer_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

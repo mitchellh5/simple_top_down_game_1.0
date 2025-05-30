@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://c61548llu851w"]
+
+[ext_resource type="Script" uid="uid://dd83hyo65kipy" path="res://scenes/weapons/shield.gd" id="1_lqkp7"]
+[ext_resource type="Texture2D" uid="uid://cu3c5qqp2kbg8" path="res://assets/testing/weapons/shield.png" id="2_btmqt"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7tcuw"]
+radius = 7.0
+height = 24.0
+
+[node name="Shield" type="StaticBody2D"]
+collision_layer = 128
+collision_mask = 128
+script = ExtResource("1_lqkp7")
+
+[node name="Shield" type="Sprite2D" parent="."]
+texture = ExtResource("2_btmqt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_7tcuw")

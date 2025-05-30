@@ -47,7 +47,7 @@ var damageable: bool = true					#Used for tracking i-frames
 var damaged: bool = false					#Detects when arlithon receives damage
 var smote: bool = false						#Determines how arlithon was slain
 var stunlocked: bool = false				#Used for determining if the player is currently stun locking the arlithon
-var damage_dealt = 1						#How much damage it deals to the player
+var damage_dealt = 2						#How much damage it deals to the player
 var dir
 
 var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
@@ -151,10 +151,10 @@ func _check_mutations():
 	#Checks and applies modifiers for "stinger" mutation
 	if has_node("Stinger_Mutation"):
 		#print("I have a stinger! Stabby stabby stabby!")
-		damage_dealt = 2
+		damage_dealt = 4
 		is_mutated = true
 	else:
-		damage_dealt = 1
+		damage_dealt = 2
 		is_mutated = false
 
 #This is the logic used for tracking when this arlithon is currently

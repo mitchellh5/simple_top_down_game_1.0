@@ -26,7 +26,7 @@ func _on_physics_update(_delta: float) -> void:
 	
 	if mynra.player && is_animating:
 		#Gets input velocity from the "Game_Input_Events" class,
-		#and uses it to calculate the proper direction of the dash
+		#and uses it to calculate the proper direction of movement after swing
 		var input_velocity: Vector2 = Game_Input_Events.velocity_of_movement()
 		mynra.velocity = atk_vel
 		mynra.move_and_slide()
@@ -65,6 +65,10 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
+						
 			elif mynra.player_direction == Vector2.RIGHT:
 				mynra_animation.play("Prim_Atk1_R")
 				mynra.hit_box.rotation_degrees = 180
@@ -72,6 +76,10 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
+							
 			elif mynra.player_direction == Vector2.DOWN:
 				mynra_animation.play("Prim_Atk1_D")
 				mynra.hit_box.rotation_degrees = -90
@@ -79,6 +87,10 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
+						
 			else:
 				mynra_animation.play("Prim_Atk1_U")
 				mynra.hit_box.rotation_degrees = 90
@@ -86,7 +98,11 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-		
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
+							
+							
 		else:
 			if mynra.angle >= -45 && mynra.angle < 45:
 				mynra_animation.play("Prim_Atk1_R")
@@ -95,6 +111,9 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
 		
 			elif mynra.angle >= 45 && mynra.angle < 135:
 				mynra_animation.play("Prim_Atk1_D")
@@ -103,6 +122,9 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
 		
 			elif mynra.angle >= -135 && mynra.angle < -45:
 				mynra_animation.play("Prim_Atk1_U")
@@ -111,6 +133,9 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
 			else:
 				mynra_animation.play("Prim_Atk1_L")
 				mynra.hit_box.rotation_degrees = 0
@@ -118,6 +143,9 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
+						if mynra.guard_recov > 0:
+							mynra.health += mynra.damage
+							mynra.guard_recov -= mynra.damage
 
 func primary_attack_companion():
 	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_prim_atk_range:
@@ -168,6 +196,8 @@ func _on_next_transitions() -> void:
 	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
+		elif Game_Input_Events.is_blocking():
+			transition.emit("Block")
 		elif Game_Input_Events.is_sec_attacking():
 			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_dashing():

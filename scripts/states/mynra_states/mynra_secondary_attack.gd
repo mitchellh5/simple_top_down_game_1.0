@@ -162,6 +162,8 @@ func _on_next_transitions() -> void:
 	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
+		elif Game_Input_Events.is_blocking():
+			transition.emit("Block")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("Primary_Attack")
 		elif Game_Input_Events.is_dashing():

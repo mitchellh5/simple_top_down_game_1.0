@@ -18,7 +18,7 @@ class_name PlayerScythio
 
 # Tracks if Scythio is the current player character, or a companion
 # (set to true by default since Scythio is the "anchor" character)aw
-@onready var player = true
+@onready var player = false
 
 # Tracks Scythio's current state within the "StateMachine"
 var current_state
@@ -87,7 +87,7 @@ func _physics_process(delta: float) -> void:
 		_character_swap()
 	
 	if player:
-		#print("I'm a player")
+		#print("I'm a player")aaaaaaaaaaas
 		if Input.get_connected_joypads().size() > 0:
 			var x_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 			var y_dir= Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
