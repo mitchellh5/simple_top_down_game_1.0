@@ -1536,7 +1536,7 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd", "parry_window", "guard_recov_window") groups=["Player"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd", "parry_window", "guard_recov_window", "stamina_recov") groups=["Player"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
@@ -1551,7 +1551,8 @@ interact_area = NodePath("InteractionArea")
 los = NodePath("LineOfSight")
 prim_atk_cd = NodePath("Prim_Atk_Cooldown")
 parry_window = NodePath("Parry")
-guard_recov_window = NodePath("Guard_Recovery_Timer")
+guard_recov_window = NodePath("Guard_Recovery")
+stamina_recov = NodePath("Stamina_Recovery")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
@@ -1659,7 +1660,13 @@ autostart = true
 wait_time = 0.33
 one_shot = true
 
-[node name="Guard_Recovery_Timer" type="Timer" parent="."]
+[node name="Guard_Recovery" type="Timer" parent="."]
+
+[node name="Stamina_Recovery_Starter" type="Timer" parent="."]
+
+[node name="Stamina_Recovery" type="Timer" parent="."]
+
+[node name="Stamina_Recovery_Blocking" type="Timer" parent="."]
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_mynra_state")]
 script = ExtResource("3_ugxf0")
@@ -1722,7 +1729,8 @@ mynra_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="body_exited" from="SecAtkRange" to="." method="_on_sec_atk_range_body_exited"]
 [connection signal="timeout" from="Prim_Atk_Cooldown" to="StateMachine/PrimaryAttack" method="_on_prim_atk_cooldown_timeout"]
 [connection signal="timeout" from="Parry" to="StateMachine/Block" method="_on_parry_timeout"]
-[connection signal="timeout" from="Guard_Recovery_Timer" to="." method="_on_guard_recovery_timer_timeout"]
+[connection signal="timeout" from="Guard_Recovery" to="." method="_on_guard_recovery_timeout"]
+[connection signal="timeout" from="Stamina_Recovery" to="." method="_on_stamina_recovery_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

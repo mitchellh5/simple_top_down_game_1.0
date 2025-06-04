@@ -17,6 +17,8 @@ class_name PlayerMynra
 																		# just watch the companion tear everything to shreds around them)
 @export var parry_window: Timer											# Times the parry window for a successful perfect parry versus a standard guard
 @export var guard_recov_window: Timer									# Works for slowly depleting the player's guard recovery bar after blocking damage
+@export var stamina_recov: Timer										# Slowly regens the player's stamina as long as they are not active (not attacking,
+																		# blocking damage, parrying, or dashing)
 
 
 # Tracks if Mynra is the current player character, or a companion
@@ -46,6 +48,7 @@ var damage : int = 1													# Used to track how much damage the player deal
 var damage_rate: int													# Used for determining how much damage the player takes from an attack
 var is_parrying: bool = false											# Used to track if character is currently parrying (transitions to blocking after the first few frames)
 var is_blocking: bool = false											# Used to track if character is currently blocking
+var is_active: bool = false												# Used to track if character is still actively using stamina (attacking, blocking damage, parrying, or dashing)
 
 ## Companion specific variabls
 
@@ -152,13 +155,15 @@ func _physics_process(delta: float) -> void:
 	
 	if player:
 		angle = rad_to_deg(dir.angle())
-	
-	if Input.is_action_just_pressed("H"):
-		print("Mynra health")
+
+# Slowly regens stamina while player is inactive (not attacking,
+# blocking damage, parrying, or dodging)
+func _on_stamina_recovery_timeout() -> void:
+	pass
 
 # Slowly depletes guard recov after a guard until it has either been
 # fully depleted for fully healed back from the player's attacks.
-func _on_guard_recovery_timer_timeout() -> void:
+func _on_guard_recovery_timeout() -> void:
 	print("Current available guard recovery:", guard_recov)
 	guard_recov -= 1
 	if guard_recov == 0:
