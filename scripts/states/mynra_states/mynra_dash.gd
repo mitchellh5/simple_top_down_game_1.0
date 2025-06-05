@@ -29,11 +29,9 @@ func _on_physics_update(_delta: float) -> void:
 	if mynra.get_parent().name == "Oblivion":
 		can_dash = false
 	
-	if mynra.player:
-		#Awaits input from player, then, if the cooldown is inactive, runs the "dash()" function
-		if Input.is_action_pressed("dash") && can_dash:
-			_dash_as_player()
-	elif !mynra.player && can_dash:
+	if mynra.player && Input.is_action_pressed("dash") && can_dash && mynra.stamina:
+		_dash_as_player()
+	elif !mynra.player && can_dash && mynra.stamina > 0:
 		_dash_as_companion()
 	
 	#While dashing:
@@ -103,6 +101,14 @@ func _dash_as_player():
 		can_dash = false
 		mynra.damageable = false
 		
+		
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 20
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
+		
+		
+		
 		start_position = mynra.position
 		distance_covered = 0.0
 		
@@ -127,7 +133,9 @@ func _dash_as_player():
 			_:
 				mynra_animation.play("Dash_D")
 		
-		#Puts the dash on cooldown
+		can_dash = true
+		
+		# Puts the dash on cooldown
 		start_cooldown()
 
 #Handles dashing for companion
@@ -135,6 +143,11 @@ func _dash_as_companion():
 	if !is_animating:
 		is_animating = true																#Set "is_animating" and  "can_dash" to true to avoid spamming
 		can_dash = false
+		
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 20
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
 		
 		mynra.damageable = false														#Dashing grants free i-frames
 		
@@ -163,6 +176,8 @@ func _dash_as_companion():
 				mynra_animation.play("Dash_U")
 			_:
 				mynra_animation.play("Dash_D")
+		
+		can_dash = true
 		
 		#Puts the dash on cooldown
 		start_cooldown()

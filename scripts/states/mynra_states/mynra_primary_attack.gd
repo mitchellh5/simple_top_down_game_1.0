@@ -18,7 +18,7 @@ func _ready() -> void:
 func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
-	if mynra.player && Input.is_action_pressed("primary_attack"):
+	if mynra.player && Input.is_action_pressed("primary_attack") && mynra.stamina > 0:
 		primary_attack_player()
 	elif !mynra.player && mynra.arlithon_in_prim_atk_range:
 		primary_attack_companion()
@@ -34,6 +34,10 @@ func _on_physics_update(_delta: float) -> void:
 func primary_attack_player():
 	#Makes sure the player is not currently animating to avoid overlapping animations
 	if !is_animating:
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 20
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		
 		var input_velocity = Game_Input_Events.velocity_of_movement()					#Gets player's current velocity_vector from the "Game_Input_Events" class
@@ -149,6 +153,10 @@ func primary_attack_player():
 
 func primary_attack_companion():
 	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_prim_atk_range:
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 20
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		atk_on_cooldown = true
 		mynra.prim_atk_cd.start()

@@ -17,9 +17,8 @@ func _ready() -> void:
 func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
-	if mynra.player:
-		if Input.is_action_pressed("secondary_attack"):
-			secondary_attack_player()
+	if mynra.player && Input.is_action_pressed("secondary_attack") && mynra.stamina > 0:
+		secondary_attack_player()
 	elif !mynra.player && mynra.arlithon_in_sec_atk_range:
 		secondary_attack_companion()
 
@@ -27,6 +26,10 @@ func _on_physics_update(_delta: float) -> void:
 func secondary_attack_player():
 	# Check if player is animating and has ammo
 	if !is_animating and mynra.ammo > 0:
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 25
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 
 		# Detect direction for animation and aiming
@@ -91,6 +94,10 @@ func secondary_attack_companion():
 	#print("Mynra prepares an attack")
 	var distance = mynra.target_arlithon.global_position.distance_to(mynra.global_position)
 	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_sec_atk_range && mynra.ammo > 0 && distance <= 32:
+		mynra.stamina_recov.stop()
+		mynra.stamina -= 25
+		mynra.stamina_recov_starter.start()
+		print("Mynra's stamina: ", mynra.stamina)
 		#print("Mynra has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true

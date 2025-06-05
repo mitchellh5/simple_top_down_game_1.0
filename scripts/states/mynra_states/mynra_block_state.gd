@@ -1,4 +1,4 @@
-#MynraState
+#Block
 extends MynraState
 
 @export var mynra: PlayerMynra

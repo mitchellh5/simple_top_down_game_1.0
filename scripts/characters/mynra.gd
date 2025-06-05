@@ -17,6 +17,7 @@ class_name PlayerMynra
 																		# just watch the companion tear everything to shreds around them)
 @export var parry_window: Timer											# Times the parry window for a successful perfect parry versus a standard guard
 @export var guard_recov_window: Timer									# Works for slowly depleting the player's guard recovery bar after blocking damage
+@export var stamina_recov_starter: Timer								# Starts to regen stamina after a brief period of time
 @export var stamina_recov: Timer										# Slowly regens the player's stamina as long as they are not active (not attacking,
 																		# blocking damage, parrying, or dashing)
 
@@ -153,13 +154,31 @@ func _physics_process(delta: float) -> void:
 	#print(target_arlithon)
 	#_check_player_range()
 	
+	if stamina < 0:
+		stamina = 0
+	
 	if player:
 		angle = rad_to_deg(dir.angle())
 
-# Slowly regens stamina while player is inactive (not attacking,
-# blocking damage, parrying, or dodging)
+# Starts to regen stamina after the timer has gone off
+# as long as they are not active (not attacking, blocking
+# damage, parrying, or dashing)
+func _on_stamina_recovery_starter_timeout() -> void:
+	stamina_recov.start()
+
+# Slowly regens stamina after the starter timer has gone off
+# as long as they are not active (not attacking, blocking
+# damage, parrying, or dashing)
 func _on_stamina_recovery_timeout() -> void:
-	pass
+	if is_blocking && stamina < 100:
+		stamina += 1
+		print("Currenly blocking, stamina recov crippled.\nMynra's stamina: ", stamina)
+	elif stamina < 100:
+		stamina += 2
+		print("Walking freely, standard stamina recov active.\nMynra's stamina: ", stamina)
+	elif stamina >= 100:
+		stamina = 100
+		stamina_recov.stop()
 
 # Slowly depletes guard recov after a guard until it has either been
 # fully depleted for fully healed back from the player's attacks.
@@ -243,14 +262,22 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):
 	damage_rate = dmg
-	if damageable && is_parrying:
+	if damageable && is_parrying && stamina >= 0:
 		damaged = false
 		print("Mynra parried! Health unchanged: ", health)
-	elif damageable && is_blocking:
+		stamina -= 5
+		stamina_recov.stop()
+		stamina_recov_starter.start()
+		print("Mynra's stamina: ", stamina)
+	elif damageable && is_blocking && stamina >= 0:
 		health -= damage_rate / 2
 		guard_recov += damage_rate / 2
 		guard_recov_window.start()
+		stamina -= 10
+		stamina_recov.stop()
+		stamina_recov_starter.start()
 		print("Mynra blocked! Half damage received: ", health)
+		print("Mynra's stamina: ", stamina)
 		damageable = false
 		await get_tree().create_timer(0.5).timeout
 		damageable = true
@@ -260,10 +287,9 @@ func lose_health(dmg):
 	#print("Mynra's health", health)
 
 func collect_famine():
-	if collectable:
-		#print("Famine collected")
-		ammo = 1
-		_secondary_atk_cd()
+	print("Famine collected")
+	ammo = 1
+	_secondary_atk_cd()
  
 func _secondary_atk_cd():
 	sec_atk_cooldown = true

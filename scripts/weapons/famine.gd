@@ -4,6 +4,8 @@ extends CharacterBody2D
 const SPEED = 600 #Speed at which Famine travels
 const RANGE = 300 #Range of Famine (before it begins to return to Mynra)
 
+@export var collection_area: Area2D
+
 #Gets the character and arlithon nodes on start up to use for collision checking
 @onready var character = get_tree().current_scene.find_child("PlayerMynra")
 @onready var arlithon = get_tree().get_first_node_in_group("Arlithons")
@@ -45,6 +47,12 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 	else:
 		return_to_mynra()	#Runs the "return_to_mynra()" function once Famine has exceeded its range of attack
+	
+	for area in collection_area.get_overlapping_areas():
+		if area.get_parent().has_method("collect_famine") && collectable:
+			print("I has been grabbed!")
+			area.get_parent().collect_famine()
+			queue_free()
 
 #Once the timer (0.05s) has ended, it marks Famine as "collectable"
 #func _on_timer_timeout():
@@ -73,6 +81,7 @@ func _on_area_2d_body_entered(body):
 		returning = true
 	
 	elif body.is_in_group("walls"):
+		print("Hit a wall, otw back")
 		returning = true
 
 #This function is used to have Famine track back towards Mynra for collection

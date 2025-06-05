@@ -1536,7 +1536,7 @@ radius = 142.004
 radius = 14.0
 height = 46.0
 
-[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd", "parry_window", "guard_recov_window", "stamina_recov") groups=["Player"]]
+[node name="PlayerMynra" type="CharacterBody2D" node_paths=PackedStringArray("State_Machine", "spriteMynra", "nav", "hit_box", "player_detect", "prim_atk_range", "sec_atk_range", "interact_area", "los", "prim_atk_cd", "parry_window", "guard_recov_window", "stamina_recov_starter", "stamina_recov") groups=["Player"]]
 collision_mask = 22
 wall_min_slide_angle = 0.0
 script = ExtResource("1_u4xuv")
@@ -1552,6 +1552,7 @@ los = NodePath("LineOfSight")
 prim_atk_cd = NodePath("Prim_Atk_Cooldown")
 parry_window = NodePath("Parry")
 guard_recov_window = NodePath("Guard_Recovery")
+stamina_recov_starter = NodePath("Stamina_Recovery_Starter")
 stamina_recov = NodePath("Stamina_Recovery")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -1662,11 +1663,12 @@ one_shot = true
 
 [node name="Guard_Recovery" type="Timer" parent="."]
 
-[node name="Stamina_Recovery_Starter" type="Timer" parent="."]
-
 [node name="Stamina_Recovery" type="Timer" parent="."]
+wait_time = 0.1
 
-[node name="Stamina_Recovery_Blocking" type="Timer" parent="."]
+[node name="Stamina_Recovery_Starter" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_mynra_state")]
 script = ExtResource("3_ugxf0")
@@ -1731,6 +1733,7 @@ mynra_animation = NodePath("../../AnimatedSprite2D")
 [connection signal="timeout" from="Parry" to="StateMachine/Block" method="_on_parry_timeout"]
 [connection signal="timeout" from="Guard_Recovery" to="." method="_on_guard_recovery_timeout"]
 [connection signal="timeout" from="Stamina_Recovery" to="." method="_on_stamina_recovery_timeout"]
+[connection signal="timeout" from="Stamina_Recovery_Starter" to="." method="_on_stamina_recovery_starter_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]
