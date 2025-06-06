@@ -50,7 +50,7 @@ func _physics_process(delta: float) -> void:
 	
 	for area in collection_area.get_overlapping_areas():
 		if area.get_parent().has_method("collect_famine") && collectable:
-			print("I has been grabbed!")
+			#print("I has been grabbed!")
 			area.get_parent().collect_famine()
 			queue_free()
 
@@ -81,7 +81,7 @@ func _on_area_2d_body_entered(body):
 		returning = true
 	
 	elif body.is_in_group("walls"):
-		print("Hit a wall, otw back")
+		#print("Hit a wall, otw back")
 		returning = true
 
 #This function is used to have Famine track back towards Mynra for collection

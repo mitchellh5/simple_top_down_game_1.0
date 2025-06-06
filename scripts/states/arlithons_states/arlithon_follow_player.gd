@@ -1,14 +1,14 @@
-#Arlithon_Follow_Player
+# Arlithon_Follow_Player
 extends Arlithon_State
 
 @export var arlithon: Arlithon
 @export var arlithon_animation: AnimatedSprite2D
 
-#Runs every frame
+# Runs every frame
 func _on_update(_delta: float) -> void:
 	pass
 
-#Runs every frame
+# Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	arlithon_animation.play("Fly")
 	var direction = arlithon.to_local(arlithon.nav.get_next_path_position()).normalized()
@@ -24,8 +24,11 @@ func _make_path():
 func _on_nav_timeout() -> void:
 	_make_path()
 
-#Handles transitioning between states
+# Handles transitioning between states
 func _on_next_transitions() -> void:
+	
+	if arlithon.staggered:
+		transition.emit("Staggered")
 	
 	if arlithon.damaged:
 		transition.emit("Damaged")
@@ -37,10 +40,10 @@ func _on_next_transitions() -> void:
 		elif !arlithon.player_in_range:
 			transition.emit("Idle")
 
-#Runs upon entering state
+# Runs upon entering state
 func _on_enter():
 	_make_path()
 
-#Runs upon exiting state
+# Runs upon exiting state
 func _on_exit():
 	pass

@@ -1,78 +1,80 @@
-#Basic_Arlithon
+# Basic_Arlithon
 extends CharacterBody2D
 class_name Arlithon
 
-#Exports the arlithon's AnimatedSprite2D node to be called for animations
+# Exports the arlithon's AnimatedSprite2D node to be called for animations
 @export var sprite: AnimatedSprite2D
 
-#Connects the arlithon to the state machine on run time
+# Connects the arlithon to the state machine on run time
 @export var State_Machine : NodePath
 @onready var state_machine_instance = get_node("State_Machine")
 
-#Links the navigation2d node to the enemy for pathfinding
+# Links the navigation2d node to the enemy for pathfinding
 @onready var nav: NavigationAgent2D = $NavigationAgent2D
 
-#preloads all possible mutations on run time
+# Preloads all possible mutations on run time
 @onready var armor_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/armor_mutation.tscn")
 @onready var barbed_stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/barbed_stinger_mutation.tscn")
 @onready var hatchling_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/hatchling_mutation.tscn")
 @onready var stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn")
 
-#Determines movement speed of the basic arlithon
+# Determines movement speed of the basic arlithon
 var speed = 50
 
-#Paths to character Mynra on start up so that it can track the player's location
-#NOTE: will need to update this later to be able to track whichever character
-#is currently the player character
+# Paths to character Mynra on start up so that it can track the player's location
+# NOTE: will need to update this later to be able to track whichever character
+# is currently the player character
 @onready var character = get_tree().get_first_node_in_group("Player")
 @onready var companion = get_tree().get_first_node_in_group("Companion")
 
 @onready var prim_atk_range = get_node("%Hitbox")
 
-signal direction_changed(flip_h: bool)		#Used to determine the arlithon's current facing direction so that any
-var facing_left = false						#mutations can animate properly in the same direction
+signal direction_changed(flip_h: bool)		# Used to determine the arlithon's current facing direction so that any
+var facing_left = false						# mutations can animate properly in the same direction
 
-signal modulating(is_red: bool)				#Used to check when the arlithon has modulated to red to indicate it has
-var red = false								#been damaged to stay consistent with the mutations (namely the stinger)
+signal modulating(is_red: bool)				# Used to check when the arlithon has modulated to red to indicate it has
+var red = false								# been damaged to stay consistent with the mutations (namely the stinger)
 
-var health: int = 5							#Used for tracking health of arlithon
-var player_in_range: bool = false			#Used for tracking if player is within range of detection
-var player_body: CharacterBody2D			#Represents the player body
-var companion_body: CharacterBody2D			#Represents the companion's body
-var target_body: CharacterBody2D			#Represents the body (player or companion) that the arlithon is currently targeting
-var companion_in_range: bool = false		#Used for tracking if companion is within range of detection
-var body_in_atk_range: bool = false			#Used for tracking if a character (player or companion) is in attack range
+var health: int = 10						# Used for tracking health of arlithon
+var stagger_bar: int = 5					# Tracks how many times the enemy must be blocked, dodged, parried, or damaged before finally staggering
+var staggered: bool = false					# Used to track if arlithon is staggered (becomes true when the "stagger_bar" variable's value is <= 0)
+var player_in_range: bool = false			# Used for tracking if player is within range of detection
+var player_body: CharacterBody2D			# Represents the player body
+var companion_body: CharacterBody2D			# Represents the companion's body
+var target_body: CharacterBody2D			# Represents the body (player or companion) that the arlithon is currently targeting
+var companion_in_range: bool = false		# Used for tracking if companion is within range of detection
+var body_in_atk_range: bool = false			# Used for tracking if a character (player or companion) is in attack range
 
-var damageable: bool = true					#Used for tracking i-frames
-var damaged: bool = false					#Detects when arlithon receives damage
-var smote: bool = false						#Determines how arlithon was slain
-var stunlocked: bool = false				#Used for determining if the player is currently stun locking the arlithon
-var damage_dealt = 2						#How much damage it deals to the player
-var dir
+var damageable: bool = true					# Used for tracking i-frames
+var damaged: bool = false					# Detects when arlithon receives damage
+var smote: bool = false						# Determines how arlithon was slain
+var stunlocked: bool = false				# Used for determining if the player is currently stun locking the arlithon
+var damage_dealt = 2						# How much damage it deals to the player
 
-var is_targeted_by_player : bool			#Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
-var target_locked : bool = false			#Used to track to make sure the arlithon has been damaged in the last 7 seconds
-var is_alive : bool = true					#Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
+var is_targeted_by_player : bool			# Used to track if this is being targeted by the player so that the companion can assist even if it is mutated
+var target_locked : bool = false			# Used to track to make sure the arlithon has been damaged in the last 7 seconds
+var is_alive : bool = true					# Used to track if this arlithon is currently alive (so that companions won't hunt dead bodies)
 
-#Mutation variables
-var is_mutated: bool = false				#Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
+# Mutation variables
+var is_mutated: bool = false				# Used to track if the arlithon is currently mutated so that the companion knows not to target it unless the player does or it is the last remaining arlithon
 
-#Tracks all mutations the arlithon currently has to ensure appropriate animation
+# Tracks all mutations the arlithon currently has to ensure appropriate animation
 var has_armor: bool = false
 var has_barbed_stinger: bool = false
 var has_hatchling: bool = false
 var has_stinger: bool = false			
 
-signal dead									#Used to signal to companion that the enemy has died
+signal dead									# Used to signal to companion that the enemy has died
 
+# Runs once on start up
 func _ready():
 	prim_atk_range.monitoring = true
 	_check_mutations()
 
-#Runs each frame
+# Runs each frame
 func _physics_process(delta: float) -> void:
-	#If the arlithon is dead, it removes itself from the "Arlithons" group
-	#This is to help companion AI avoid hunting arlithons that are already dead
+	# If the arlithon is dead, it removes itself from the "Arlithons" group
+	# This is to help companion AI avoid hunting arlithons that are already dead
 	if health <= 0:
 		emit_signal("dead")
 		remove_from_group("Arlithons")
@@ -123,14 +125,19 @@ func _physics_process(delta: float) -> void:
 		if body == target_body:
 			body_in_atk_range = true
 	
+	if stagger_bar <= 0:
+		staggered = true
+	
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
 
-#Handles taking damage
+# Handles taking damage
 func take_damage():
 	if damageable:
 		health -= 1
+		stagger_bar -= 1
+		print("Stagger bar: ", stagger_bar)
 		if health > 0:
 			damaged = true
 			stunlocked = true
@@ -144,11 +151,11 @@ func _stunlocked():
 	stunlocked = false
 	#print("Can now attack")
 
-#Checks this arlithons current mutations each frame to see if it is
-#mutated (used for targeting purposes for the companion), and if so,
-#which mutations it has (to alter the arlithon's stats accordingly)
+# Checks this arlithons current mutations each frame to see if it is
+# mutated (used for targeting purposes for the companion), and if so,
+# which mutations it has (to alter the arlithon's stats accordingly)
 func _check_mutations():
-	#Checks and applies modifiers for "stinger" mutation
+	# Checks and applies modifiers for "stinger" mutation
 	if has_node("Stinger_Mutation"):
 		#print("I have a stinger! Stabby stabby stabby!")
 		damage_dealt = 4
@@ -157,25 +164,25 @@ func _check_mutations():
 		damage_dealt = 2
 		is_mutated = false
 
-#This is the logic used for tracking when this arlithon is currently
-#being targeted by the player character
+# This is the logic used for tracking when this arlithon is currently
+# being targeted by the player character
 func _is_being_targeted() -> void:
-	var other_arlithons = get_tree().get_nodes_in_group("Arlithons")		#Gets list of all arlithons in the current scene
+	var other_arlithons = get_tree().get_nodes_in_group("Arlithons")		# Gets list of all arlithons in the current scene
 		
 	if !is_alive:
 		is_targeted_by_player = false
-	elif damaged:												#If this arlithon is damaged
-		for node in other_arlithons:						#It parses through all other arlithons
-			if node != self && node.is_targeted_by_player:	#And if that arlithon is not itself and is currently being targeted by the PC
-				node.is_targeted_by_player = false			#It will set that arlithon to no longer being targeted by the PC
-		is_targeted_by_player = true						#Then it will set itself as the current target
-		$TargetLocked.start()								#And start the timer (which locks it as the target as long is it is damaged by the player every 7s or less)
+	elif damaged:												# If this arlithon is damaged
+		for node in other_arlithons:							# It parses through all other arlithons
+			if node != self && node.is_targeted_by_player:		# And if that arlithon is not itself and is currently being targeted by the PC
+				node.is_targeted_by_player = false				# It will set that arlithon to no longer being targeted by the PC
+		is_targeted_by_player = true							# Then it will set itself as the current target
+		$TargetLocked.start()									# And start the timer (which locks it as the target as long is it is damaged by the player every 7s or less)
 	
-	elif other_arlithons.size() == 1:						#As long as this is the only arlithon in the current scene
-		is_targeted_by_player = true						#It is always considered the targeted arlithon
+	elif other_arlithons.size() == 1:							# As long as this is the only arlithon in the current scene
+		is_targeted_by_player = true							# It is always considered the targeted arlithon
 	
-	elif $TargetLocked.is_stopped():						#Once the 7s timer runs out, if this arlithon is not being damaged
-		is_targeted_by_player = false						#It is removed as the current target
+	elif $TargetLocked.is_stopped():							# Once the 7s timer runs out, if this arlithon is not being damaged
+		is_targeted_by_player = false							# It is removed as the current target
 
 func _on_target_locked_timeout() -> void:
 	if !damaged:

@@ -37,7 +37,7 @@ func primary_attack_player():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 20
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
+		#print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		
 		var input_velocity = Game_Input_Events.velocity_of_movement()					#Gets player's current velocity_vector from the "Game_Input_Events" class
@@ -156,7 +156,7 @@ func primary_attack_companion():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 20
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
+		#print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		atk_on_cooldown = true
 		mynra.prim_atk_cd.start()

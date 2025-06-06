@@ -172,10 +172,10 @@ func _on_stamina_recovery_starter_timeout() -> void:
 func _on_stamina_recovery_timeout() -> void:
 	if is_blocking && stamina < 100:
 		stamina += 1
-		print("Currenly blocking, stamina recov crippled.\nMynra's stamina: ", stamina)
+		#print("Currenly blocking, stamina recov crippled.\nMynra's stamina: ", stamina)
 	elif stamina < 100:
 		stamina += 2
-		print("Walking freely, standard stamina recov active.\nMynra's stamina: ", stamina)
+		#print("Walking freely, standard stamina recov active.\nMynra's stamina: ", stamina)
 	elif stamina >= 100:
 		stamina = 100
 		stamina_recov.stop()
@@ -183,10 +183,10 @@ func _on_stamina_recovery_timeout() -> void:
 # Slowly depletes guard recov after a guard until it has either been
 # fully depleted for fully healed back from the player's attacks.
 func _on_guard_recovery_timeout() -> void:
-	print("Current available guard recovery:", guard_recov)
+	#print("Current available guard recovery:", guard_recov)
 	guard_recov -= 1
 	if guard_recov == 0:
-		print("Current available guard recovery:", guard_recov, ", ending decay.")
+		#print("Current available guard recovery:", guard_recov, ", ending decay.")
 		guard_recov_window.stop()
 
 func _character_swap() -> void:
@@ -287,7 +287,7 @@ func lose_health(dmg):
 	#print("Mynra's health", health)
 
 func collect_famine():
-	print("Famine collected")
+	#print("Famine collected")
 	ammo = 1
 	_secondary_atk_cd()
  

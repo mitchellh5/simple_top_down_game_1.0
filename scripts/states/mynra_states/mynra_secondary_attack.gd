@@ -29,7 +29,7 @@ func secondary_attack_player():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 25
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
+		#print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 
 		# Detect direction for animation and aiming
@@ -97,7 +97,7 @@ func secondary_attack_companion():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 25
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
+		#print("Mynra's stamina: ", mynra.stamina)
 		#print("Mynra has an attack locked on")
 		is_animating = true
 		atk_on_cooldown = true

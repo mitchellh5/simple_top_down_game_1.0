@@ -37,7 +37,7 @@ func on_animation_finished() -> void:
 
 func _on_parry_timeout() -> void:
 	mynra.is_parrying = false
-	print("Mynra is no longer parrying and has reverted to blocking")
+	#print("Mynra is no longer parrying and has reverted to blocking")
 
 #Handles transitioning between states
 func _on_next_transitions() -> void:
@@ -63,7 +63,7 @@ func _on_enter():
 	mynra.speed /= 2
 	mynra.is_parrying = true
 	mynra.parry_window.start()
-	print("Parrying")
+	#print("Parrying")
 
 #Runs upon exiting state
 func _on_exit():

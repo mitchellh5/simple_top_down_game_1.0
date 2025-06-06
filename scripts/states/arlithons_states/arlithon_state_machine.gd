@@ -1,4 +1,4 @@
-#Arlithon_State_Machine
+# Arlithon_State_Machine
 class_name Arlithon_State_Machine
 extends Node
 
@@ -8,17 +8,29 @@ var arlithon_states : Dictionary = {}				#States dictionary
 var current_arlithon_state : Arlithon_State		#Tracks current state
 var current_arlithon_state_name : String		#Holds name of current state
 
-#Runs on startup
 func _ready():
-	for child in get_children():							#Loops over all children
-		if child is Arlithon_State:							#If current child is a state
-			arlithon_states[child.name.to_lower()] = child	#Add it to the dictionary "states" using its name (NOTE: uses "to_lower" to avoid issues with case sensitivity
+	#print("Children of State Machine:")
+	for child in get_children():
+		#print("- ", child.name, " (", child.get_class(), ")")
+		if child is Arlithon_State:
+			#print("  -> This is an Arlithon_State")
+			arlithon_states[child.name.to_lower()] = child
 			child.transition.connect(transition_to)
-	
-	if initial_arlithon_state:					#Checks if there is an "initial_state"
-		#initial_player_state.player = get_parent()
-		initial_arlithon_state._on_enter()			#If so, enters "initial_state"
-		current_arlithon_state = initial_arlithon_state	#And sets the "current_state" equal to "initial_state"
+
+	if initial_arlithon_state:
+		var state_name := initial_arlithon_state.name.to_lower()
+		#print("Initial state set in Inspector: ", state_name)
+		var true_initial_state = arlithon_states.get(state_name)
+
+		if true_initial_state:
+			current_arlithon_state = true_initial_state
+			current_arlithon_state_name = state_name
+			call_deferred("_enter_initial_state")
+		else:
+			push_error("Initial state '%s' not found in children!" % state_name)
+
+func _enter_initial_state():
+	current_arlithon_state._on_enter()
 
 #Updates every frame, similarly to "_physics_process," but without a set frame rate
 #(Typically 60 fps for "_physics_process")
@@ -49,6 +61,6 @@ func transition_to(arlithon_state_name: String) -> void:
 	current_arlithon_state = new_arlithon_state
 	current_arlithon_state_name = current_arlithon_state.name.to_lower()
 	
-	# *** IMPORTANT: Call _on_enter() on the new state ***
 	current_arlithon_state._on_enter()
-	#print("Current State: ", current_arlithon_state)
+	
+	#print("Current State: ", current_arlithon_state_name)

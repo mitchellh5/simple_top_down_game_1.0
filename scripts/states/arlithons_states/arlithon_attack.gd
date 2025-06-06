@@ -1,14 +1,14 @@
-#Arlithon_Attack
+# Arlithon_Attack
 extends Arlithon_State
 
 @export var arlithon: Arlithon
 @export var arlithon_animation: AnimatedSprite2D
 
-#Runs every frame
+# Runs every frame
 func _on_update(_delta: float) -> void:
 	pass
 
-#Runs every frame
+# Runs every frame
 func _on_physics_update(_delta: float) -> void:
 	if arlithon.body_in_atk_range && !arlithon.stunlocked:
 		
@@ -30,7 +30,7 @@ func _on_physics_update(_delta: float) -> void:
 			if arlithon_animation.frame == 6:
 				arlithon.target_body.lose_health(arlithon.damage_dealt)
 
-#Handles transitioning between states
+# Handles transitioning between states
 func _on_next_transitions() -> void:
 	
 	if arlithon.body_in_atk_range:
@@ -41,10 +41,10 @@ func _on_next_transitions() -> void:
 	else:
 		transition.emit("Idle")
 
-#Runs upon entering state
+# Runs upon entering state
 func _on_enter():
 	pass
 
-#Runs upon exiting state
+# Runs upon exiting state
 func _on_exit():
 	pass

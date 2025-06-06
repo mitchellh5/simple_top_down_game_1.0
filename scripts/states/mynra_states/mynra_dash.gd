@@ -105,9 +105,7 @@ func _dash_as_player():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 20
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
-		
-		
+		#print("Mynra's stamina: ", mynra.stamina)
 		
 		start_position = mynra.position
 		distance_covered = 0.0
@@ -147,7 +145,7 @@ func _dash_as_companion():
 		mynra.stamina_recov.stop()
 		mynra.stamina -= 20
 		mynra.stamina_recov_starter.start()
-		print("Mynra's stamina: ", mynra.stamina)
+		#print("Mynra's stamina: ", mynra.stamina)
 		
 		mynra.damageable = false														#Dashing grants free i-frames
 		
