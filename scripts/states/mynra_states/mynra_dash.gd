@@ -29,9 +29,9 @@ func _on_physics_update(_delta: float) -> void:
 	if mynra.get_parent().name == "Oblivion":
 		can_dash = false
 	
-	if mynra.player && Input.is_action_pressed("dash") && can_dash && mynra.stamina:
+	if mynra.player && Input.is_action_pressed("dash") && can_dash:
 		_dash_as_player()
-	elif !mynra.player && can_dash && mynra.stamina > 0:
+	elif !mynra.player && can_dash:
 		_dash_as_companion()
 	
 	#While dashing:
@@ -101,12 +101,6 @@ func _dash_as_player():
 		can_dash = false
 		mynra.damageable = false
 		
-		
-		mynra.stamina_recov.stop()
-		mynra.stamina -= 20
-		mynra.stamina_recov_starter.start()
-		#print("Mynra's stamina: ", mynra.stamina)
-		
 		start_position = mynra.position
 		distance_covered = 0.0
 		
@@ -141,11 +135,6 @@ func _dash_as_companion():
 	if !is_animating:
 		is_animating = true																#Set "is_animating" and  "can_dash" to true to avoid spamming
 		can_dash = false
-		
-		mynra.stamina_recov.stop()
-		mynra.stamina -= 20
-		mynra.stamina_recov_starter.start()
-		#print("Mynra's stamina: ", mynra.stamina)
 		
 		mynra.damageable = false														#Dashing grants free i-frames
 		
@@ -214,8 +203,6 @@ func _on_next_transitions() -> void:
 	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
-		elif Game_Input_Events.is_blocking():
-			transition.emit("Block")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("PrimaryAttack")
 		elif Game_Input_Events.is_sec_attacking():

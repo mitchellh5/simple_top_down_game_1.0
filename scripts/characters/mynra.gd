@@ -15,11 +15,6 @@ class_name PlayerMynra
 @export var los: RayCast2D												# Sets up line of sight
 @export var prim_atk_cd: Timer											# Cooldown timers for when in companion mode to ensure balance (the player should be allowed to do more than
 																		# just watch the companion tear everything to shreds around them)
-@export var parry_window: Timer											# Times the parry window for a successful perfect parry versus a standard guard
-@export var guard_recov_window: Timer									# Works for slowly depleting the player's guard recovery bar after blocking damage
-@export var stamina_recov_starter: Timer								# Starts to regen stamina after a brief period of time
-@export var stamina_recov: Timer										# Slowly regens the player's stamina as long as they are not active (not attacking,
-																		# blocking damage, parrying, or dashing)
 
 
 # Tracks if Mynra is the current player character, or a companion
@@ -39,17 +34,12 @@ var speed = 200															# Sets speed of player movement
 var angle: float														# Tracks the direction Mynra is facing
 var player_direction : Vector2											# Used to track the direction the player was last facing for idling
 var health = 100														# Sets health value for Mynra
-var stamina = 100														# Sets stamina value
-var guard_recov: int													# Used to track current gguard regain amount
 var ammo = 1															# Sets ammo for Famine (1, because there is only one)
 var collectable: bool													# Sets variable to determine if Famine is currently collectable
 var damaged = false														# Used for state transitions
 var damageable = true													# Used for i-frames
 var damage : int = 1													# Used to track how much damage the player deals to enemies
 var damage_rate: int													# Used for determining how much damage the player takes from an attack
-var is_parrying: bool = false											# Used to track if character is currently parrying (transitions to blocking after the first few frames)
-var is_blocking: bool = false											# Used to track if character is currently blocking
-var is_active: bool = false												# Used to track if character is still actively using stamina (attacking, blocking damage, parrying, or dashing)
 
 ## Companion specific variabls
 
@@ -109,85 +99,59 @@ func _physics_process(delta: float) -> void:
 			if dir.length() > 0:
 				dir = dir.normalized()
 	elif !player:
-		#print("Im an NPC")
-		move_and_slide()
-		#print("NPC")
-		for body in prim_atk_range.get_overlapping_bodies():
-			if body == target_arlithon:
-				#print(target_arlithon)
-				#print("enemy spotted")
-				arlithon_in_prim_atk_range = true
-			#elif body != target_arlithon && arlithon_in_prim_atk_range:
-				#arlithon_in_prim_atk_range = false
-				#print("I'm an idiot swinging in the wind, ungabungabingaboo")
- 		
-		for body in sec_atk_range.get_overlapping_bodies():
-			if body == target_arlithon:
-				#print("Found target arlithon: ", target_arlithon)
-				los.look_at(body.global_position)
-				_check_los_enemy()
-				if enemy_spotted:
-					#print("Enemy spotted!")
-					arlithon_in_sec_atk_range = true
-			#elif body != target_arlithon && arlithon_in_sec_atk_range:
-				#arlithon_in_sec_atk_range = false
-		
-		player_body = get_tree().get_first_node_in_group("Player")
-		
-		var distance_from_player
-		var distance_from_arlithon
-		
-		if player_body:
-			distance_from_player = global_position.distance_to(player_body.global_position)
-		
-		if target_arlithon:
-			distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
+		if $"../PlayerScythio".is_in_group("Player"):
+			#print("Im an NPC")
+			move_and_slide()
+			#print("NPC")
+			for body in prim_atk_range.get_overlapping_bodies():
+				if body == target_arlithon:
+					#print(target_arlithon)
+					#print("enemy spotted")
+					arlithon_in_prim_atk_range = true
+				#elif body != target_arlithon && arlithon_in_prim_atk_range:
+					#arlithon_in_prim_atk_range = false
+					#print("I'm an idiot swinging in the wind, ungabungabingaboo")
+	 		
+			for body in sec_atk_range.get_overlapping_bodies():
+				if body == target_arlithon:
+					#print("Found target arlithon: ", target_arlithon)
+					los.look_at(body.global_position)
+					_check_los_enemy()
+					if enemy_spotted:
+						#print("Enemy spotted!")
+						arlithon_in_sec_atk_range = true
+				#elif body != target_arlithon && arlithon_in_sec_atk_range:
+					#arlithon_in_sec_atk_range = false
+			
+			player_body = get_tree().get_first_node_in_group("Player")
+			
+			var distance_from_player
+			var distance_from_arlithon
+			
+			if player_body:
+				distance_from_player = global_position.distance_to(player_body.global_position)
+			
+			if target_arlithon:
+				distance_from_arlithon = global_position.distance_to(target_arlithon.global_position)
+			else:
+				distance_from_arlithon = 10000000000
+			
+			
+			
+			if distance_from_arlithon < distance_from_player:
+					nav.target_position = target_arlithon.global_position
+			else:
+				nav.target_position = player_body.global_position
 		else:
-			distance_from_arlithon = 10000000000
-		
-		if distance_from_arlithon < distance_from_player:
-			nav.target_position = target_arlithon.global_position
-		else:
-			nav.target_position = player_body.global_position
+			return
 		
 	#print(arlithon_in_prim_atk_range)
 	#print(target_arlithon)
 	#_check_player_range()
 	
-	if stamina < 0:
-		stamina = 0
-	
 	if player:
 		angle = rad_to_deg(dir.angle())
 
-# Starts to regen stamina after the timer has gone off
-# as long as they are not active (not attacking, blocking
-# damage, parrying, or dashing)
-func _on_stamina_recovery_starter_timeout() -> void:
-	stamina_recov.start()
-
-# Slowly regens stamina after the starter timer has gone off
-# as long as they are not active (not attacking, blocking
-# damage, parrying, or dashing)
-func _on_stamina_recovery_timeout() -> void:
-	if is_blocking && stamina < 100:
-		stamina += 1
-		#print("Currenly blocking, stamina recov crippled.\nMynra's stamina: ", stamina)
-	elif stamina < 100:
-		stamina += 2
-		#print("Walking freely, standard stamina recov active.\nMynra's stamina: ", stamina)
-	elif stamina >= 100:
-		stamina = 100
-		stamina_recov.stop()
-
-# Slowly depletes guard recov after a guard until it has either been
-# fully depleted for fully healed back from the player's attacks.
-func _on_guard_recovery_timeout() -> void:
-	#print("Current available guard recovery:", guard_recov)
-	guard_recov -= 1
-	if guard_recov == 0:
-		#print("Current available guard recovery:", guard_recov, ", ending decay.")
-		guard_recov_window.stop()
 
 func _character_swap() -> void:
 	if player:
@@ -262,26 +226,7 @@ func _on_sec_atk_range_body_exited(body: Node2D) -> void:
 #Used for transitioning to the "Damaged" state when Mynra takes damage
 func lose_health(dmg):
 	damage_rate = dmg
-	if damageable && is_parrying && stamina >= 0:
-		damaged = false
-		print("Mynra parried! Health unchanged: ", health)
-		stamina -= 5
-		stamina_recov.stop()
-		stamina_recov_starter.start()
-		print("Mynra's stamina: ", stamina)
-	elif damageable && is_blocking && stamina >= 0:
-		health -= damage_rate / 2
-		guard_recov += damage_rate / 2
-		guard_recov_window.start()
-		stamina -= 10
-		stamina_recov.stop()
-		stamina_recov_starter.start()
-		print("Mynra blocked! Half damage received: ", health)
-		print("Mynra's stamina: ", stamina)
-		damageable = false
-		await get_tree().create_timer(0.5).timeout
-		damageable = true
-	elif damageable:
+	if damageable:
 		damaged = true
 	
 	#print("Mynra's health", health)

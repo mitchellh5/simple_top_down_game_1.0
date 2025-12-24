@@ -19,7 +19,7 @@ class_name Arlithon
 @onready var stinger_mutation_scene: PackedScene = preload("res://scenes/arlithon_mutations/pryd/stinger_mutation.tscn")
 
 # Determines movement speed of the basic arlithon
-var speed = 50
+var speed = 150
 
 # Paths to character Mynra on start up so that it can track the player's location
 # NOTE: will need to update this later to be able to track whichever character
@@ -36,8 +36,6 @@ signal modulating(is_red: bool)				# Used to check when the arlithon has modulat
 var red = false								# been damaged to stay consistent with the mutations (namely the stinger)
 
 var health: int = 10						# Used for tracking health of arlithon
-var stagger_bar: int = 5					# Tracks how many times the enemy must be blocked, dodged, parried, or damaged before finally staggering
-var staggered: bool = false					# Used to track if arlithon is staggered (becomes true when the "stagger_bar" variable's value is <= 0)
 var player_in_range: bool = false			# Used for tracking if player is within range of detection
 var player_body: CharacterBody2D			# Represents the player body
 var companion_body: CharacterBody2D			# Represents the companion's body
@@ -125,9 +123,6 @@ func _physics_process(delta: float) -> void:
 		if body == target_body:
 			body_in_atk_range = true
 	
-	if stagger_bar <= 0:
-		staggered = true
-	
 	_check_mutations()
 	_is_being_targeted()
 	#print(is_targeted_by_player)
@@ -136,8 +131,6 @@ func _physics_process(delta: float) -> void:
 func take_damage():
 	if damageable:
 		health -= 1
-		stagger_bar -= 1
-		print("Stagger bar: ", stagger_bar)
 		if health > 0:
 			damaged = true
 			stunlocked = true

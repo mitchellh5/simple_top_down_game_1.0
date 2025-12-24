@@ -45,9 +45,7 @@ func _on_next_transitions() -> void:
 	if mynra.damaged:
 		transition.emit("Damaged")
 	else:
-		if Game_Input_Events.is_blocking():
-			transition.emit("Block")
-		elif Game_Input_Events.is_sec_attacking():
+		if Game_Input_Events.is_sec_attacking():
 			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_prim_attacking():
 			transition.emit("PrimaryAttack")

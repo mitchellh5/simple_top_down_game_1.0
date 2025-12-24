@@ -1,3 +1,4 @@
+
 extends Node
 
 var in_range: bool = false

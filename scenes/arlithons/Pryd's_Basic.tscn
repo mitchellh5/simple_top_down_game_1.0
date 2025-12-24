@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=3 uid="uid://djulfym54bhm0"]
+[gd_scene load_steps=75 format=3 uid="uid://djulfym54bhm0"]
 
 [ext_resource type="Script" uid="uid://ba0th0iret3bq" path="res://scripts/arlithons/rath's hive/basic_arlithon.gd" id="1_4g40n"]
 [ext_resource type="Texture2D" uid="uid://bksf0uj1twi7p" path="res://assets/alpha/arlithons/pryd's hive/Pryd-Basic-Sheet.png" id="2_rx2ct"]
@@ -10,7 +10,6 @@
 [ext_resource type="Script" uid="uid://bjhjlpjbc3rdm" path="res://scripts/states/arlithons_states/arlithon_attack.gd" id="6_kmaep"]
 [ext_resource type="Script" uid="uid://cvxl7y0s0blvj" path="res://scripts/states/arlithons_states/arlithon_damaged.gd" id="7_uojla"]
 [ext_resource type="Script" uid="uid://egxuw4uds6dv" path="res://scripts/states/arlithons_states/arlithon_death.gd" id="8_3ncui"]
-[ext_resource type="Script" uid="uid://ihahsgax1anp" path="res://scenes/arlithons/staggered.gd" id="9_51va2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5q62m"]
 atlas = ExtResource("2_rx2ct")
@@ -541,10 +540,6 @@ autostart = true
 wait_time = 7.0
 one_shot = true
 
-[node name="Stagger_Timer" type="Timer" parent="."]
-wait_time = 10.0
-one_shot = true
-
 [node name="State_Machine" type="Node" parent="." node_paths=PackedStringArray("initial_arlithon_state")]
 script = ExtResource("3_onjyk")
 initial_arlithon_state = NodePath("Idle")
@@ -564,12 +559,6 @@ script = ExtResource("6_kmaep")
 arlithon = NodePath("../..")
 arlithon_animation = NodePath("../../Test_Arlithon")
 
-[node name="Staggered" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation", "stagger_timer")]
-script = ExtResource("9_51va2")
-arlithon = NodePath("../..")
-arlithon_animation = NodePath("../../Test_Arlithon")
-stagger_timer = NodePath("../../Stagger_Timer")
-
 [node name="Damaged" type="Node" parent="State_Machine" node_paths=PackedStringArray("arlithon", "arlithon_animation")]
 script = ExtResource("7_uojla")
 arlithon = NodePath("../..")
@@ -586,7 +575,6 @@ arlithon_animation = NodePath("../../Test_Arlithon")
 [connection signal="body_exited" from="Character_Detection" to="." method="_on_character_detection_body_exited"]
 [connection signal="timeout" from="Nav" to="State_Machine/Hunt" method="_on_nav_timeout"]
 [connection signal="timeout" from="TargetLocked" to="." method="_on_target_locked_timeout"]
-[connection signal="timeout" from="Stagger_Timer" to="State_Machine/Staggered" method="_on_stagger_timer_timeout"]
 
 [editable path="Hurtbox"]
 [editable path="Hitbox"]

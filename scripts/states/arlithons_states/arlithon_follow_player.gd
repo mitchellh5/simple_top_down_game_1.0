@@ -26,10 +26,6 @@ func _on_nav_timeout() -> void:
 
 # Handles transitioning between states
 func _on_next_transitions() -> void:
-	
-	if arlithon.staggered:
-		transition.emit("Staggered")
-	
 	if arlithon.damaged:
 		transition.emit("Damaged")
 	else:

@@ -18,7 +18,7 @@ func _ready() -> void:
 func _on_physics_update(_delta: float) -> void:
 	arlithons = get_tree().get_nodes_in_group("Arlithons")
 	
-	if mynra.player && Input.is_action_pressed("primary_attack") && mynra.stamina > 0:
+	if mynra.player && Input.is_action_pressed("primary_attack"):
 		primary_attack_player()
 	elif !mynra.player && mynra.arlithon_in_prim_atk_range:
 		primary_attack_companion()
@@ -34,10 +34,6 @@ func _on_physics_update(_delta: float) -> void:
 func primary_attack_player():
 	#Makes sure the player is not currently animating to avoid overlapping animations
 	if !is_animating:
-		mynra.stamina_recov.stop()
-		mynra.stamina -= 20
-		mynra.stamina_recov_starter.start()
-		#print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		
 		var input_velocity = Game_Input_Events.velocity_of_movement()					#Gets player's current velocity_vector from the "Game_Input_Events" class
@@ -69,9 +65,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 						
 			elif mynra.player_direction == Vector2.RIGHT:
 				mynra_animation.play("Prim_Atk1_R")
@@ -80,9 +73,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 							
 			elif mynra.player_direction == Vector2.DOWN:
 				mynra_animation.play("Prim_Atk1_D")
@@ -91,9 +81,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 						
 			else:
 				mynra_animation.play("Prim_Atk1_U")
@@ -102,11 +89,8 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
-							
-							
+						
+						
 		else:
 			if mynra.angle >= -45 && mynra.angle < 45:
 				mynra_animation.play("Prim_Atk1_R")
@@ -115,9 +99,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 		
 			elif mynra.angle >= 45 && mynra.angle < 135:
 				mynra_animation.play("Prim_Atk1_D")
@@ -126,9 +107,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 		
 			elif mynra.angle >= -135 && mynra.angle < -45:
 				mynra_animation.play("Prim_Atk1_U")
@@ -137,9 +115,6 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 			else:
 				mynra_animation.play("Prim_Atk1_L")
 				mynra.hit_box.rotation_degrees = 0
@@ -147,16 +122,9 @@ func primary_attack_player():
 				for body in bodies:
 					if body.has_method("take_damage"):
 						body.take_damage()
-						if mynra.guard_recov > 0:
-							mynra.health += mynra.damage
-							mynra.guard_recov -= mynra.damage
 
 func primary_attack_companion():
 	if !is_animating && mynra.target_arlithon.is_alive && !atk_on_cooldown && mynra.arlithon_in_prim_atk_range:
-		mynra.stamina_recov.stop()
-		mynra.stamina -= 20
-		mynra.stamina_recov_starter.start()
-		#print("Mynra's stamina: ", mynra.stamina)
 		is_animating = true
 		atk_on_cooldown = true
 		mynra.prim_atk_cd.start()
@@ -204,8 +172,6 @@ func _on_next_transitions() -> void:
 	elif mynra.player:
 		if Game_Input_Events.is_movement_input():
 			transition.emit("Movement")
-		elif Game_Input_Events.is_blocking():
-			transition.emit("Block")
 		elif Game_Input_Events.is_sec_attacking():
 			transition.emit("SecondaryAttack")
 		elif Game_Input_Events.is_dashing():

@@ -38,12 +38,6 @@ static func is_dashing() -> bool:
 	else:
 		return false
 
-static func is_blocking() -> bool:
-	if Input.is_action_pressed("block_parry") && !GlobalState.input_paused:
-		return true
-	else:
-		return false
-
 #Detects if player is currently using their secondary attack
 static func is_sec_attacking() -> bool:
 	if Input.is_action_just_pressed("secondary_attack") && !GlobalState.input_paused:
